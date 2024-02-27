@@ -1,36 +1,67 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Next BlockEditor App
 
-## Getting Started
-
-First, run the development server:
+## Installation & Usage
+To begin, clone the tiptap-templates repository from GitHub using the following command:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone git@github.com:ueberdosis/tiptap-templates.git
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+This command clones the entire repository, providing access to all the Tiptap templates currently available. The block
+editor template is located in `templates/next-block-editor-app`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Proceed with the following steps:
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+```bash
+# Duplicate the example environment file and adjust the necessary settings in the .env file
+# Ensure the inclusion of your Tiptap cloud token and application IDs in the .env file
+cp .env.example .env
 
-## Learn More
+# Install project dependencies
+npm install
 
-To learn more about Next.js, take a look at the following resources:
+# Launch the development server
+npm run dev
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Access the application at http://localhost:3000
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+> [!Important]
+> For users without access to Tiptap's paid [Content AI](https://tiptap.dev/product/content-ai) features, you will need to remove or exclude the Content AI extension from this template. This template is designed to showcase UI possibilities and should be adapted to fit your project's requirements and access to [Tiptap features](https://tiptap.dev/pricing).
 
-## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Usage Guidelines
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+The BlockEditor template is a fully functional Next.js application, akin to Notion or Dropbox Paper, suitable as a
+foundation for your projects or as a base for a custom editor.
+
+Key features of the template include:
+
+- A Next.js setup with TypeScript
+- A basic Tailwind setup for styling
+- Pre-configured links to Tiptap Cloud for collaboration and data persistence.
+- A Block Editor with a basic set of nodes and marks but also more advanced features like
+  - Drag & Drop via a DragHandle
+  - A fleshed out menu bar for text editing and formatting
+  - Link editing
+  - mocked image uploading that can be hooked up to your backend
+
+You can either start a fresh project from this editor or copy over the editor or parts you need to your own projects.
+Make sure to check out the [Tiptap documentation](https://tiptap.dev) for more information on how to use Tiptap.
+
+## Folder structure
+
+The template is structured as a Next.js app with a few additional folders and files:
+
+- **components** Includes all React components used in the app
+  - **BlockEditor** the wrapping BlockEditor setup component
+  - **menus** a set of menus used in the editor (for example Link, Text and DragHandle menus)
+  - **panels** popover menus used in menu bars for example the Colorpicker or Link editor
+  - **Sidebar** the sidebar component
+  - **TableOfContents** the table of contents component used for navigation
+  - **ui** general reusable UI components used across the application
+- **context** A place to put React contexts that are used in the app
+- **extensions** Includes all Tiptap extensions used in the app including their NodeViews and logic parts
+- **hooks** Including general hooks used for app and editor setup
+- **lib** Includes helper functions
+- **styles** Includes global CSS styles with Tailwind to setup richtext styling
