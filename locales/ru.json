@@ -1,0 +1,13 @@
+{
+  "Metadata": {
+    "title": "Чекноут",
+    "description": "Приложение для огранизции работы в команде, управления командой, совместного ведения документов и документации.",
+    "robots": "noindex, nofollow"
+  },
+  "Marketing": {
+    "Enter": "Войти",
+    "title": "Ваши идеи, документы и планы. Добро пожаловать в ",
+    "desc": "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nulla, qui commodi. Est, modi? Fuga explicabo, esse perferendis minus similique sit aspernatur. Eveniet eum unde ratione qui deleniti ipsum harum libero.",
+    "enterNote": "Войти в ноут"
+  }
+}
