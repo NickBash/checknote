@@ -8,7 +8,7 @@ import { useTranslations } from 'next-intl'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 
-export const Heading = ({ lng }: { lng: string }) => {
+export const Heading = ({ locale }: { locale: string }) => {
   const t = useTranslations('Marketing')
   const { user } = usePocket()
 

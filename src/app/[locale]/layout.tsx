@@ -16,8 +16,8 @@ export function generateStaticParams() {
   return locales.map(locale => ({ locale }))
 }
 
-export async function generateMetadata({ params: { lng } }: Root) {
-  const t = await getTranslations({ locale: lng, namespace: 'Metadata' })
+export async function generateMetadata({ params: { locale } }: Root) {
+  const t = await getTranslations({ locale, namespace: 'Metadata' })
 
   return {
     title: t('title'),
@@ -29,16 +29,16 @@ export async function generateMetadata({ params: { lng } }: Root) {
 
 interface Root {
   children: React.ReactNode
-  params: { lng: string }
+  params: { locale: string }
 }
 
-export default function RootLayout({ children, params: { lng } }: Root) {
-  unstable_setRequestLocale(lng)
+export default function RootLayout({ children, params: { locale } }: Root) {
+  unstable_setRequestLocale(locale)
 
   const messages = useMessages()
 
   return (
-    <html className="h-full font-sans" lang={lng} suppressHydrationWarning>
+    <html className="h-full font-sans" lang={locale} suppressHydrationWarning>
       <body className="flex h-full flex-col">
         <ConvexClientProvider>
           <PocketProvider>
@@ -53,7 +53,7 @@ export default function RootLayout({ children, params: { lng } }: Root) {
                 <Toaster position="bottom-center" />
                 <ModalProvider />
                 <main className="h-full">
-                  <NextIntlClientProvider locale={lng} messages={messages}>
+                  <NextIntlClientProvider locale={locale} messages={messages}>
                     {children}
                   </NextIntlClientProvider>
                 </main>
