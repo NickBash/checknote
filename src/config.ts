@@ -8,8 +8,12 @@ export const pathnames = {
     ru: '/pathnames',
     en: '/pathnames',
   },
+  '/api': {
+    ru: '/api',
+    en: '/api',
+  },
 } satisfies Pathnames<typeof locales>
 
-export const localePrefix = 'as-needed'
+export const localePrefix = undefined
 
 export type AppPathnames = keyof typeof pathnames

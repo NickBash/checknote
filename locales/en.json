@@ -9,5 +9,15 @@
     "title": "Your Ideas, Documents & Plans. Welcome to ",
     "desc": "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nulla, qui commodi. Est, modi? Fuga explicabo, esse perferendis minus similique sit aspernatur. Eveniet eum unde ratione qui deleniti ipsum harum libero.",
     "enterNote": "Enter Note"
+  },
+  "Signin": {
+    "title": "Sign in to your account",
+    "email": "Your email",
+    "password": "Password",
+    "remember": "Remember me",
+    "forgout": "Forgot password?",
+    "signinButton": "Sign in",
+    "dontAccount": "Don’t have an account yet?",
+    "signupLink": "Sign up"
   }
 }

@@ -40,7 +40,7 @@ export const Heading = ({ locale }: { locale: string }) => {
       )} */}
       {user && init && (
         <Button asChild>
-          <Link href="/signin">
+          <Link href="/documents">
             {t('Enter')}
             <ArrowRight className="ml-2 h-4 w-4" />
           </Link>

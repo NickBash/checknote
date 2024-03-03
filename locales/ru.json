@@ -9,5 +9,15 @@
     "title": "Ваши идеи, документы и планы. Добро пожаловать в ",
     "desc": "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nulla, qui commodi. Est, modi? Fuga explicabo, esse perferendis minus similique sit aspernatur. Eveniet eum unde ratione qui deleniti ipsum harum libero.",
     "enterNote": "Войти в ноут"
+  },
+  "Signin": {
+    "title": "Войдите в ваш аккаунт",
+    "email": "Ваша электронная почта",
+    "password": "Пароль",
+    "remember": "Запомнить меня",
+    "forgout": "Забыли пароль?",
+    "signinButton": "Войти",
+    "dontAccount": "У вас нет аккаунта?",
+    "signupLink": "Зарегистрироваться"
   }
 }
