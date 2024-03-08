@@ -1,11 +1,14 @@
 'use client'
 
+import { usePocket } from '@/components/providers/pocket-provider'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { useDocuments } from '@/hooks/use-documents'
 import { useSearch } from '@/hooks/use-search'
 import { useSettings } from '@/hooks/use-settings'
 import { cn } from '@/lib/utils'
 import { ChevronsLeft, MenuIcon, Plus, PlusCircle, Search, Settings, Trash } from 'lucide-react'
-import { useParams, usePathname, useRouter } from 'next/navigation'
+import { useTranslations } from 'next-intl'
+import { useParams, usePathname } from 'next/navigation'
 import { ElementRef, useEffect, useRef, useState } from 'react'
 import { useMediaQuery } from 'usehooks-ts'
 import { DocumentList } from './document-list'
@@ -15,14 +18,14 @@ import { TrashBox } from './trash-box'
 import { UserItem } from './user-item'
 
 const Navigation = () => {
-  const router = useRouter()
   const settings = useSettings()
   const search = useSearch()
   const params = useParams()
   const pathname = usePathname()
   const isMobile = useMediaQuery('(max-width: 768px)')
-
-  //const create = useMutation(api.documents.create);
+  const t = useTranslations('Navigation')
+  const documents = useDocuments()
+  const { pb, user } = usePocket()
 
   const isResizingRef = useRef(false)
   const sidebarRef = useRef<ElementRef<'aside'>>(null)
@@ -98,14 +101,7 @@ const Navigation = () => {
   }
 
   const handleCreate = () => {
-    // const promise = create({ title: 'Untitled' }).then((documentId) =>
-    //   router.push(`/documents/${documentId}`),
-    // );
-    // toast.promise(promise, {
-    //   loading: 'Creating a new note...',
-    //   success: 'New note created!',
-    //   error: 'Failed to create a new note.',
-    // });
+    documents.createDocuments(pb, user as Record<string, any>)
   }
 
   return (
@@ -136,7 +132,7 @@ const Navigation = () => {
         </div>
         <div className="mt-4">
           <DocumentList />
-          <Item onClick={handleCreate} icon={Plus} label="Add a page" />
+          <Item onClick={handleCreate} icon={Plus} label={t('addPage')} />
           <Popover>
             <PopoverTrigger className="mt-4 w-full">
               <Item label="Trash" icon={Trash} />

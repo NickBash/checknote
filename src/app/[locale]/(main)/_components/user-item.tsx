@@ -1,6 +1,5 @@
 'use client'
 
-import { SignOutButton } from '@clerk/clerk-react'
 import { ChevronsLeftRight } from 'lucide-react'
 
 import { usePocket } from '@/components/providers/pocket-provider'
@@ -28,7 +27,7 @@ export const UserItem = () => {
             <Avatar className="h-5 w-5">
               <AvatarImage src={user?.avatar} />
             </Avatar>
-            <span className="line-clamp-1 text-start font-medium">{user?.name}&apos;s Jotion</span>
+            <span className="line-clamp-1 text-start font-medium">{user?.username}&apos;s Jotion</span>
           </div>
           <ChevronsLeftRight className="ml-2 h-4 w-4 rotate-90 text-muted-foreground" />
         </div>
@@ -43,15 +42,13 @@ export const UserItem = () => {
               </Avatar>
             </div>
             <div className="space-y-1">
-              <p className="line-clamp-1 text-sm">{user?.name}&apos;s Jotion</p>
+              <p className="line-clamp-1 text-sm">{user?.username}&apos;s Jotion</p>
             </div>
           </div>
         </div>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild className="w-full cursor-pointer text-muted-foreground">
-          <div>
-            <SignOutButton>Log out</SignOutButton>
-          </div>
+          <div>{/* <SignOutButton>Log out</SignOutButton> */}</div>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

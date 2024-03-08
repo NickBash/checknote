@@ -1,53 +1,42 @@
-'use client';
+'use client'
 
-import { ConfirmModal } from '@/components/modals/confirm-modal';
-import { Button } from '@/components/ui/button';
-import { api } from '@/convex/_generated/api';
-import type { Id } from '@/convex/_generated/dataModel';
-import { useMutation } from 'convex/react';
-import { useRouter } from 'next/navigation';
-import { toast } from 'sonner';
+import { ConfirmModal } from '@/components/modals/confirm-modal'
+import { usePocket } from '@/components/providers/pocket-provider'
+import { Button } from '@/components/ui/button'
+import { useDocuments } from '@/hooks/use-documents'
+import { useRouter } from 'next/navigation'
 
 interface BannerProps {
-  documentId: Id<'documents'>;
+  documentId: string
 }
 
 export const Banner = ({ documentId }: BannerProps) => {
-  const router = useRouter();
+  const { user, pb } = usePocket()
+  const router = useRouter()
 
-  const remove = useMutation(api.documents.remove);
-  const restore = useMutation(api.documents.restore);
+  const updateDocuments = useDocuments(state => state.updateDocuments)
+  const deleteDocument = useDocuments(state => state.deleteDocument)
 
   const onRemove = () => {
-    const promise = remove({ id: documentId });
+    deleteDocument(pb, user, documentId)
 
-    toast.promise(promise, {
-      loading: 'Deleting note...',
-      success: 'Note deleted!',
-      error: 'Failed to delete note.',
-    });
+    router.push('/documents')
+  }
 
-    router.push('/documents');
-  };
+  const onRestore = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    event.stopPropagation()
 
-  const onRestore = () => {
-    const promise = restore({ id: documentId });
-
-    toast.promise(promise, {
-      loading: 'Restoring note...',
-      success: 'Note restored!',
-      error: 'Failed to restore note.',
-    });
-  };
+    updateDocuments(pb, user, documentId, { isArchived: false })
+  }
 
   return (
-    <div className="w-full bg-rose-500 text-center text-sm p-2 text-white flex items-center gap-x-2 justify-center">
+    <div className="flex w-full items-center justify-center gap-x-2 bg-rose-500 p-2 text-center text-sm text-white">
       <p>This page is in the Trash.</p>
       <Button
         size="sm"
-        onClick={onRestore}
+        onClick={e => onRestore(e)}
         variant="outline"
-        className="border-white bg-transparent hover:bg-primary/5 text-white hover:text-white p-1 px-2 h-auto font-normal"
+        className="h-auto border-white bg-transparent p-1 px-2 font-normal text-white hover:bg-primary/5 hover:text-white"
       >
         Restore page
       </Button>
@@ -55,11 +44,11 @@ export const Banner = ({ documentId }: BannerProps) => {
         <Button
           size="sm"
           variant="outline"
-          className="border-white bg-transparent hover:bg-primary/5 text-white hover:text-white p-1 px-2 h-auto font-normal"
+          className="h-auto border-white bg-transparent p-1 px-2 font-normal text-white hover:bg-primary/5 hover:text-white"
         >
           Delete forever
         </Button>
       </ConfirmModal>
     </div>
-  );
-};
+  )
+}

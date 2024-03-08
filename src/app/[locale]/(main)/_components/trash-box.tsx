@@ -1,68 +1,69 @@
-'use client';
+'use client'
 
-import { ConfirmModal } from '@/components/modals/confirm-modal';
-import { Spinner } from '@/components/spinner';
-import { Input } from '@/components/ui/input';
-import { api } from '@/convex/_generated/api';
-import type { Id } from '@/convex/_generated/dataModel';
-import { useMutation, useQuery } from 'convex/react';
-import { Search, Trash, Undo } from 'lucide-react';
-import { useParams, useRouter } from 'next/navigation';
-import { useState } from 'react';
-import { toast } from 'sonner';
+import { ConfirmModal } from '@/components/modals/confirm-modal'
+import { usePocket } from '@/components/providers/pocket-provider'
+import { Spinner } from '@/components/spinner'
+import { Input } from '@/components/ui/input'
+import { useDocuments, type Document } from '@/hooks/use-documents'
+import { Search, Trash, Undo } from 'lucide-react'
+import { useParams, useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 
 export const TrashBox = () => {
-  const router = useRouter();
-  const params = useParams();
-  const documents = useQuery(api.documents.getTrash);
-  const restore = useMutation(api.documents.restore);
-  const remove = useMutation(api.documents.remove);
+  const router = useRouter()
+  const params = useParams()
 
-  const [search, setSearch] = useState('');
+  const documents = useDocuments(state => state.documents)
+  const { user, pb } = usePocket()
 
-  const filteredDocuments = documents?.filter((document) => {
-    return document.title.toLowerCase().includes(search.toLowerCase());
-  });
+  const updateDocuments = useDocuments(state => state.updateDocuments)
+  const deleteDocument = useDocuments(state => state.deleteDocument)
+
+  const [search, setSearch] = useState('')
+  const [filteredDocuments, setFilteredDocuments] = useState<Document[]>([])
 
   const onClick = (documentId: string) => {
-    router.push(`/documents/${documentId}`);
-  };
+    router.push(`/documents/${documentId}`)
+  }
 
-  const onRestore = (
-    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
-    documentId: Id<'documents'>,
-  ) => {
-    event.stopPropagation();
+  const onRestore = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, documentId: string) => {
+    event.stopPropagation()
 
-    const promise = restore({ id: documentId });
+    updateDocuments(pb, user, documentId, { isArchived: false })
+  }
 
-    toast.promise(promise, {
-      loading: 'Restore note...',
-      success: 'Note restored!',
-      error: 'Failed to restore note.',
-    });
-  };
-
-  const onRemove = (documentId: Id<'documents'>) => {
-    const promise = remove({ id: documentId });
-
-    toast.promise(promise, {
-      loading: 'Deleting note...',
-      success: 'Note deleted!',
-      error: 'Failed to rdelete note.',
-    });
+  const onRemove = (documentId: string) => {
+    deleteDocument(pb, user, documentId)
 
     if (params.documentId === documentId) {
-      router.push('/documents');
+      router.push('/documents')
     }
-  };
+  }
+
+  useEffect(() => {
+    let findDocs: Document[] | undefined
+
+    if (search) {
+      findDocs = documents?.filter(
+        (document: Document) => document.title.toLowerCase().includes(search.toLowerCase()) && document.isArchived,
+      )
+    } else {
+      findDocs = documents?.filter((document: Document) => document.isArchived)
+    }
+
+    if (findDocs?.length) {
+      setFilteredDocuments(findDocs)
+    } else {
+      setFilteredDocuments([])
+    }
+  }, [search, documents])
 
   if (documents === undefined) {
     return (
-      <div className="h-full flex items-center justify-center p-4">
+      <div className="flex h-full items-center justify-center p-4">
         <Spinner size="lg"></Spinner>
       </div>
-    );
+    )
   }
 
   return (
@@ -71,36 +72,31 @@ export const TrashBox = () => {
         <Search className="h-4 w-4" />
         <Input
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="h-7 px-2 focus-visible:ring-transparent bg-secondary"
+          onChange={e => setSearch(e.target.value)}
+          className="h-7 bg-secondary px-2 focus-visible:ring-transparent"
           placeholder="Filter by page title..."
         />
       </div>
       <div className="mt-2 px-1 pb-1">
-        <p className="hidden last:block text-xs text-center text-muted-foreground pb-2">
-          No documents found.
-        </p>
-        {filteredDocuments?.map((document) => (
+        <p className="hidden pb-2 text-center text-xs text-muted-foreground last:block">No documents found.</p>
+        {filteredDocuments?.map(document => (
           <div
-            key={document._id}
+            key={document.id}
             role="button"
-            onClick={() => onClick(document._id)}
-            className="text-sm rounded-sm w-full hover:bg-primary/5 flex items-center text-primary justify-between"
+            onClick={() => onClick(document.id)}
+            className="flex w-full items-center justify-between rounded-sm text-sm text-primary hover:bg-primary/5"
           >
             <span className="truncate pl-2">{document.title}</span>
             <div className="flex items-center">
               <div
-                onClick={(e) => onRestore(e, document._id)}
+                onClick={e => onRestore(e, document.id)}
                 role="button"
                 className="rounded-sm p-2 hover:bg-neutral-200 dark:hover:bg-neutral-600"
               >
                 <Undo className="h-4 w-4 text-muted-foreground" />
               </div>
-              <ConfirmModal onConfirm={() => onRemove(document._id)}>
-                <div
-                  role="button"
-                  className="rounded-sm p-2 hover:bg-neutral-200 dark:hover:bg-neutral-600"
-                >
+              <ConfirmModal onConfirm={() => onRemove(document.id)}>
+                <div role="button" className="rounded-sm p-2 hover:bg-neutral-200 dark:hover:bg-neutral-600">
                   <Trash className="h-4 w-4 text-muted-foreground" />
                 </div>
               </ConfirmModal>
@@ -109,5 +105,5 @@ export const TrashBox = () => {
         ))}
       </div>
     </div>
-  );
-};
+  )
+}

@@ -1,27 +1,17 @@
 'use client'
 
+import { usePocket } from '@/components/providers/pocket-provider'
 import { Button } from '@/components/ui/button'
-import { api } from '@/convex/_generated/api'
-import { useUser } from '@clerk/clerk-react'
-import { useMutation } from 'convex/react'
+import { useDocuments } from '@/hooks/use-documents'
 import { PlusCircle } from 'lucide-react'
 import Image from 'next/image'
-import { useRouter } from 'next/navigation'
-import { toast } from 'sonner'
 
 const DocumentPage = () => {
-  const router = useRouter()
-  const { user } = useUser()
-  const create = useMutation(api.documents.create)
+  const { user, pb } = usePocket()
+  const createDocument = useDocuments(state => state.createDocuments)
 
   const onCreate = () => {
-    const promise = create({ title: 'Untitled' }).then(documentId => router.push(`/documents/${documentId}`))
-
-    toast.promise(promise, {
-      loading: 'Creating a new note...',
-      success: 'New note created!',
-      error: 'Failed to create a new note.',
-    })
+    createDocument(pb, user as Record<string, any>)
   }
 
   return (

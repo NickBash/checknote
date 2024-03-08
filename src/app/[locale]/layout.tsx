@@ -1,7 +1,6 @@
 import 'cal-sans'
 
 import { ModalProvider } from '@/components/modals/modal-provider'
-import { ConvexClientProvider } from '@/components/providers/convex-provider'
 import { PocketProvider } from '@/components/providers/pocket-provider'
 import { ThemeProvider } from '@/components/providers/theme-provider'
 import { EdgeStoreProvider } from '@/lib/edgestore'
@@ -40,27 +39,25 @@ export default function RootLayout({ children, params: { locale } }: Root) {
   return (
     <html className="h-full font-sans" lang={locale} suppressHydrationWarning>
       <body className="flex h-full flex-col">
-        <ConvexClientProvider>
-          <PocketProvider>
-            <EdgeStoreProvider>
-              <ThemeProvider
-                attribute="class"
-                defaultTheme="system"
-                enableSystem
-                disableTransitionOnChange
-                storageKey="checknote-theme-2"
-              >
-                <Toaster position="bottom-center" />
-                <ModalProvider />
-                <main className="h-full">
-                  <NextIntlClientProvider locale={locale} messages={messages}>
-                    {children}
-                  </NextIntlClientProvider>
-                </main>
-              </ThemeProvider>
-            </EdgeStoreProvider>
-          </PocketProvider>
-        </ConvexClientProvider>
+        <PocketProvider>
+          <EdgeStoreProvider>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+              storageKey="checknote-theme-2"
+            >
+              <Toaster position="bottom-center" />
+              <ModalProvider />
+              <main className="h-full">
+                <NextIntlClientProvider locale={locale} messages={messages}>
+                  {children}
+                </NextIntlClientProvider>
+              </main>
+            </ThemeProvider>
+          </EdgeStoreProvider>
+        </PocketProvider>
       </body>
     </html>
   )

@@ -1,19 +1,27 @@
 'use client'
 
-import type { Doc, Id } from '@/convex/_generated/dataModel'
+import { usePocket } from '@/components/providers/pocket-provider'
+import { Document, useDocuments } from '@/hooks/use-documents'
+import { cn } from '@/lib/utils'
+import { FileIcon } from 'lucide-react'
 import { useParams, useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { Item } from './item'
 
 interface IDocumentListProps {
-  parentDocumentId?: Id<'documents'>
   level?: number
-  data?: Doc<'documents'>[]
 }
 
-export const DocumentList = ({ parentDocumentId, level = 0 }: IDocumentListProps) => {
+export const DocumentList = ({ level = 0 }: IDocumentListProps) => {
+  const { pb, user } = usePocket()
   const params = useParams()
   const router = useRouter()
   const [expanded, setExpanded] = useState<Record<string, boolean>>({})
+  const [documentsList, setDocumentsList] = useState<Document[]>([])
+
+  const { getDocuments, isLoading, addDocument, updateDocument, deleteDocumentState } = useDocuments()
+
+  const documents = useDocuments(state => state.documents)
 
   const onExpand = (documentId: string) => {
     setExpanded(prevExpanded => ({
@@ -22,63 +30,85 @@ export const DocumentList = ({ parentDocumentId, level = 0 }: IDocumentListProps
     }))
   }
 
-  // const documents = useQuery(api.documents.getSidebar, {
-  //   parentDocument: parentDocumentId,
-  // })
+  useEffect(() => {
+    if (!isLoading) {
+      getDocuments(pb, user)
+
+      pb.collection('documents').subscribe('*', e => {
+        console.log(e)
+        if (e?.action === 'create') {
+          addDocument(e?.record as Document)
+        }
+        if (e?.action === 'update') {
+          updateDocument(e?.record as Document)
+        }
+        if (e?.action === 'delete') {
+          deleteDocumentState(e?.record as Document)
+        }
+      })
+    }
+
+    return () => {
+      pb.collection('documents').unsubscribe('*')
+    }
+  }, [])
+
+  useEffect(() => {
+    if (documents?.length) {
+      setDocumentsList(documents.filter(doc => !doc.isArchived))
+    } else {
+      setDocumentsList([])
+    }
+  }, [documents])
 
   const onRedirect = (documentId: string) => {
     router.push(`/documents/${documentId}`)
   }
 
-  return <div></div>
+  if (!documents) {
+    return (
+      <>
+        <Item.Skeleton level={level} />
+        {level === 0 && (
+          <>
+            <Item.Skeleton level={level} />
+            <Item.Skeleton level={level} />
+          </>
+        )}
+      </>
+    )
+  }
 
-  // if (documents === undefined) {
-  //   return (
-  //     <>
-  //       <Item.Skeleton level={level} />
-  //       {level === 0 && (
-  //         <>
-  //           <Item.Skeleton level={level} />
-  //           <Item.Skeleton level={level} />
-  //         </>
-  //       )}
-  //     </>
-  //   );
-  // }
-
-  // return (
-  //   <>
-  //     <p
-  //       style={{ paddingLeft: level ? `${level * 12 + 25}px` : undefined }}
-  //       className={cn(
-  //         'hidden text-sm font-medium text-muted-foreground/80',
-  //         expanded && 'last:block',
-  //         level === 0 && 'hidden',
-  //       )}
-  //     >
-  //       No page inside
-  //     </p>
-  //     {documents.map((document) => (
-  //       <div key={document._id}>
-  //         <Item
-  //           id={document._id}
-  //           onClick={() => onRedirect(document._id)}
-  //           label={document.title}
-  //           icon={FileIcon}
-  //           documentIcon={document.icon}
-  //           active={params.documentId === document._id}
-  //           level={level}
-  //           onExpand={() => onExpand(document._id)}
-  //           expanded={expanded[document._id]}
-  //         />
-  //         {expanded[document._id] && (
-  //           <DocumentList
-  //             parentDocumentId={document._id}
-  //             level={level + 1}
-  //           />
-  //         )}
-  //       </div>
-  //     ))}
-  //   </>
-  // );
+  return (
+    <>
+      <p
+        style={{ paddingLeft: level ? `${level * 12 + 25}px` : undefined }}
+        className={cn(
+          'hidden text-sm font-medium text-muted-foreground/80',
+          expanded && 'last:block',
+          level === 0 && 'hidden',
+        )}
+      >
+        No page inside
+      </p>
+      {documentsList.map(document => (
+        <div key={document.id}>
+          <Item
+            id={document.id}
+            onClick={() => onRedirect(document.id)}
+            document={document}
+            label={document.title}
+            icon={FileIcon}
+            documentIcon={document.icon}
+            active={params.documentId === document.id}
+            level={level}
+            onExpand={() => onExpand(document.id)}
+            expanded={expanded[document.id]}
+          />
+          {/*
+          {expanded[document.id] && <DocumentList parentDocumentId={document.id} level={level + 1} />} */}
+        </div>
+      ))}
+    </>
+  )
 }

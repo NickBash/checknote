@@ -6,9 +6,9 @@ import CollaborationCursor from '@tiptap/extension-collaboration-cursor'
 import { Editor, useEditor } from '@tiptap/react'
 import * as Y from 'yjs'
 
+import { usePocket } from '@/components/providers/pocket-provider'
 import { ExtensionKit } from '@/extensions/extension-kit'
 import { initialContent } from '@/lib/data/initialContent'
-import { useUser } from '@clerk/clerk-react'
 import { EditorUser } from '../components/BlockEditor/types'
 import { userColors, userNames } from '../lib/constants'
 import { randomElement } from '../lib/utils'
@@ -32,7 +32,7 @@ export const useBlockEditor = ({
 }) => {
   const leftSidebar = useSidebar()
   const [collabState, setCollabState] = useState<WebSocketStatus>(WebSocketStatus.Connecting)
-  const { user } = useUser()
+  const { user } = usePocket()
 
   const editor = useEditor(
     {

@@ -10,13 +10,11 @@ import { BlockEditor } from '@/components/BlockEditor'
 import { Cover } from '@/components/cover'
 import { Toolbar } from '@/components/toolbar'
 import { Skeleton } from '@/components/ui/skeleton'
-import { api } from '@/convex/_generated/api'
-import type { Id } from '@/convex/_generated/dataModel'
-import { useMutation, useQuery } from 'convex/react'
+import { useDocuments, type Document } from '@/hooks/use-documents'
 
 interface DocumentIdPageProps {
   params: {
-    documentId: Id<'documents'>
+    documentId: string
   }
 }
 
@@ -24,12 +22,9 @@ export default function Document({ params }: DocumentIdPageProps) {
   const [provider, setProvider] = useState<TiptapCollabProvider | HocuspocusProvider | null>(null)
   const [collabToken, setCollabToken] = useState<string | null>(null)
   const searchParams = useSearchParams()
+  const documentsList = useDocuments(state => state.documents)
 
-  const document = useQuery(api.documents.getById, {
-    documentId: params.documentId,
-  })
-
-  const update = useMutation(api.documents.update)
+  const document: Document | undefined = documentsList?.find(doc => doc.id === params.documentId)
 
   const hasCollab = parseInt(searchParams.get('noCollab') as string) !== 1
 
@@ -70,8 +65,6 @@ export default function Document({ params }: DocumentIdPageProps) {
   }
 
   if (hasCollab && !provider) return
-
-  // return <BlockEditor hasCollab={hasCollab} ydoc={ydoc} provider={provider} />
 
   return (
     <div className="pb-40">

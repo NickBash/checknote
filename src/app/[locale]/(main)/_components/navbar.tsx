@@ -1,6 +1,4 @@
-import { api } from '@/convex/_generated/api'
-import type { Id } from '@/convex/_generated/dataModel'
-import { useQuery } from 'convex/react'
+import { useDocuments, type Document } from '@/hooks/use-documents'
 import { MenuIcon } from 'lucide-react'
 import { useParams } from 'next/navigation'
 import { Banner } from './banner'
@@ -15,12 +13,11 @@ interface NavbarProps {
 
 export const Navbar = ({ isCollapsed, onResetWidth }: NavbarProps) => {
   const params = useParams()
+  const documents = useDocuments(state => state.documents)
 
-  const document = useQuery(api.documents.getById, {
-    documentId: params.documentId as Id<'documents'>,
-  })
+  const documentCopy = documents?.find((doc: Document) => doc.id === params.documentId)
 
-  if (document === undefined) {
+  if (documentCopy === undefined) {
     return (
       <nav className="flex w-full items-center justify-between bg-background px-3 py-2 dark:bg-[#1F1F1F]">
         <Title.Skeleton />
@@ -31,7 +28,7 @@ export const Navbar = ({ isCollapsed, onResetWidth }: NavbarProps) => {
     )
   }
 
-  if (document === null) {
+  if (documentCopy === null) {
     return null
   }
 
@@ -40,14 +37,14 @@ export const Navbar = ({ isCollapsed, onResetWidth }: NavbarProps) => {
       <nav className="flex w-full items-center gap-x-4 border-b bg-background px-3 py-2 shadow-sm dark:bg-[#1F1F1F]">
         {isCollapsed && <MenuIcon role="button" onClick={onResetWidth} className="h-6 w-6 text-muted-foreground" />}
         <div className="flex w-full items-center justify-between">
-          <Title initialData={document} />
+          <Title initialData={documentCopy} />
           <div className="flex items-center gap-x-2">
-            <Publish initialData={document} />
-            <Menu documentId={document._id} />
+            <Publish initialData={documentCopy} />
+            <Menu documentId={documentCopy.id} />
           </div>
         </div>
       </nav>
-      {document.isArchived && <Banner documentId={document._id} />}
+      {documentCopy.isArchived && <Banner documentId={documentCopy.id} />}
     </>
   )
 }

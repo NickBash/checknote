@@ -2,21 +2,12 @@
 
 import { usePocket } from '@/components/providers/pocket-provider'
 import { Spinner } from '@/components/spinner'
-import { redirect } from 'next/navigation'
-import { useLayoutEffect, useState } from 'react'
+import Navigation from './_components/navigation'
 
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
-  const { user } = usePocket()
-  const [isLoading, setIsLoading] = useState(true)
+  const { isLoadingUser, user } = usePocket()
 
-  useLayoutEffect(() => {
-    if (!user) {
-      return redirect('/')
-    }
-    setIsLoading(false)
-  }, [user])
-
-  if (isLoading) {
+  if (isLoadingUser) {
     return (
       <div className="flex h-full items-center justify-center">
         <Spinner size="lg" />
@@ -26,7 +17,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <div className="flex h-full dark:bg-[#1F1F1F]">
-      {/* <Navigation /> */}
+      <Navigation />
       <main className="h-full flex-1 overflow-y-auto">
         {/* <SearchCommand /> */}
         {children}

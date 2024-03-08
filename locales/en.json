@@ -19,5 +19,8 @@
     "signinButton": "Sign in",
     "dontAccount": "Don’t have an account yet?",
     "signupLink": "Sign up"
+  },
+  "Navigation": {
+    "addPage": "Add a page"
   }
 }

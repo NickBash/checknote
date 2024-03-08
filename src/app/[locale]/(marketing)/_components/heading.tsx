@@ -48,7 +48,7 @@ export const Heading = ({ locale }: { locale: string }) => {
       )}
       {!user && init && (
         <Button>
-          <Link href="/signin">
+          <Link href="/signin" className="flex">
             Get Note free
             <ArrowRight className="ml-2 h-4 w-4" />
           </Link>

@@ -1,9 +1,7 @@
 'use client'
 
-import { api } from '@/convex/_generated/api'
-import type { Doc } from '@/convex/_generated/dataModel'
 import { useCoverImage } from '@/hooks/use-cover-image'
-import { useMutation } from 'convex/react'
+import type { Document } from '@/hooks/use-documents'
 import { ImageIcon, Smile, X } from 'lucide-react'
 import { useRef, useState, type ElementRef } from 'react'
 import TextareaAutosize from 'react-textarea-autosize'
@@ -11,7 +9,7 @@ import { IconPicker } from './icon-picker'
 import { Button } from './ui/button'
 
 interface ToolbarProps {
-  initialData: Doc<'documents'>
+  initialData: Document
   preview?: boolean
 }
 
@@ -20,8 +18,8 @@ export const Toolbar = ({ initialData, preview }: ToolbarProps) => {
   const [isEditing, setIsEditing] = useState(false)
   const [value, setValue] = useState(initialData.title)
 
-  const update = useMutation(api.documents.update)
-  const removeIcon = useMutation(api.documents.removeIcon)
+  // const update = useMutation(api.documents.update)
+  // const removeIcon = useMutation(api.documents.removeIcon)
 
   const coverImage = useCoverImage()
 
@@ -39,10 +37,10 @@ export const Toolbar = ({ initialData, preview }: ToolbarProps) => {
 
   const onInput = (value: string) => {
     setValue(value)
-    update({
-      id: initialData._id,
-      title: value || 'Untitled',
-    })
+    // update({
+    //   id: initialData._id,
+    //   title: value || 'Untitled',
+    // })
   }
 
   const onKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -53,16 +51,16 @@ export const Toolbar = ({ initialData, preview }: ToolbarProps) => {
   }
 
   const onIconSelect = (icon: string) => {
-    update({
-      id: initialData._id,
-      icon,
-    })
+    // update({
+    //   id: initialData._id,
+    //   icon,
+    // })
   }
 
   const onRemoveIcon = () => {
-    removeIcon({
-      id: initialData._id,
-    })
+    // removeIcon({
+    //   id: initialData._id,
+    // })
   }
 
   return (

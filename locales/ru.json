@@ -19,5 +19,8 @@
     "signinButton": "Войти",
     "dontAccount": "У вас нет аккаунта?",
     "signupLink": "Зарегистрироваться"
+  },
+  "Navigation": {
+    "addPage": "Создать страницу"
   }
 }

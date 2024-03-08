@@ -5,7 +5,6 @@ import { Spinner } from '@/components/spinner'
 import { Button } from '@/components/ui/button'
 import { useScrollTop } from '@/hooks/use-scroll-top'
 import { cn } from '@/lib/utils'
-import { UserButton } from '@clerk/clerk-react'
 import { useTranslations } from 'next-intl'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
@@ -46,7 +45,6 @@ export const Navbar = ({ locale }: { locale: string }) => {
             <Button variant="secondary" size="sm" asChild>
               <Link href="/documents">{t('enterNote')}</Link>
             </Button>
-            <UserButton afterSignOutUrl="/"></UserButton>
           </>
         )}
         <ModeToggle />
