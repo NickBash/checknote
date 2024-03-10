@@ -2,24 +2,14 @@ import { LangToggle } from '@/components/lang-toggle'
 import { ModeToggle } from '@/components/mode-toggle'
 import { usePocket } from '@/components/providers/pocket-provider'
 import { Spinner } from '@/components/spinner'
-import { Button } from '@/components/ui/button'
 import { useScrollTop } from '@/hooks/use-scroll-top'
 import { cn } from '@/lib/utils'
-import { useTranslations } from 'next-intl'
-import Link from 'next/link'
-import { useEffect, useState } from 'react'
 import { Logo } from './logo'
+import { User } from './user'
 
 export const Navbar = ({ locale }: { locale: string }) => {
+  const { isLoadingUser } = usePocket()
   const scrolled = useScrollTop()
-  const [init, setInit] = useState(false)
-  const t = useTranslations('Marketing')
-
-  const { user } = usePocket()
-
-  useEffect(() => {
-    setInit(true)
-  }, [])
 
   return (
     <div
@@ -30,25 +20,15 @@ export const Navbar = ({ locale }: { locale: string }) => {
     >
       <Logo />
       <div className="flex w-full items-center justify-between gap-x-2 md:ml-auto md:justify-end">
-        {!init && (
-          <div className="pr-2">
-            <Spinner />
-          </div>
-        )}
-        {init && !user && (
-          <Button size="sm" asChild>
-            <Link href="/signin">Log in</Link>
-          </Button>
-        )}
-        {init && user && (
-          <>
-            <Button variant="secondary" size="sm" asChild>
-              <Link href="/documents">{t('enterNote')}</Link>
-            </Button>
-          </>
-        )}
         <ModeToggle />
         <LangToggle locale={locale} />
+        {isLoadingUser ? (
+          <div className="mx-3">
+            <Spinner />
+          </div>
+        ) : (
+          <User />
+        )}
       </div>
     </div>
   )

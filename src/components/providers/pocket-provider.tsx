@@ -44,10 +44,12 @@ export const PocketProvider = ({ children }: { children: React.ReactNode }) => {
             router.push('/')
           }
         }
+        setIsLoadingUser(false)
       }
     } else if (window.navigator.onLine) {
       console.warn('AUTHSTORE INVALID, SHOW LOGIN UI')
       router.push('/')
+      setIsLoadingUser(false)
     }
   }, [pb, router])
 
@@ -61,6 +63,7 @@ export const PocketProvider = ({ children }: { children: React.ReactNode }) => {
 
       setUser(res.record)
       setToken(res.token)
+      setIsLoadingUser(false)
     } catch (error: unknown) {
       console.warn(error)
     }
@@ -68,6 +71,9 @@ export const PocketProvider = ({ children }: { children: React.ReactNode }) => {
 
   const logout = useCallback(() => {
     pb.authStore.clear()
+
+    setUser(null)
+    setToken(null)
   }, [])
 
   const refreshSession = useCallback(async () => {

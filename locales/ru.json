@@ -5,10 +5,12 @@
     "robots": "noindex, nofollow"
   },
   "Marketing": {
-    "Enter": "Войти",
-    "title": "Ваши идеи, документы и планы. Добро пожаловать в ",
-    "desc": "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nulla, qui commodi. Est, modi? Fuga explicabo, esse perferendis minus similique sit aspernatur. Eveniet eum unde ratione qui deleniti ipsum harum libero.",
-    "enterNote": "Войти в ноут"
+    "Enter": "В рабочее пространство",
+    "title": "Добро пожаловать в ",
+    "desc": "Ваши идеи, документы и планы в одном месте. Ваш помощник в управлении командой. Ваш \"второй мозг\"",
+    "enterNote": "Войти в аккаунт",
+    "logout": "Выйти",
+    "toDoc": "К документам"
   },
   "Signin": {
     "title": "Войдите в ваш аккаунт",
@@ -22,5 +24,10 @@
   },
   "Navigation": {
     "addPage": "Создать страницу"
+  },
+  "ModeToggle": {
+    "light": "Светлая",
+    "dark": "Темная",
+    "system": "Системная"
   }
 }

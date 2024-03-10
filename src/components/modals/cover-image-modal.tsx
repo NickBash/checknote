@@ -2,6 +2,7 @@
 
 import { useCoverImage } from '@/hooks/use-cover-image'
 import { useEdgeStore } from '@/lib/edgestore'
+import { usePresignedUpload } from 'next-s3-upload'
 import { useParams } from 'next/navigation'
 import { useState } from 'react'
 import { SingleImageDropzone } from '../single-image-dropzone'
@@ -9,6 +10,7 @@ import { Dialog, DialogContent, DialogHeader } from '../ui/dialog'
 
 export const CoverImageModal = () => {
   const params = useParams()
+  const { uploadToS3 } = usePresignedUpload()
 
   const [file, setFile] = useState<File>()
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -22,6 +24,10 @@ export const CoverImageModal = () => {
   }
 
   const onChange = async (file?: File) => {
+    if (file) {
+      const { url } = await uploadToS3(file)
+      console.log(url)
+    }
     // if (file) {
     //   setIsSubmitting(true);
     //   setFile(file);

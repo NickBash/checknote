@@ -3,11 +3,12 @@
 import { HocuspocusProvider, TiptapCollabProvider } from '@hocuspocus/provider'
 import 'iframe-resizer/js/iframeResizer.contentWindow'
 import { useSearchParams } from 'next/navigation'
-import { useLayoutEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react'
 import * as Y from 'yjs'
 
 import { BlockEditor } from '@/components/BlockEditor'
 import { Cover } from '@/components/cover'
+import { usePocket } from '@/components/providers/pocket-provider'
 import { Toolbar } from '@/components/toolbar'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useDocuments, type Document } from '@/hooks/use-documents'
@@ -24,6 +25,8 @@ export default function Document({ params }: DocumentIdPageProps) {
   const searchParams = useSearchParams()
   const documentsList = useDocuments(state => state.documents)
 
+  const { pb } = usePocket()
+
   const document: Document | undefined = documentsList?.find(doc => doc.id === params.documentId)
 
   const hasCollab = parseInt(searchParams.get('noCollab') as string) !== 1
@@ -31,6 +34,16 @@ export default function Document({ params }: DocumentIdPageProps) {
   const documentId = params.documentId as string
 
   const ydoc = useMemo(() => new Y.Doc(), [])
+
+  const a = useCallback(async () => {
+    const c = await pb.admins.authWithPassword('nikitabash7@gmail.com', '1111111111')
+
+    const b = await pb.settings.testS3('storage')
+  }, [])
+
+  useEffect(() => {
+    a()
+  }, [])
 
   useLayoutEffect(() => {
     if (hasCollab) {

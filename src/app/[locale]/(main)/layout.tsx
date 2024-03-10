@@ -15,6 +15,10 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
     )
   }
 
+  if (!user) {
+    return null
+  }
+
   return (
     <div className="flex h-full dark:bg-[#1F1F1F]">
       <Navigation />

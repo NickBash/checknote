@@ -5,10 +5,12 @@
     "robots": "noindex, nofollow"
   },
   "Marketing": {
-    "Enter": "Enter",
-    "title": "Your Ideas, Documents & Plans. Welcome to ",
-    "desc": "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nulla, qui commodi. Est, modi? Fuga explicabo, esse perferendis minus similique sit aspernatur. Eveniet eum unde ratione qui deleniti ipsum harum libero.",
-    "enterNote": "Enter Note"
+    "Enter": "To the workspace",
+    "title": "Welcome to ",
+    "desc": "Your ideas, documents and plans in one place. Your assistant in team management. Your \"second brain\"",
+    "enterNote": "Login to account",
+    "logout": "Logout",
+    "toDoc": "To documents"
   },
   "Signin": {
     "title": "Sign in to your account",
@@ -22,5 +24,10 @@
   },
   "Navigation": {
     "addPage": "Add a page"
+  },
+  "ModeToggle": {
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
   }
 }
