@@ -14,7 +14,7 @@ export const Navbar = ({ locale }: { locale: string }) => {
   return (
     <div
       className={cn(
-        'items-cemter fixed top-0 z-50 flex w-full bg-background p-6 dark:bg-[#1F1F1F]',
+        'fixed top-0 z-50 flex w-full items-center bg-background p-6 dark:bg-[#1F1F1F]',
         scrolled && 'border-b shadow-sm',
       )}
     >
