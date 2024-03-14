@@ -4,7 +4,16 @@ const withNextIntl = require('next-intl/plugin')()
 const nextConfig = {
   reactStrictMode: false,
   images: {
-    domains: ['files.edgestore.dev'],
+    remotePatterns: [
+      // {
+      //   protocol: 'https',
+      //   hostname: 'checknote.ru',
+      // },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+      },
+    ],
   },
   poweredByHeader: false,
   typescript: {

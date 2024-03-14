@@ -1,21 +1,32 @@
 'use client'
 
 import { useCoverImage } from '@/hooks/use-cover-image'
-import { useEdgeStore } from '@/lib/edgestore'
-import { usePresignedUpload } from 'next-s3-upload'
+import { useDocuments } from '@/hooks/use-documents'
 import { useParams } from 'next/navigation'
 import { useState } from 'react'
+import { usePocket } from '../providers/pocket-provider'
 import { SingleImageDropzone } from '../single-image-dropzone'
 import { Dialog, DialogContent, DialogHeader } from '../ui/dialog'
 
+async function uploadFile(file: File, documentId: string) {
+  const body = new FormData()
+
+  body.append('file', file, file.name)
+  body.append('documentId', `${documentId}`)
+
+  const response = await fetch('/api/s3', { method: 'POST', body })
+  return await response.json()
+}
+
 export const CoverImageModal = () => {
-  const params = useParams()
-  const { uploadToS3 } = usePresignedUpload()
+  const { user, pb } = usePocket()
+  const { documentId } = useParams()
+
+  const updateDocuments = useDocuments(state => state.updateDocuments)
 
   const [file, setFile] = useState<File>()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const coverImage = useCoverImage()
-  const { edgestore } = useEdgeStore()
 
   const onClose = () => {
     setFile(undefined)
@@ -25,24 +36,14 @@ export const CoverImageModal = () => {
 
   const onChange = async (file?: File) => {
     if (file) {
-      const { url } = await uploadToS3(file)
-      console.log(url)
+      const res = await uploadFile(file, documentId as string)
+
+      if (res.status) {
+        updateDocuments(pb, user, documentId as string, { coverImage: res.src })
+      }
+
+      onClose()
     }
-    // if (file) {
-    //   setIsSubmitting(true);
-    //   setFile(file);
-    //   const res = await edgestore.publicFiles.upload({
-    //     file,
-    //     options: {
-    //       replaceTargetUrl: coverImage.url,
-    //     },
-    //   });
-    //   await update({
-    //     id: params.documentId as Id<'documents'>,
-    //     coverImage: res.url,
-    //   });
-    //   onClose();
-    // }
   }
 
   return (

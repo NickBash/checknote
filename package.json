@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "-": "^0.0.1",
+    "@aws-sdk/client-s3": "^3.529.1",
     "@edgestore/react": "^0.1.6",
     "@edgestore/server": "^0.1.6",
     "@fontsource/inter": "^5.0.15",
@@ -91,7 +92,6 @@
     "nanoid": "^4.0.2",
     "next": "^14.1.0",
     "next-intl": "^3.9.1",
-    "next-s3-upload": "^0.3.4",
     "next-themes": "^0.2.1",
     "pocketbase": "^0.21.1",
     "prettier": "^3.2.5",
@@ -102,6 +102,7 @@
     "react-hot-toast": "^2.4.1",
     "react-textarea-autosize": "^8.5.3",
     "sonner": "^1.4.0",
+    "swr": "^2.2.5",
     "tailwind-merge": "^1.14.0",
     "tailwindcss-animate": "^1.0.7",
     "tippy.js": "^6.3.7",
