@@ -1,10 +1,11 @@
 'use client'
 
 import { ConfirmModal } from '@/components/modals/confirm-modal'
-import { usePocket } from '@/components/providers/pocket-provider'
 import { Spinner } from '@/components/spinner'
 import { Input } from '@/components/ui/input'
 import { useDocuments, type Document } from '@/hooks/use-documents'
+import { usePocketbaseStore } from '@/stores/use-pocketbase.store'
+import { useUserStore } from '@/stores/use-user.store'
 import { Search, Trash, Undo } from 'lucide-react'
 import { useParams, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
@@ -14,7 +15,8 @@ export const TrashBox = () => {
   const params = useParams()
 
   const documents = useDocuments(state => state.documents)
-  const { user, pb } = usePocket()
+  const pb = usePocketbaseStore(state => state.pocketbaseClient)
+  const user = useUserStore(state => state.user)
 
   const updateDocuments = useDocuments(state => state.updateDocuments)
   const deleteDocument = useDocuments(state => state.deleteDocument)
@@ -29,11 +31,11 @@ export const TrashBox = () => {
   const onRestore = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, documentId: string) => {
     event.stopPropagation()
 
-    updateDocuments(pb, user, documentId, { isArchived: false })
+    updateDocuments(pb as any, user, documentId, { isArchived: false })
   }
 
   const onRemove = (documentId: string) => {
-    deleteDocument(pb, user, documentId)
+    deleteDocument(pb as any, user, documentId)
 
     if (params.documentId === documentId) {
       router.push('/documents')

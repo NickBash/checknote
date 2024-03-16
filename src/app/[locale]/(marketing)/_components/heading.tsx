@@ -1,8 +1,8 @@
 'use client'
 
-import { usePocket } from '@/components/providers/pocket-provider'
 import { Spinner } from '@/components/spinner'
 import { Button } from '@/components/ui/button'
+import { useUserStore } from '@/stores/use-user.store'
 import { ArrowRight } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import Link from 'next/link'
@@ -11,7 +11,7 @@ import { Logo } from './logo'
 
 export const Heading = () => {
   const t = useTranslations('Marketing')
-  const { user } = usePocket()
+  const user = useUserStore(state => state.user)
 
   const [init, setInit] = useState(false)
 

@@ -1,9 +1,10 @@
 'use client'
 
 import { ConfirmModal } from '@/components/modals/confirm-modal'
-import { usePocket } from '@/components/providers/pocket-provider'
 import { Button } from '@/components/ui/button'
 import { useDocuments } from '@/hooks/use-documents'
+import { usePocketbaseStore } from '@/stores/use-pocketbase.store'
+import { useUserStore } from '@/stores/use-user.store'
 import { useRouter } from 'next/navigation'
 
 interface BannerProps {
@@ -11,14 +12,15 @@ interface BannerProps {
 }
 
 export const Banner = ({ documentId }: BannerProps) => {
-  const { user, pb } = usePocket()
+  const pb = usePocketbaseStore(state => state.pocketbaseClient)
+  const user = useUserStore(state => state.user)
   const router = useRouter()
 
   const updateDocuments = useDocuments(state => state.updateDocuments)
   const deleteDocument = useDocuments(state => state.deleteDocument)
 
   const onRemove = () => {
-    deleteDocument(pb, user, documentId)
+    deleteDocument(pb as any, user, documentId)
 
     router.push('/documents')
   }
@@ -26,7 +28,7 @@ export const Banner = ({ documentId }: BannerProps) => {
   const onRestore = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.stopPropagation()
 
-    updateDocuments(pb, user, documentId, { isArchived: false })
+    updateDocuments(pb as any, user, documentId, { isArchived: false })
   }
 
   return (

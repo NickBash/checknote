@@ -2,7 +2,6 @@
 
 import { ChevronsLeftRight } from 'lucide-react'
 
-import { usePocket } from '@/components/providers/pocket-provider'
 import { Avatar, AvatarImage } from '@/components/ui/avatar'
 import {
   DropdownMenu,
@@ -11,9 +10,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { useUserStore } from '@/stores/use-user.store'
 
 export const UserItem = () => {
-  const { user } = usePocket()
+  const user = useUserStore(state => state.user)
 
   if (!user) {
     return null

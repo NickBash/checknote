@@ -1,15 +1,15 @@
 'use client'
 
-import { usePocket } from '@/components/providers/pocket-provider'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { useUserStore } from '@/stores/use-user.store'
 import { PersonIcon } from '@radix-ui/react-icons'
 import { useTranslations } from 'next-intl'
 import Link from 'next/link'
 
 export function User() {
   const t = useTranslations('Marketing')
-  const { logout, user } = usePocket()
+  const userStore = useUserStore()
 
   const userAuthDropdown = (
     <>
@@ -19,7 +19,7 @@ export function User() {
         </Link>
       </DropdownMenuItem>
       <DropdownMenuItem asChild>
-        <Button onClick={logout} size="sm" variant="destructive" className="h-[32px] w-full cursor-pointer">
+        <Button onClick={userStore.logout} size="sm" variant="destructive" className="h-[32px] w-full cursor-pointer">
           {t('logout')}
         </Button>
       </DropdownMenuItem>
@@ -53,7 +53,7 @@ export function User() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="space-y-2">
-        {user ? userAuthDropdown : userUnauthDropdown}
+        {userStore.user ? userAuthDropdown : userUnauthDropdown}
       </DropdownMenuContent>
     </DropdownMenu>
   )

@@ -1,16 +1,16 @@
 'use client'
 
-import { usePocket } from '@/components/providers/pocket-provider'
 import { Spinner } from '@/components/spinner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { useUserStore } from '@/stores/use-user.store'
 import { useTranslations } from 'next-intl'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
 
 const SignIn = () => {
-  const { login } = usePocket()
+  const login = useUserStore(state => state.login)
   const { push } = useRouter()
   const [init, setInit] = useState(false)
   const t = useTranslations('Signin')

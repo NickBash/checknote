@@ -1,8 +1,9 @@
 'use client'
 
-import { usePocket } from '@/components/providers/pocket-provider'
 import { Document, useDocuments } from '@/hooks/use-documents'
 import { cn } from '@/lib/utils'
+import { usePocketbaseStore } from '@/stores/use-pocketbase.store'
+import { useUserStore } from '@/stores/use-user.store'
 import { FileIcon } from 'lucide-react'
 import { useParams, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
@@ -13,7 +14,8 @@ interface IDocumentListProps {
 }
 
 export const DocumentList = ({ level = 0 }: IDocumentListProps) => {
-  const { pb, user } = usePocket()
+  const pb = usePocketbaseStore(state => state.pocketbaseClient)
+  const user = useUserStore(state => state.user)
   const params = useParams()
   const router = useRouter()
   const [expanded, setExpanded] = useState<Record<string, boolean>>({})
@@ -34,7 +36,7 @@ export const DocumentList = ({ level = 0 }: IDocumentListProps) => {
     if (!isLoading) {
       getDocuments(pb, user)
 
-      pb.collection('documents').subscribe('*', e => {
+      pb?.collection('documents').subscribe('*', e => {
         console.log(e)
         if (e?.action === 'create') {
           addDocument(e?.record as Document)
@@ -49,7 +51,7 @@ export const DocumentList = ({ level = 0 }: IDocumentListProps) => {
     }
 
     return () => {
-      pb.collection('documents').unsubscribe('*')
+      pb?.collection('documents').unsubscribe('*')
     }
   }, [])
 

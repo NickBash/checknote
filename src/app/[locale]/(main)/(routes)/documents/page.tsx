@@ -1,17 +1,19 @@
 'use client'
 
-import { usePocket } from '@/components/providers/pocket-provider'
 import { Button } from '@/components/ui/button'
 import { useDocuments } from '@/hooks/use-documents'
+import { usePocketbaseStore } from '@/stores/use-pocketbase.store'
+import { useUserStore } from '@/stores/use-user.store'
 import { PlusCircle } from 'lucide-react'
 import Image from 'next/image'
 
 const DocumentPage = () => {
-  const { user, pb } = usePocket()
+  const pb = usePocketbaseStore(state => state.pocketbaseClient)
+  const user = useUserStore(state => state.user)
   const createDocument = useDocuments(state => state.createDocuments)
 
   const onCreate = () => {
-    createDocument(pb, user as Record<string, any>)
+    createDocument(pb as any, user as Record<string, any>)
   }
 
   return (

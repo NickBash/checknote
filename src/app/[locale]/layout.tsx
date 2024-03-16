@@ -39,25 +39,24 @@ export default function RootLayout({ children, params: { locale } }: Root) {
   return (
     <html className="h-full font-sans" lang={locale} suppressHydrationWarning>
       <body className="flex h-full flex-col">
-        <PocketProvider>
-          <EdgeStoreProvider>
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="system"
-              enableSystem
-              disableTransitionOnChange
-              storageKey="checknote-theme-2"
-            >
-              <Toaster position="bottom-center" />
-              <ModalProvider />
-              <main className="h-full">
-                <NextIntlClientProvider locale={locale} messages={messages}>
-                  {children}
-                </NextIntlClientProvider>
-              </main>
-            </ThemeProvider>
-          </EdgeStoreProvider>
-        </PocketProvider>
+        <PocketProvider />
+        <EdgeStoreProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+            storageKey="checknote-theme-2"
+          >
+            <Toaster position="bottom-center" />
+            <ModalProvider />
+            <main className="h-full">
+              <NextIntlClientProvider locale={locale} messages={messages}>
+                {children}
+              </NextIntlClientProvider>
+            </main>
+          </ThemeProvider>
+        </EdgeStoreProvider>
       </body>
     </html>
   )

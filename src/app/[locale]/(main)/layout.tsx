@@ -1,13 +1,13 @@
 'use client'
 
-import { usePocket } from '@/components/providers/pocket-provider'
 import { Spinner } from '@/components/spinner'
+import { useUserStore } from '@/stores/use-user.store'
 import Navigation from './_components/navigation'
 
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
-  const { isLoadingUser, user } = usePocket()
+  const userStore = useUserStore()
 
-  if (isLoadingUser) {
+  if (userStore.isLoadingUser) {
     return (
       <div className="flex h-full items-center justify-center">
         <Spinner size="lg" />
@@ -15,7 +15,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
     )
   }
 
-  if (!user) {
+  if (!userStore.user) {
     return null
   }
 

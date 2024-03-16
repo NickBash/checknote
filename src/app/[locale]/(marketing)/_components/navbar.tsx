@@ -1,14 +1,14 @@
 import { LangToggle } from '@/components/lang-toggle'
 import { ModeToggle } from '@/components/mode-toggle'
-import { usePocket } from '@/components/providers/pocket-provider'
 import { Spinner } from '@/components/spinner'
 import { useScrollTop } from '@/hooks/use-scroll-top'
 import { cn } from '@/lib/utils'
+import { useUserStore } from '@/stores/use-user.store'
 import { Logo } from './logo'
 import { User } from './user'
 
 export const Navbar = ({ locale }: { locale: string }) => {
-  const { isLoadingUser } = usePocket()
+  const isLoadingUser = useUserStore(state => state.isLoadingUser)
   const scrolled = useScrollTop()
 
   return (

@@ -1,6 +1,5 @@
 'use client'
 
-import { usePocket } from '@/components/providers/pocket-provider'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -10,6 +9,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Skeleton } from '@/components/ui/skeleton'
+import { useUserStore } from '@/stores/use-user.store'
 import { MoreHorizontal, Trash } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 
@@ -19,7 +19,8 @@ interface MenuProps {
 
 export const Menu = ({ documentId }: MenuProps) => {
   const router = useRouter()
-  const { user } = usePocket()
+
+  const user = useUserStore(state => state.user)
 
   // const archive = useMutation(api.documents.archive)
 

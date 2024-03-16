@@ -1,6 +1,5 @@
 'use client'
 
-import { usePocket } from '@/components/providers/pocket-provider'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,6 +10,8 @@ import {
 import { Skeleton } from '@/components/ui/skeleton'
 import { useDocuments } from '@/hooks/use-documents'
 import { cn } from '@/lib/utils'
+import { usePocketbaseStore } from '@/stores/use-pocketbase.store'
+import { useUserStore } from '@/stores/use-user.store'
 import { ChevronDown, ChevronRight, MoreHorizontal, Plus, Trash, type LucideIcon } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 
@@ -41,7 +42,8 @@ export const Item = ({
   onExpand,
   expanded,
 }: ItemProps) => {
-  const { user, pb } = usePocket()
+  const pb = usePocketbaseStore(state => state.pocketbaseClient)
+  const user = useUserStore(state => state.user)
   const router = useRouter()
   const documents = useDocuments()
 
@@ -49,7 +51,7 @@ export const Item = ({
     event.stopPropagation()
     if (!id) return
 
-    documents.updateDocuments(pb, user, id, { isArchived: true })
+    documents.updateDocuments(pb as any, user, id, { isArchived: true })
   }
 
   const handleExpand = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {

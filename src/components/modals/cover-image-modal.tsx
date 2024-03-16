@@ -2,24 +2,23 @@
 
 import { useCoverImage } from '@/hooks/use-cover-image'
 import { useDocuments } from '@/hooks/use-documents'
+import { usePocketbaseStore } from '@/stores/use-pocketbase.store'
+import { useUserStore } from '@/stores/use-user.store'
 import { useParams } from 'next/navigation'
 import { useState } from 'react'
-import { usePocket } from '../providers/pocket-provider'
 import { SingleImageDropzone } from '../single-image-dropzone'
 import { Dialog, DialogContent, DialogHeader } from '../ui/dialog'
 
 async function uploadFile(file: File, documentId: string) {
   const body = new FormData()
 
-  body.append('file', file, file.name)
-  body.append('documentId', `${documentId}`)
-
   const response = await fetch('/api/s3', { method: 'POST', body })
   return await response.json()
 }
 
 export const CoverImageModal = () => {
-  const { user, pb } = usePocket()
+  const pb = usePocketbaseStore(state => state.pocketbaseClient)
+  const user = useUserStore(state => state.user)
   const { documentId } = useParams()
 
   const updateDocuments = useDocuments(state => state.updateDocuments)
@@ -39,7 +38,7 @@ export const CoverImageModal = () => {
       const res = await uploadFile(file, documentId as string)
 
       if (res.status) {
-        updateDocuments(pb, user, documentId as string, { coverImage: res.src })
+        updateDocuments(pb as any, user, documentId as string, { coverImage: res.src })
       }
 
       onClose()

@@ -1,11 +1,12 @@
 'use client'
 
-import { usePocket } from '@/components/providers/pocket-provider'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { useDocuments } from '@/hooks/use-documents'
 import { useSearch } from '@/hooks/use-search'
 import { useSettings } from '@/hooks/use-settings'
 import { cn } from '@/lib/utils'
+import { usePocketbaseStore } from '@/stores/use-pocketbase.store'
+import { useUserStore } from '@/stores/use-user.store'
 import { ChevronsLeft, MenuIcon, Plus, PlusCircle, Search, Settings, Trash } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { useParams, usePathname } from 'next/navigation'
@@ -25,7 +26,8 @@ const Navigation = () => {
   const isMobile = useMediaQuery('(max-width: 768px)')
   const t = useTranslations('Navigation')
   const documents = useDocuments()
-  const { pb, user } = usePocket()
+  const pb = usePocketbaseStore(state => state.pocketbaseClient)
+  const user = useUserStore(state => state.user)
 
   const isResizingRef = useRef(false)
   const sidebarRef = useRef<ElementRef<'aside'>>(null)
@@ -101,7 +103,7 @@ const Navigation = () => {
   }
 
   const handleCreate = () => {
-    documents.createDocuments(pb, user as Record<string, any>)
+    documents.createDocuments(pb as any, user as Record<string, any>)
   }
 
   return (
