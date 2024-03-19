@@ -6,11 +6,11 @@ import { useEffect, useState } from 'react'
 import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from './ui/command'
 
 import { useDocuments } from '@/hooks/use-documents'
+import { useUserStore } from '@/stores/use-user.store'
 import { File } from 'lucide-react'
-import { usePocket } from './providers/pocket-provider'
 
 export const SearchCommand = () => {
-  const { user } = usePocket()
+  const user = useUserStore(state => state.user)
   const router = useRouter()
   const documents = useDocuments(state => state.documents)
   const [isMounted, setIsMounted] = useState(false)

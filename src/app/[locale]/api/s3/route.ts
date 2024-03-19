@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-import { ListObjectsCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3'
+import { DeleteObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3'
 import { nanoid } from 'nanoid'
 
 const Bucket = process.env.AWS_BUCKET
@@ -12,14 +12,14 @@ const s3 = new S3Client({
     accessKeyId: process.env.AWS_ACCESS! as string,
     secretAccessKey: process.env.AWS_SECRET! as string,
   },
-  endpoint: process.env.AWS_ENDPOINT!,
+  endpoint: Endpoint,
 })
 
 // endpoint to get the list of files in the bucket
-export async function GET() {
-  const response = await s3.send(new ListObjectsCommand({ Bucket }))
-  return NextResponse.json(response?.Contents ?? [])
-}
+// export async function GET() {
+//   const response = await s3.send(new ListObjectsCommand({ Bucket }))
+//   return NextResponse.json(response?.Contents ?? [])
+// }
 
 export async function POST(request: NextRequest) {
   const formData = await request.formData()
@@ -41,13 +41,50 @@ export async function POST(request: NextRequest) {
   try {
     await s3.send(command)
 
-    return NextResponse.json({
-      name: `${newName}.${ext}`,
-      status: true,
-      src: `${Endpoint}/${Bucket}/${newName}.${ext}`,
-      originalName: file.name,
-    })
+    return NextResponse.json(
+      {
+        name: `${newName}.${ext}`,
+        status: true,
+        originalName: file.name,
+      },
+      { status: 200 },
+    )
   } catch (e) {
     console.error(e)
+    return NextResponse.json(
+      {
+        message: 'Not created',
+      },
+      { status: 500 },
+    )
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  const formData = await request.formData()
+  const filename = formData.get('filename') as string
+
+  const command = new DeleteObjectCommand({
+    Bucket,
+    Key: filename,
+  })
+
+  try {
+    await s3.send(command)
+
+    return NextResponse.json(
+      {
+        status: true,
+      },
+      { status: 200 },
+    )
+  } catch (e) {
+    console.error(e)
+    return NextResponse.json(
+      {
+        message: 'Not deleted',
+      },
+      { status: 500 },
+    )
   }
 }

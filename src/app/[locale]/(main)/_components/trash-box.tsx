@@ -31,7 +31,7 @@ export const TrashBox = () => {
   const onRestore = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, documentId: string) => {
     event.stopPropagation()
 
-    updateDocuments(pb as any, user, documentId, { isArchived: false })
+    updateDocuments(documentId, { isArchived: false })
   }
 
   const onRemove = (documentId: string) => {

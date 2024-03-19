@@ -68,7 +68,7 @@ export default function Document({ params }: DocumentIdPageProps) {
 
   return (
     <div className="pb-40">
-      <Cover url={document.coverImage} />
+      <Cover url={document.coverImage} documentId={params.documentId} />
       <div className="mx-auto">
         <Toolbar initialData={document} />
         <BlockEditor hasCollab={hasCollab} ydoc={ydoc} provider={provider} />

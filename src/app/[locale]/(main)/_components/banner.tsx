@@ -28,7 +28,7 @@ export const Banner = ({ documentId }: BannerProps) => {
   const onRestore = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.stopPropagation()
 
-    updateDocuments(pb as any, user, documentId, { isArchived: false })
+    updateDocuments(documentId, { isArchived: false })
   }
 
   return (

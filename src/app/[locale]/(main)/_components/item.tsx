@@ -51,7 +51,7 @@ export const Item = ({
     event.stopPropagation()
     if (!id) return
 
-    documents.updateDocuments(pb as any, user, id, { isArchived: true })
+    documents.updateDocuments(id, { isArchived: true })
   }
 
   const handleExpand = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {

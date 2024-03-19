@@ -1,3 +1,5 @@
+import { usePocketbaseStore } from '@/stores/use-pocketbase.store'
+import { useUserStore } from '@/stores/use-user.store'
 import PocketBase from 'pocketbase'
 import toast from 'react-hot-toast'
 import { create } from 'zustand'
@@ -14,12 +16,7 @@ type DocumentsStore = {
   updateDocument: (value: Document) => void
   deleteDocumentState: (value: Document) => void
   createDocuments: (pb: PocketBase, user: Record<string, any>, data?: DocumentTemplate) => Promise<unknown>
-  updateDocuments: (
-    pb: PocketBase,
-    user: Record<string, any> | null,
-    recordId: string,
-    data: Partial<Document>,
-  ) => Promise<unknown>
+  updateDocuments: (recordId: string, data: Partial<Document>) => Promise<unknown>
   deleteDocument: (pb: PocketBase, user: Record<string, any> | null, recordId: string) => Promise<unknown>
 }
 
@@ -100,17 +97,15 @@ export const useDocuments = create<DocumentsStore>()(
           toast.error('Не получилось содать документ')
         }
       },
-      updateDocuments: async (
-        pb: PocketBase,
-        user: Record<string, any> | null,
-        recordId: string,
-        data: Partial<Document>,
-      ) => {
+      updateDocuments: async (recordId: string, data: Partial<Document>) => {
+        const pb = usePocketbaseStore.getState().pocketbaseClient
+        const user = useUserStore.getState().user
+
         if (user) {
           data.userId = user.id
 
           try {
-            await pb.collection('documents').update(recordId, data)
+            await pb?.collection('documents').update(recordId, data)
 
             toast.success('Документ обновлен')
           } catch (e) {

@@ -1,59 +1,53 @@
 'use client'
 
 import { useCoverImage } from '@/hooks/use-cover-image'
-import { useEdgeStore } from '@/lib/edgestore'
+import { useDocuments } from '@/hooks/use-documents'
 import { cn } from '@/lib/utils'
+import { useS3 } from '@/stores/use-s3.store'
 import { ImageIcon, X } from 'lucide-react'
 import Image from 'next/image'
-import { useParams } from 'next/navigation'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from './ui/button'
 import { Skeleton } from './ui/skeleton'
 
 interface CoverImageProps {
   url?: string
   preview?: boolean
+  documentId: string
 }
 
-async function requestGetImage(url: string) {
-  const body = new FormData()
+export const Cover = ({ preview, url, documentId }: CoverImageProps) => {
+  const [urlImage, setUrlImage] = useState<string | null>(null)
 
-  body.append('fileName', url)
-
-  try {
-    const response = await fetch(`/api/s3/get`, { method: 'POST', body })
-    return await response.json()
-  } catch (e) {
-    console.error(e)
-  }
-}
-
-export const Cover = ({ preview, url }: CoverImageProps) => {
-  const { edgestore } = useEdgeStore()
-  const params = useParams()
-  //const coverImage = useCoverImage()
-  const coverImage = null
-  const getUrlImage = useCoverImage(state => state.requestGetImage)
-  const setUrlImage = useCoverImage(state => state.setUrlImage)
-  const urlImage = useCoverImage(state => state.url)
+  const getUrlS3 = useS3(state => state.getUrl)
+  const urlS3 = useS3(state => state.url)
+  const removeFile = useS3(state => state.removeFile)
+  const updateDocuments = useDocuments(state => state.updateDocuments)
+  const coverImage = useCoverImage()
 
   useEffect(() => {
-    if (url) {
-      setUrlImage(url)
-    } else {
-      setUrlImage(null)
+    if (!urlS3) {
+      getUrlS3()
     }
-  }, [url, setUrlImage])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(() => {
+    if (url && urlS3) {
+      setUrlImage(urlS3 + url)
+    }
+  }, [url, urlS3])
 
   const onRemove = async () => {
-    // if (url) {
-    //   await edgestore.publicFiles.delete({
-    //     url: url,
-    //   })
-    // }
-    // removeCoverImage({
-    //   id: params.documentId as Id<'documents'>,
-    // });
+    if (url) {
+      const res = await removeFile(url)
+
+      if (res?.status) {
+        updateDocuments(documentId, { coverImage: '' })
+
+        setUrlImage(null)
+      }
+    }
   }
 
   return (
@@ -61,7 +55,7 @@ export const Cover = ({ preview, url }: CoverImageProps) => {
       {!!urlImage && <Image src={urlImage} fill alt="Cover" className="object-cover" />}
       {urlImage && !preview && (
         <div className="absolute bottom-5 right-5 flex items-center gap-x-2 opacity-0 group-hover:opacity-100">
-          <Button onClick={() => {}} className="text-xs text-muted-foreground" variant="outline" size="sm">
+          <Button onClick={coverImage.onOpen} className="text-xs text-muted-foreground" variant="outline" size="sm">
             <ImageIcon className="mr-2 h-4 w-4" />
             Change cover
           </Button>
