@@ -1,4 +1,4 @@
-import { useDocuments, type Document } from '@/hooks/use-documents'
+import { useDocuments } from '@/stores'
 import { MenuIcon } from 'lucide-react'
 import { useParams } from 'next/navigation'
 import { Banner } from './banner'
@@ -13,9 +13,9 @@ interface NavbarProps {
 
 export const Navbar = ({ isCollapsed, onResetWidth }: NavbarProps) => {
   const params = useParams()
-  const documents = useDocuments(state => state.documents)
+  const listDocuments = useDocuments(state => state.listDocuments)
 
-  const documentCopy = documents?.find((doc: Document) => doc.id === params.documentId)
+  const documentCopy = listDocuments?.find(doc => doc.id === params.documentId)
 
   if (documentCopy === undefined) {
     return (

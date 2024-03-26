@@ -24,6 +24,7 @@ const s3 = new S3Client({
 export async function POST(request: NextRequest) {
   const formData = await request.formData()
   const file = formData.get('file') as File
+  const fileName = formData.get('fileName') as string
 
   const ext = file.name.split('.').pop()
 
@@ -33,17 +34,19 @@ export async function POST(request: NextRequest) {
 
   const command = new PutObjectCommand({
     Bucket,
-    Key: `${newName}.${ext}`,
+    Key: fileName ? `${fileName}.${ext}` : `${newName}.${ext}`,
     Body,
     ContentDisposition: 'attachment',
   })
+
+  console.log(`${fileName}.${ext}`)
 
   try {
     await s3.send(command)
 
     return NextResponse.json(
       {
-        name: `${newName}.${ext}`,
+        name: fileName ? `${fileName}.${ext}` : `${newName}.${ext}`,
         status: true,
         originalName: file.name,
       },

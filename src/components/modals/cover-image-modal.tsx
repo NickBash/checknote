@@ -1,7 +1,7 @@
 'use client'
 
 import { useCoverImage } from '@/hooks/use-cover-image'
-import { useDocuments } from '@/hooks/use-documents'
+import { useDocuments } from '@/stores'
 import { useS3 } from '@/stores/use-s3.store'
 import { useParams } from 'next/navigation'
 import { useState } from 'react'
@@ -11,7 +11,7 @@ import { Dialog, DialogContent, DialogHeader } from '../ui/dialog'
 export const CoverImageModal = () => {
   const { documentId } = useParams()
 
-  const updateDocuments = useDocuments(state => state.updateDocuments)
+  const requestUpdateDocument = useDocuments(state => state.requestUpdateDocument)
 
   const [file, setFile] = useState<File>()
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -27,10 +27,10 @@ export const CoverImageModal = () => {
 
   const onChange = async (file?: File) => {
     if (file) {
-      const res = await uploadFile(file)
+      const res = await uploadFile(file, documentId as string)
 
       if (res.status) {
-        updateDocuments(documentId as string, { coverImage: res.name })
+        requestUpdateDocument(documentId as string, { coverImage: res.name })
       }
 
       onClose()

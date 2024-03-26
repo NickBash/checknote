@@ -1,7 +1,7 @@
 'use client'
 
 import { useCoverImage } from '@/hooks/use-cover-image'
-import type { Document } from '@/hooks/use-documents'
+import { useDocuments, type DocumentCopy } from '@/stores'
 import { ImageIcon, Smile, X } from 'lucide-react'
 import { useRef, useState, type ElementRef } from 'react'
 import TextareaAutosize from 'react-textarea-autosize'
@@ -9,17 +9,16 @@ import { IconPicker } from './icon-picker'
 import { Button } from './ui/button'
 
 interface ToolbarProps {
-  initialData: Document
+  initialData: DocumentCopy
   preview?: boolean
+  documentId: string
 }
 
-export const Toolbar = ({ initialData, preview }: ToolbarProps) => {
+export const Toolbar = ({ initialData, preview, documentId }: ToolbarProps) => {
   const inputRef = useRef<ElementRef<'textarea'>>(null)
   const [isEditing, setIsEditing] = useState(false)
   const [value, setValue] = useState(initialData.title)
-
-  // const update = useMutation(api.documents.update)
-  // const removeIcon = useMutation(api.documents.removeIcon)
+  const requestUpdateDocument = useDocuments(state => state.requestUpdateDocument)
 
   const coverImage = useCoverImage()
 
@@ -37,10 +36,7 @@ export const Toolbar = ({ initialData, preview }: ToolbarProps) => {
 
   const onInput = (value: string) => {
     setValue(value)
-    // update({
-    //   id: initialData._id,
-    //   title: value || 'Untitled',
-    // })
+    requestUpdateDocument(documentId as string, { title: value || 'Untitled' })
   }
 
   const onKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -51,16 +47,11 @@ export const Toolbar = ({ initialData, preview }: ToolbarProps) => {
   }
 
   const onIconSelect = (icon: string) => {
-    // update({
-    //   id: initialData._id,
-    //   icon,
-    // })
+    requestUpdateDocument(documentId as string, { icon })
   }
 
   const onRemoveIcon = () => {
-    // removeIcon({
-    //   id: initialData._id,
-    // })
+    requestUpdateDocument(documentId as string, { icon: '' })
   }
 
   return (

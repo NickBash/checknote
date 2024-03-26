@@ -5,14 +5,14 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from './ui/command'
 
-import { useDocuments } from '@/hooks/use-documents'
+import { useDocuments } from '@/stores'
 import { useUserStore } from '@/stores/use-user.store'
 import { File } from 'lucide-react'
 
 export const SearchCommand = () => {
   const user = useUserStore(state => state.user)
   const router = useRouter()
-  const documents = useDocuments(state => state.documents)
+  const listDocuments = useDocuments(state => state.listDocuments)
   const [isMounted, setIsMounted] = useState(false)
 
   const toggle = useSearch(store => store.toggle)
@@ -51,7 +51,7 @@ export const SearchCommand = () => {
       <CommandList>
         <CommandEmpty>No result found.</CommandEmpty>
         <CommandGroup heading="Documents">
-          {documents?.map(document => (
+          {listDocuments?.map(document => (
             <CommandItem
               key={document.id}
               value={`${document.id}-${document.title}`}

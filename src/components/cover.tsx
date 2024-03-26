@@ -1,8 +1,8 @@
 'use client'
 
 import { useCoverImage } from '@/hooks/use-cover-image'
-import { useDocuments } from '@/hooks/use-documents'
 import { cn } from '@/lib/utils'
+import { useDocuments } from '@/stores'
 import { useS3 } from '@/stores/use-s3.store'
 import { ImageIcon, X } from 'lucide-react'
 import Image from 'next/image'
@@ -22,7 +22,7 @@ export const Cover = ({ preview, url, documentId }: CoverImageProps) => {
   const getUrlS3 = useS3(state => state.getUrl)
   const urlS3 = useS3(state => state.url)
   const removeFile = useS3(state => state.removeFile)
-  const updateDocuments = useDocuments(state => state.updateDocuments)
+  const requestUpdateDocument = useDocuments(state => state.requestUpdateDocument)
   const coverImage = useCoverImage()
 
   useEffect(() => {
@@ -43,7 +43,7 @@ export const Cover = ({ preview, url, documentId }: CoverImageProps) => {
       const res = await removeFile(url)
 
       if (res?.status) {
-        updateDocuments(documentId, { coverImage: '' })
+        requestUpdateDocument(documentId, { coverImage: '' })
 
         setUrlImage(null)
       }

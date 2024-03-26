@@ -10,7 +10,7 @@ import { BlockEditor } from '@/components/BlockEditor'
 import { Cover } from '@/components/cover'
 import { Toolbar } from '@/components/toolbar'
 import { Skeleton } from '@/components/ui/skeleton'
-import { useDocuments, type Document } from '@/hooks/use-documents'
+import { useDocuments, type DocumentCopy } from '@/stores'
 
 interface DocumentIdPageProps {
   params: {
@@ -22,9 +22,9 @@ export default function Document({ params }: DocumentIdPageProps) {
   const [provider, setProvider] = useState<TiptapCollabProvider | HocuspocusProvider | null>(null)
   const [collabToken, setCollabToken] = useState<string | null>(null)
   const searchParams = useSearchParams()
-  const documentsList = useDocuments(state => state.documents)
+  const listDocuments = useDocuments(state => state.listDocuments)
 
-  const document: Document | undefined = documentsList?.find(doc => doc.id === params.documentId)
+  const documentCopy: DocumentCopy | undefined = listDocuments?.find(doc => doc.id === params.documentId)
 
   const hasCollab = parseInt(searchParams.get('noCollab') as string) !== 1
 
@@ -44,7 +44,7 @@ export default function Document({ params }: DocumentIdPageProps) {
     }
   }, [setProvider, collabToken, ydoc, documentId, hasCollab])
 
-  if (document === undefined) {
+  if (documentCopy === undefined) {
     return (
       <div>
         <Cover.Skeleton />
@@ -60,7 +60,7 @@ export default function Document({ params }: DocumentIdPageProps) {
     )
   }
 
-  if (document === null) {
+  if (documentCopy === null) {
     return <div>Not found</div>
   }
 
@@ -68,9 +68,9 @@ export default function Document({ params }: DocumentIdPageProps) {
 
   return (
     <div className="pb-40">
-      <Cover url={document.coverImage} documentId={params.documentId} />
+      <Cover url={documentCopy?.coverImage} documentId={params.documentId} />
       <div className="mx-auto">
-        <Toolbar initialData={document} />
+        <Toolbar initialData={documentCopy} documentId={params.documentId} />
         <BlockEditor hasCollab={hasCollab} ydoc={ydoc} provider={provider} />
       </div>
     </div>

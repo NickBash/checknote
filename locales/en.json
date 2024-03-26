@@ -22,6 +22,15 @@
     "dontAccount": "Don’t have an account yet?",
     "signupLink": "Sign up"
   },
+  "Signup": {
+    "title": "Registration",
+    "email": "Your email",
+    "password": "Password",
+    "repeatPassword": "Repeat password",
+    "signupButton": "Sign up",
+    "haveAccount": "You have an account?",
+    "signinLink": "Sign in"
+  },
   "Navigation": {
     "addPage": "Add a page"
   },

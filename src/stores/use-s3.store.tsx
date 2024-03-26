@@ -4,7 +4,7 @@ type S3Store = {
   url: string | null
   setUrl: (url: string | null) => void
   getUrl: () => Promise<void>
-  uploadFile: (file: File) => Promise<any>
+  uploadFile: (file: File, fileName?: string) => Promise<any>
   removeFile: (filename: string) => Promise<any>
 }
 
@@ -23,9 +23,12 @@ export const useS3 = create<S3Store>(set => ({
       console.error(e)
     }
   },
-  uploadFile: async file => {
+  uploadFile: async (file, fileName) => {
     const body = new FormData()
     body.append('file', file, file.name)
+    if (fileName) {
+      body.append('fileName', fileName)
+    }
 
     try {
       const response = await fetch('/api/s3', { method: 'POST', body })

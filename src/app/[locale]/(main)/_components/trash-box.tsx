@@ -3,9 +3,7 @@
 import { ConfirmModal } from '@/components/modals/confirm-modal'
 import { Spinner } from '@/components/spinner'
 import { Input } from '@/components/ui/input'
-import { useDocuments, type Document } from '@/hooks/use-documents'
-import { usePocketbaseStore } from '@/stores/use-pocketbase.store'
-import { useUserStore } from '@/stores/use-user.store'
+import { useDocuments, type DocumentCopy } from '@/stores'
 import { Search, Trash, Undo } from 'lucide-react'
 import { useParams, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
@@ -14,15 +12,12 @@ export const TrashBox = () => {
   const router = useRouter()
   const params = useParams()
 
-  const documents = useDocuments(state => state.documents)
-  const pb = usePocketbaseStore(state => state.pocketbaseClient)
-  const user = useUserStore(state => state.user)
-
-  const updateDocuments = useDocuments(state => state.updateDocuments)
-  const deleteDocument = useDocuments(state => state.deleteDocument)
+  const listDocuments = useDocuments(state => state.listDocuments)
+  const requestUpdateDocuments = useDocuments(state => state.requestUpdateDocument)
+  const requestDeleteDocument = useDocuments(state => state.requestDeleteDocument)
 
   const [search, setSearch] = useState('')
-  const [filteredDocuments, setFilteredDocuments] = useState<Document[]>([])
+  const [filteredDocuments, setFilteredDocuments] = useState<DocumentCopy[]>([])
 
   const onClick = (documentId: string) => {
     router.push(`/documents/${documentId}`)
@@ -31,11 +26,11 @@ export const TrashBox = () => {
   const onRestore = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, documentId: string) => {
     event.stopPropagation()
 
-    updateDocuments(documentId, { isArchived: false })
+    requestUpdateDocuments(documentId, { isArchived: false })
   }
 
   const onRemove = (documentId: string) => {
-    deleteDocument(pb as any, user, documentId)
+    requestDeleteDocument(documentId)
 
     if (params.documentId === documentId) {
       router.push('/documents')
@@ -43,14 +38,14 @@ export const TrashBox = () => {
   }
 
   useEffect(() => {
-    let findDocs: Document[] | undefined
+    let findDocs: DocumentCopy[] | undefined
 
     if (search) {
-      findDocs = documents?.filter(
-        (document: Document) => document.title.toLowerCase().includes(search.toLowerCase()) && document.isArchived,
+      findDocs = listDocuments?.filter(
+        document => document.title.toLowerCase().includes(search.toLowerCase()) && document.isArchived,
       )
     } else {
-      findDocs = documents?.filter((document: Document) => document.isArchived)
+      findDocs = listDocuments?.filter(document => document.isArchived)
     }
 
     if (findDocs?.length) {
@@ -58,9 +53,9 @@ export const TrashBox = () => {
     } else {
       setFilteredDocuments([])
     }
-  }, [search, documents])
+  }, [search, listDocuments])
 
-  if (documents === undefined) {
+  if (!listDocuments) {
     return (
       <div className="flex h-full items-center justify-center p-4">
         <Spinner size="lg"></Spinner>

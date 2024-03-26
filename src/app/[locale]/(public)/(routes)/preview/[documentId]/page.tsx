@@ -3,7 +3,7 @@
 import { Cover } from '@/components/cover'
 import { Toolbar } from '@/components/toolbar'
 import { Skeleton } from '@/components/ui/skeleton'
-import { useDocuments, type Document } from '@/hooks/use-documents'
+import { useDocuments, type DocumentCopy } from '@/stores'
 import dynamic from 'next/dynamic'
 import { useEffect, useMemo, useState } from 'react'
 
@@ -14,14 +14,14 @@ interface DocumentIdPageProps {
 }
 
 const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
-  const documentsList = useDocuments(state => state.documents)
+  const listDocuments = useDocuments(state => state.listDocuments)
 
   const Editor = useMemo(() => dynamic(() => import('@/components/editor'), { ssr: false }), [])
 
-  const [documentCopy, setDocumentCopy] = useState<Document | null>(null)
+  const [documentCopy, setDocumentCopy] = useState<DocumentCopy>()
 
   useEffect(() => {
-    const findDoc = documentsList.find((doc: Document) => doc.id === params.documentId)
+    const findDoc = listDocuments.find(doc => doc.id === params.documentId)
 
     if (findDoc) {
       setDocumentCopy(findDoc)
@@ -35,7 +35,7 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
     // });
   }
 
-  if (document === undefined) {
+  if (documentCopy === undefined) {
     return (
       <div>
         <Cover.Skeleton />
@@ -57,10 +57,10 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
 
   return (
     <div className="pb-40">
-      <Cover preview url={document.coverImage} />
+      <Cover preview url={documentCopy.coverImage} documentId={params.documentId} />
       <div className="lg:md-max-w-4xl mx-auto md:max-w-3xl">
-        <Toolbar preview initialData={document} />
-        <Editor editable={false} onChange={onChange} initialContent={document.content} />
+        <Toolbar preview initialData={documentCopy} documentId={params.documentId} />
+        <Editor editable={false} onChange={onChange} initialContent={documentCopy.content} />
       </div>
     </div>
   )

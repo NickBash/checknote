@@ -62,12 +62,7 @@ export const useUserStore = create<UserStore>((set, get) => ({
   register: async (email, password) => {
     const pb = usePocketbaseStore.getState().pocketbaseClient
 
-    try {
-      return await pb?.collection('users').create({ email, password, passwordConfirm: password })
-    } catch (e) {
-      console.log(e)
-      return false
-    }
+    return await pb?.collection('users').create({ email, password, passwordConfirm: password })
   },
   login: async (email: string, password: string) => {
     const pb = usePocketbaseStore.getState().pocketbaseClient

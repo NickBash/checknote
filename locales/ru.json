@@ -22,6 +22,15 @@
     "dontAccount": "У вас нет аккаунта?",
     "signupLink": "Зарегистрироваться"
   },
+  "Signup": {
+    "title": "Регистрация",
+    "email": "Электронная почта",
+    "password": "Пароль",
+    "repeatPassword": "Повторите пароль",
+    "signupButton": "Зарегистрироваться",
+    "haveAccount": "У вас есть аккаунт?",
+    "signinLink": "Войти"
+  },
   "Navigation": {
     "addPage": "Создать страницу"
   },

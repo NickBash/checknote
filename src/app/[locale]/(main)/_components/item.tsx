@@ -8,12 +8,10 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Skeleton } from '@/components/ui/skeleton'
-import { useDocuments } from '@/hooks/use-documents'
 import { cn } from '@/lib/utils'
-import { usePocketbaseStore } from '@/stores/use-pocketbase.store'
+import { useDocuments } from '@/stores'
 import { useUserStore } from '@/stores/use-user.store'
 import { ChevronDown, ChevronRight, MoreHorizontal, Plus, Trash, type LucideIcon } from 'lucide-react'
-import { useRouter } from 'next/navigation'
 
 interface ItemProps {
   id?: string
@@ -42,16 +40,14 @@ export const Item = ({
   onExpand,
   expanded,
 }: ItemProps) => {
-  const pb = usePocketbaseStore(state => state.pocketbaseClient)
   const user = useUserStore(state => state.user)
-  const router = useRouter()
-  const documents = useDocuments()
+  const updateDocument = useDocuments(state => state.requestUpdateDocument)
 
   const onArchive = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     event.stopPropagation()
     if (!id) return
 
-    documents.updateDocuments(id, { isArchived: true })
+    updateDocument(id, { isArchived: true })
   }
 
   const handleExpand = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {

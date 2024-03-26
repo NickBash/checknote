@@ -2,9 +2,7 @@
 
 import { ConfirmModal } from '@/components/modals/confirm-modal'
 import { Button } from '@/components/ui/button'
-import { useDocuments } from '@/hooks/use-documents'
-import { usePocketbaseStore } from '@/stores/use-pocketbase.store'
-import { useUserStore } from '@/stores/use-user.store'
+import { useDocuments } from '@/stores'
 import { useRouter } from 'next/navigation'
 
 interface BannerProps {
@@ -12,15 +10,13 @@ interface BannerProps {
 }
 
 export const Banner = ({ documentId }: BannerProps) => {
-  const pb = usePocketbaseStore(state => state.pocketbaseClient)
-  const user = useUserStore(state => state.user)
   const router = useRouter()
 
-  const updateDocuments = useDocuments(state => state.updateDocuments)
-  const deleteDocument = useDocuments(state => state.deleteDocument)
+  const updateDocuments = useDocuments(state => state.requestUpdateDocument)
+  const deleteDocument = useDocuments(state => state.requestDeleteDocument)
 
   const onRemove = () => {
-    deleteDocument(pb as any, user, documentId)
+    deleteDocument(documentId)
 
     router.push('/documents')
   }

@@ -1,12 +1,10 @@
 'use client'
 
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { useDocuments } from '@/hooks/use-documents'
 import { useSearch } from '@/hooks/use-search'
 import { useSettings } from '@/hooks/use-settings'
 import { cn } from '@/lib/utils'
-import { usePocketbaseStore } from '@/stores/use-pocketbase.store'
-import { useUserStore } from '@/stores/use-user.store'
+import { useDocuments } from '@/stores'
 import { ChevronsLeft, MenuIcon, Plus, PlusCircle, Search, Settings, Trash } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { useParams, usePathname } from 'next/navigation'
@@ -25,9 +23,7 @@ const Navigation = () => {
   const pathname = usePathname()
   const isMobile = useMediaQuery('(max-width: 768px)')
   const t = useTranslations('Navigation')
-  const documents = useDocuments()
-  const pb = usePocketbaseStore(state => state.pocketbaseClient)
-  const user = useUserStore(state => state.user)
+  const requestСreateDocument = useDocuments(state => state.requestСreateDocument)
 
   const isResizingRef = useRef(false)
   const sidebarRef = useRef<ElementRef<'aside'>>(null)
@@ -41,6 +37,8 @@ const Navigation = () => {
     } else {
       resetWidth()
     }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isMobile])
 
   useEffect(() => {
@@ -103,7 +101,7 @@ const Navigation = () => {
   }
 
   const handleCreate = () => {
-    documents.createDocuments(pb as any, user as Record<string, any>)
+    requestСreateDocument()
   }
 
   return (

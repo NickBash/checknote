@@ -9,26 +9,29 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
 
-const SignIn = () => {
-  const login = useUserStore(state => state.login)
+const SignUp = () => {
+  const register = useUserStore(state => state.register)
   const { push } = useRouter()
   const [init, setInit] = useState(false)
-  const t = useTranslations('Signin')
+  const t = useTranslations('Signup')
   const [email, setEmail] = useState('')
   const [pass, setPass] = useState('')
+  const [repeatPass, setRepeatPass] = useState('')
 
   const onSubmit = useCallback(
     async (evt: React.MouseEvent<HTMLElement>) => {
       evt?.preventDefault()
-      try {
-        await login(email, pass)
+      if (repeatPass === pass) {
+        try {
+          await register(email, pass)
 
-        push('/')
-      } catch (e) {
-        console.error(e)
+          push('/')
+        } catch (e) {
+          console.error(e)
+        }
       }
     },
-    [email, pass, login, push],
+    [email, pass, register, push, repeatPass],
   )
 
   useEffect(() => {
@@ -80,18 +83,30 @@ const SignIn = () => {
                   required
                 />
               </div>
-              <div className="flex items-center justify-center">
-                <Link href="#" className="text-primary-600 dark:text-primary-500 text-sm font-medium hover:underline">
-                  {t('forgout')}
-                </Link>
+              <div>
+                <label
+                  htmlFor="repeatPassword"
+                  className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  {t('repeatPassword')}
+                </label>
+                <Input
+                  type="password"
+                  name="password"
+                  id="password"
+                  className="dark:bg-neutral-900"
+                  placeholder="••••••••"
+                  onChange={e => setRepeatPass(e.target.value)}
+                  required
+                />
               </div>
               <Button onClick={onSubmit} variant="default" className="w-full">
-                {t('signinButton')}
+                {t('signupButton')}
               </Button>
               <p className="text-center text-sm font-light text-gray-500 dark:text-gray-400">
-                {t('dontAccount')}{' '}
-                <Link href="/signup" className="text-primary-600 dark:text-primary-500 font-medium hover:underline">
-                  {t('signupLink')}
+                {t('haveAccount')}{' '}
+                <Link href="/signin" className="text-primary-600 dark:text-primary-500 font-medium hover:underline">
+                  {t('signinLink')}
                 </Link>
               </p>
             </form>
@@ -102,4 +117,4 @@ const SignIn = () => {
   )
 }
 
-export default SignIn
+export default SignUp

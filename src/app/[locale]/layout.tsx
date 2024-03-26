@@ -3,7 +3,6 @@ import 'cal-sans'
 import { ModalProvider } from '@/components/modals/modal-provider'
 import { PocketProvider } from '@/components/providers/pocket-provider'
 import { ThemeProvider } from '@/components/providers/theme-provider'
-import { EdgeStoreProvider } from '@/lib/edgestore'
 
 import { NextIntlClientProvider, useMessages } from 'next-intl'
 import { getTranslations, unstable_setRequestLocale } from 'next-intl/server'
@@ -40,23 +39,22 @@ export default function RootLayout({ children, params: { locale } }: Root) {
     <html className="h-full font-sans" lang={locale} suppressHydrationWarning>
       <body className="flex h-full flex-col">
         <PocketProvider />
-        <EdgeStoreProvider>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-            storageKey="checknote-theme-2"
-          >
-            <Toaster position="bottom-center" />
-            <ModalProvider />
-            <main className="h-full">
-              <NextIntlClientProvider locale={locale} messages={messages}>
-                {children}
-              </NextIntlClientProvider>
-            </main>
-          </ThemeProvider>
-        </EdgeStoreProvider>
+
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+          storageKey="checknote-theme-2"
+        >
+          <Toaster position="bottom-center" />
+          <ModalProvider />
+          <main className="h-full">
+            <NextIntlClientProvider locale={locale} messages={messages}>
+              {children}
+            </NextIntlClientProvider>
+          </main>
+        </ThemeProvider>
       </body>
     </html>
   )

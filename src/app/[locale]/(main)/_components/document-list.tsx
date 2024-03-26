@@ -1,29 +1,24 @@
 'use client'
 
-import { Document, useDocuments } from '@/hooks/use-documents'
 import { cn } from '@/lib/utils'
-import { usePocketbaseStore } from '@/stores/use-pocketbase.store'
-import { useUserStore } from '@/stores/use-user.store'
+import { useDocuments } from '@/stores'
 import { FileIcon } from 'lucide-react'
 import { useParams, useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Item } from './item'
 
 interface IDocumentListProps {
   level?: number
+  parentDocumentId?: string
 }
 
-export const DocumentList = ({ level = 0 }: IDocumentListProps) => {
-  const pb = usePocketbaseStore(state => state.pocketbaseClient)
-  const user = useUserStore(state => state.user)
+export const DocumentList = ({ level = 0, parentDocumentId }: IDocumentListProps) => {
   const params = useParams()
   const router = useRouter()
   const [expanded, setExpanded] = useState<Record<string, boolean>>({})
-  const [documentsList, setDocumentsList] = useState<Document[]>([])
 
-  const { getDocuments, isLoading, addDocument, updateDocument, deleteDocumentState } = useDocuments()
-
-  const documents = useDocuments(state => state.documents)
+  const listDocuments = useDocuments(state => state.listDocuments)
+  const displayDocuments = useMemo(() => listDocuments.filter(doc => !doc.isArchived), [listDocuments])
 
   const onExpand = (documentId: string) => {
     setExpanded(prevExpanded => ({
@@ -32,42 +27,15 @@ export const DocumentList = ({ level = 0 }: IDocumentListProps) => {
     }))
   }
 
-  useEffect(() => {
-    if (!isLoading) {
-      getDocuments(pb, user)
-
-      pb?.collection('documents').subscribe('*', e => {
-        console.log(e)
-        if (e?.action === 'create') {
-          addDocument(e?.record as Document)
-        }
-        if (e?.action === 'update') {
-          updateDocument(e?.record as Document)
-        }
-        if (e?.action === 'delete') {
-          deleteDocumentState(e?.record as Document)
-        }
-      })
-    }
-
-    return () => {
-      pb?.collection('documents').unsubscribe('*')
-    }
-  }, [])
-
-  useEffect(() => {
-    if (documents?.length) {
-      setDocumentsList(documents.filter(doc => !doc.isArchived))
-    } else {
-      setDocumentsList([])
-    }
-  }, [documents])
+  // useEffect(() => {
+  //   console.log(parentDocumentId)
+  // }, [parentDocumentId])
 
   const onRedirect = (documentId: string) => {
     router.push(`/documents/${documentId}`)
   }
 
-  if (!documents) {
+  if (!listDocuments) {
     return (
       <>
         <Item.Skeleton level={level} />
@@ -93,7 +61,7 @@ export const DocumentList = ({ level = 0 }: IDocumentListProps) => {
       >
         No page inside
       </p>
-      {documentsList.map(document => (
+      {displayDocuments.map(document => (
         <div key={document.id}>
           <Item
             id={document.id}
@@ -107,8 +75,7 @@ export const DocumentList = ({ level = 0 }: IDocumentListProps) => {
             onExpand={() => onExpand(document.id)}
             expanded={expanded[document.id]}
           />
-          {/*
-          {expanded[document.id] && <DocumentList parentDocumentId={document.id} level={level + 1} />} */}
+          {expanded[document.id] && <DocumentList parentDocumentId={document.id} level={level + 1} />}
         </div>
       ))}
     </>

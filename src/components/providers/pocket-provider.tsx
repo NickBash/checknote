@@ -25,8 +25,6 @@ export const PocketProvider = () => {
     setPocketbaseClient(pb)
 
     if (!checkAuth()) router.push('/')
-
-    console.log('check')
   }, [pb, setPocketbaseClient, checkAuth, router])
 
   useInterval(refreshSession, token ? TWO_MINUTE_IN_MS : null)
