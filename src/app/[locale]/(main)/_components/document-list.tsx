@@ -18,7 +18,26 @@ export const DocumentList = ({ level = 0, parentDocumentId }: IDocumentListProps
   const [expanded, setExpanded] = useState<Record<string, boolean>>({})
 
   const listDocuments = useDocuments(state => state.listDocuments)
-  const displayDocuments = useMemo(() => listDocuments.filter(doc => !doc.isArchived), [listDocuments])
+  const displayDocuments = useMemo(
+    () =>
+      listDocuments
+        .filter(doc => !doc.isArchived)
+        .filter(doc => {
+          if (!parentDocumentId && doc.parentDocument) {
+            return false
+          }
+          if (parentDocumentId) {
+            if (doc.parentDocument) {
+              return parentDocumentId === doc.parentDocument
+            } else {
+              return false
+            }
+          }
+
+          return true
+        }),
+    [listDocuments, parentDocumentId],
+  )
 
   const onExpand = (documentId: string) => {
     setExpanded(prevExpanded => ({
@@ -26,10 +45,6 @@ export const DocumentList = ({ level = 0, parentDocumentId }: IDocumentListProps
       [documentId]: !prevExpanded[documentId],
     }))
   }
-
-  // useEffect(() => {
-  //   console.log(parentDocumentId)
-  // }, [parentDocumentId])
 
   const onRedirect = (documentId: string) => {
     router.push(`/documents/${documentId}`)

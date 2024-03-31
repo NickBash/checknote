@@ -42,12 +42,18 @@ export const Item = ({
 }: ItemProps) => {
   const user = useUserStore(state => state.user)
   const updateDocument = useDocuments(state => state.requestUpdateDocument)
+  const createDocument = useDocuments(state => state.requestСreateDocument)
+  const onArchiveDocuments = useDocuments(state => state.onArchiveDocuments)
 
   const onArchive = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     event.stopPropagation()
     if (!id) return
 
-    updateDocument(id, { isArchived: true })
+    console.log('check')
+
+    onArchiveDocuments(id)
+
+    // updateDocument(id, { isArchived: true })
   }
 
   const handleExpand = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -59,18 +65,7 @@ export const Item = ({
     event.stopPropagation()
     if (!id) return
 
-    // const promise = create({ title: 'Untitled', parentDocument: id }).then(documentId => {
-    //   if (!expanded) {
-    //     onExpand?.()
-    //   }
-    //   router.push(`/documents/${documentId}`)
-    // })
-
-    // toast.promise(promise, {
-    //   loading: 'Creating a new note...',
-    //   success: 'New note created!',
-    //   error: 'Failed to create a new note.',
-    // })
+    createDocument({ parentDocument: id })
   }
 
   const ChevronIcon = expanded ? ChevronDown : ChevronRight

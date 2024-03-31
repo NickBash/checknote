@@ -1,9 +1,10 @@
 'use client'
 
 import { useCoverImage } from '@/hooks/use-cover-image'
+import useDebounce from '@/hooks/use-debounce'
 import { useDocuments, type DocumentCopy } from '@/stores'
 import { ImageIcon, Smile, X } from 'lucide-react'
-import { useRef, useState, type ElementRef } from 'react'
+import { useEffect, useRef, useState, type ElementRef } from 'react'
 import TextareaAutosize from 'react-textarea-autosize'
 import { IconPicker } from './icon-picker'
 import { Button } from './ui/button'
@@ -20,7 +21,21 @@ export const Toolbar = ({ initialData, preview, documentId }: ToolbarProps) => {
   const [value, setValue] = useState(initialData.title)
   const requestUpdateDocument = useDocuments(state => state.requestUpdateDocument)
 
+  const debouncedInput = useDebounce(value, 700)
+
   const coverImage = useCoverImage()
+
+  const isInit = useRef(true)
+
+  useEffect(() => {
+    if (isInit.current) {
+      isInit.current = false
+      return
+    }
+
+    requestUpdateDocument(documentId as string, { title: value || 'Untitled' })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedInput])
 
   const enableInput = () => {
     if (preview) return
@@ -36,7 +51,6 @@ export const Toolbar = ({ initialData, preview, documentId }: ToolbarProps) => {
 
   const onInput = (value: string) => {
     setValue(value)
-    requestUpdateDocument(documentId as string, { title: value || 'Untitled' })
   }
 
   const onKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -100,7 +114,7 @@ export const Toolbar = ({ initialData, preview, documentId }: ToolbarProps) => {
       ) : (
         <div
           onClick={enableInput}
-          className="break-words pb-[11.5px] text-5xl font-bold text-[#3F3F3F] outline-none dark:text-[#CFCFCF]"
+          className="break-words pb-[11px] text-5xl font-bold text-[#3F3F3F] outline-none dark:text-[#CFCFCF]"
         >
           {initialData.title}
         </div>

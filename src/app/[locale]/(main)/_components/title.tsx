@@ -3,26 +3,40 @@
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Skeleton } from '@/components/ui/skeleton'
-import type { Document } from '@/hooks/use-documents'
-import { useRef, useState } from 'react'
+import useDebounce from '@/hooks/use-debounce'
+import { useDocuments, type DocumentCopy } from '@/stores'
+import { useEffect, useRef, useState } from 'react'
 
 interface TitleProps {
-  initialData: Document
+  initialData: DocumentCopy
 }
 
 export const Title = ({ initialData }: TitleProps) => {
   const inputRef = useRef<HTMLInputElement>(null)
-  // const update = useMutation(api.documents.update);
+  const requestUpdateDocument = useDocuments(state => state.requestUpdateDocument)
 
   const [title, setTitle] = useState(initialData.title || 'Untitled')
   const [isEditing, setIsEditing] = useState(false)
+
+  const debouncedInput = useDebounce(title, 700)
+
+  const isInit = useRef(true)
+
+  useEffect(() => {
+    if (isInit.current) {
+      isInit.current = false
+      return
+    }
+
+    requestUpdateDocument(initialData.id, { title: title || 'Untitled' })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedInput])
 
   const enableInput = () => {
     setTitle(initialData.title)
     setIsEditing(true)
     setTimeout(() => {
       inputRef.current?.focus()
-      inputRef.current?.setSelectionRange(0, inputRef.current.value.length)
     }, 0)
   }
 
@@ -32,10 +46,6 @@ export const Title = ({ initialData }: TitleProps) => {
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value)
-    // update({
-    //   id: initialData.id,
-    //   title: event.target.value || 'Untitled',
-    // });
   }
 
   const onKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {

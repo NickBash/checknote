@@ -13,8 +13,8 @@ export const TrashBox = () => {
   const params = useParams()
 
   const listDocuments = useDocuments(state => state.listDocuments)
-  const requestUpdateDocuments = useDocuments(state => state.requestUpdateDocument)
-  const requestDeleteDocument = useDocuments(state => state.requestDeleteDocument)
+  const onRestoreDocuments = useDocuments(state => state.onRestoreDocuments)
+  const onRemoveDocuments = useDocuments(state => state.onRemoveDocuments)
 
   const [search, setSearch] = useState('')
   const [filteredDocuments, setFilteredDocuments] = useState<DocumentCopy[]>([])
@@ -26,11 +26,12 @@ export const TrashBox = () => {
   const onRestore = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, documentId: string) => {
     event.stopPropagation()
 
-    requestUpdateDocuments(documentId, { isArchived: false })
+    onRestoreDocuments(documentId)
+    //requestUpdateDocuments(documentId, { isArchived: false })
   }
 
   const onRemove = (documentId: string) => {
-    requestDeleteDocument(documentId)
+    onRemoveDocuments(documentId)
 
     if (params.documentId === documentId) {
       router.push('/documents')
