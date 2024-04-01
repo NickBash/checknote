@@ -1,9 +1,11 @@
-const { Hocuspocus } = require('@hocuspocus/server');
+const { Hocuspocus } = require('@hocuspocus/server')
+const { onStoreDocument, onLoadDocument } = require('./documentHelpers')
 
-// Configure the server …
 const server = new Hocuspocus({
   port: 1234,
-});
+  onStoreDocument,
+  onLoadDocument,
+  debounce: 2000,
+})
 
-// … and run it!
-server.listen();
+server.listen()

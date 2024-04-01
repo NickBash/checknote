@@ -3,6 +3,7 @@
 import { ConfirmModal } from '@/components/modals/confirm-modal'
 import { Button } from '@/components/ui/button'
 import { useDocuments } from '@/stores'
+import { useTranslations } from 'next-intl'
 import { useRouter } from 'next/navigation'
 
 interface BannerProps {
@@ -10,6 +11,7 @@ interface BannerProps {
 }
 
 export const Banner = ({ documentId }: BannerProps) => {
+  const t = useTranslations('BannerDelete')
   const router = useRouter()
 
   const updateDocuments = useDocuments(state => state.requestUpdateDocument)
@@ -29,14 +31,14 @@ export const Banner = ({ documentId }: BannerProps) => {
 
   return (
     <div className="flex w-full items-center justify-center gap-x-2 bg-rose-500 p-2 text-center text-sm text-white">
-      <p>This page is in the Trash.</p>
+      <p>{t('title')}</p>
       <Button
         size="sm"
         onClick={e => onRestore(e)}
         variant="outline"
         className="h-auto border-white bg-transparent p-1 px-2 font-normal text-white hover:bg-primary/5 hover:text-white"
       >
-        Restore page
+        {t('restorePageButton')}
       </Button>
       <ConfirmModal onConfirm={onRemove}>
         <Button
@@ -44,7 +46,7 @@ export const Banner = ({ documentId }: BannerProps) => {
           variant="outline"
           className="h-auto border-white bg-transparent p-1 px-2 font-normal text-white hover:bg-primary/5 hover:text-white"
         >
-          Delete forever
+          {t('deleteForever')}
         </Button>
       </ConfirmModal>
     </div>

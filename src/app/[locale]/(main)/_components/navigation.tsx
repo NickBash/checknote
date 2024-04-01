@@ -17,8 +17,8 @@ import { TrashBox } from './trash-box'
 import { UserItem } from './user-item'
 
 const Navigation = () => {
-  const settings = useSettings()
-  const search = useSearch()
+  const onOpenSettings = useSettings(state => state.onOpen)
+  const onOpenSearch = useSearch(state => state.onOpen)
   const params = useParams()
   const pathname = usePathname()
   const isMobile = useMediaQuery('(max-width: 768px)')
@@ -126,16 +126,16 @@ const Navigation = () => {
         </div>
         <div>
           <UserItem />
-          <Item label="Search" icon={Search} isSearch onClick={search.onOpen} />
-          <Item label="Settings" icon={Settings} onClick={settings.onOpen} />
-          <Item onClick={handleCreate} label="New page" icon={PlusCircle} />
+          <Item label={t('search')} icon={Search} isSearch onClick={onOpenSearch} />
+          <Item label={t('settings')} icon={Settings} onClick={onOpenSettings} />
+          <Item onClick={handleCreate} label={t('newPage')} icon={PlusCircle} />
         </div>
         <div className="mt-4">
           <DocumentList />
           <Item onClick={handleCreate} icon={Plus} label={t('addPage')} />
           <Popover>
             <PopoverTrigger className="mt-4 w-full">
-              <Item label="Trash" icon={Trash} />
+              <Item label={t('trash')} icon={Trash} />
             </PopoverTrigger>
             <PopoverContent className="w-72 p-0" side={isMobile ? 'bottom' : 'right'}>
               <TrashBox />

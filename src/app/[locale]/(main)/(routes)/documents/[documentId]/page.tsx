@@ -3,13 +3,12 @@
 import { HocuspocusProvider, TiptapCollabProvider } from '@hocuspocus/provider'
 import 'iframe-resizer/js/iframeResizer.contentWindow'
 import { useSearchParams } from 'next/navigation'
-import { useLayoutEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import * as Y from 'yjs'
 
 import { BlockEditor } from '@/components/BlockEditor'
 import { Cover } from '@/components/cover'
 import { Toolbar } from '@/components/toolbar'
-import { Skeleton } from '@/components/ui/skeleton'
 import { useDocuments, type DocumentCopy } from '@/stores'
 
 interface DocumentIdPageProps {
@@ -32,35 +31,39 @@ export default function Document({ params }: DocumentIdPageProps) {
 
   const ydoc = useMemo(() => new Y.Doc(), [])
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (hasCollab) {
       setProvider(
         new HocuspocusProvider({
           url: 'ws://127.0.0.1:1234',
-          name: 'example-document',
+          name: documentId,
           document: ydoc,
+          forceSyncInterval: 200,
         }),
       )
     }
-  }, [setProvider, collabToken, ydoc, documentId, hasCollab])
+
+    return () => provider?.destroy()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  // if (documentCopy === undefined) {
+  //   return (
+  //     <div>
+  //       <Cover.Skeleton />
+  //       <div className="mx-auto mt-10 md:max-w-3xl lg:max-w-4xl">
+  //         <div className="space-y-4 pl-8 pt-4">
+  //           <Skeleton className="h-14 w-[50%]" />
+  //           <Skeleton className="h-4 w-[80%]" />
+  //           <Skeleton className="h-4 w-[40%]" />
+  //           <Skeleton className="h-4 w-[60%]" />s
+  //         </div>
+  //       </div>
+  //     </div>
+  //   )
+  // }
 
   if (documentCopy === undefined) {
-    return (
-      <div>
-        <Cover.Skeleton />
-        <div className="mx-auto mt-10 md:max-w-3xl lg:max-w-4xl">
-          <div className="space-y-4 pl-8 pt-4">
-            <Skeleton className="h-14 w-[50%]" />
-            <Skeleton className="h-4 w-[80%]" />
-            <Skeleton className="h-4 w-[40%]" />
-            <Skeleton className="h-4 w-[60%]" />
-          </div>
-        </div>
-      </div>
-    )
-  }
-
-  if (documentCopy === null) {
     return <div>Not found</div>
   }
 

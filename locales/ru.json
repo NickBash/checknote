@@ -32,11 +32,33 @@
     "signinLink": "Войти"
   },
   "Navigation": {
-    "addPage": "Создать страницу"
+    "addPage": "Создать страницу",
+    "newPage": "Новая страница",
+    "search": "Поиск",
+    "settings": "Настройки",
+    "trash": "Корзина",
+    "delete": "Удалить"
   },
   "ModeToggle": {
     "light": "Светлая",
     "dark": "Темная",
     "system": "Системная"
+  },
+  "TrashBox": {
+    "filterPlaceholder": "Найти по названию страницы..."
+  },
+  "BannerDelete": {
+    "title": "Эта страница находится в Корзине",
+    "restorePageButton": "Восстановить страницу",
+    "deleteForever": "Удалить навсегда"
+  },
+  "startDocument": {
+    "title": "Добро пожаловать в Checknote",
+    "createNote": "Создать новую заметку"
+  },
+  "searchCommand": {
+    "placeholder": "Найти заметки...",
+    "title": "Документы",
+    "notFound": "Не найдено"
   }
 }

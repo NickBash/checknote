@@ -3,8 +3,9 @@
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import Link from 'next/link'
+import { memo } from 'react'
 
-export function LangToggle({ locale }: { locale: string }) {
+export const LangToggle = memo(function LangToggle({ locale }: { locale: string }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -26,4 +27,4 @@ export function LangToggle({ locale }: { locale: string }) {
       </DropdownMenuContent>
     </DropdownMenu>
   )
-}
+})

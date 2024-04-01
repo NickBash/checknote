@@ -1,17 +1,11 @@
 'use client'
 
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Skeleton } from '@/components/ui/skeleton'
 import { cn } from '@/lib/utils'
 import { useDocuments } from '@/stores'
-import { useUserStore } from '@/stores/use-user.store'
 import { ChevronDown, ChevronRight, MoreHorizontal, Plus, Trash, type LucideIcon } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 interface ItemProps {
   id?: string
@@ -40,8 +34,8 @@ export const Item = ({
   onExpand,
   expanded,
 }: ItemProps) => {
-  const user = useUserStore(state => state.user)
-  const updateDocument = useDocuments(state => state.requestUpdateDocument)
+  const t = useTranslations('Navigation')
+
   const createDocument = useDocuments(state => state.requestСreateDocument)
   const onArchiveDocuments = useDocuments(state => state.onArchiveDocuments)
 
@@ -49,11 +43,7 @@ export const Item = ({
     event.stopPropagation()
     if (!id) return
 
-    console.log('check')
-
     onArchiveDocuments(id)
-
-    // updateDocument(id, { isArchived: true })
   }
 
   const handleExpand = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -115,10 +105,10 @@ export const Item = ({
             <DropdownMenuContent className="w-60" align="start" side="right" forceMount>
               <DropdownMenuItem onClick={onArchive}>
                 <Trash className="mr-2 h-4 w-4" />
-                Delete
+                {t('delete')}
               </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <div className="p-2 text-xs text-muted-foreground">Last edited by: {user?.fullName}</div>
+              {/* <DropdownMenuSeparator /> */}
+              {/* <div className="p-2 text-xs text-muted-foreground">Last edited by: {user?.fullName}</div> */}
             </DropdownMenuContent>
           </DropdownMenu>
           <div

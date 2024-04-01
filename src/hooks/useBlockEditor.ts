@@ -7,7 +7,6 @@ import { Editor, useEditor } from '@tiptap/react'
 import * as Y from 'yjs'
 
 import { ExtensionKit } from '@/extensions/extension-kit'
-import { initialContent } from '@/lib/data/initialContent'
 import { useUserStore } from '@/stores/use-user.store'
 import { EditorUser } from '../components/BlockEditor/types'
 import { userColors, userNames } from '../lib/constants'
@@ -40,7 +39,7 @@ export const useBlockEditor = ({
       onCreate: ({ editor }) => {
         provider?.on('synced', () => {
           if (editor.isEmpty) {
-            editor.commands.setContent(initialContent)
+            //editor.commands.setContent(initialContent)
           }
         })
       },

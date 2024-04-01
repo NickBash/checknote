@@ -5,10 +5,13 @@ import { Spinner } from '@/components/spinner'
 import { Input } from '@/components/ui/input'
 import { useDocuments, type DocumentCopy } from '@/stores'
 import { Search, Trash, Undo } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { useParams, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
 export const TrashBox = () => {
+  const t = useTranslations('TrashBox')
+
   const router = useRouter()
   const params = useParams()
 
@@ -27,7 +30,6 @@ export const TrashBox = () => {
     event.stopPropagation()
 
     onRestoreDocuments(documentId)
-    //requestUpdateDocuments(documentId, { isArchived: false })
   }
 
   const onRemove = (documentId: string) => {
@@ -72,7 +74,7 @@ export const TrashBox = () => {
           value={search}
           onChange={e => setSearch(e.target.value)}
           className="h-7 bg-secondary px-2 focus-visible:ring-transparent"
-          placeholder="Filter by page title..."
+          placeholder={t('filterPlaceholder')}
         />
       </div>
       <div className="mt-2 px-1 pb-1">

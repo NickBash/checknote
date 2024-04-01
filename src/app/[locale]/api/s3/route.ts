@@ -39,8 +39,6 @@ export async function POST(request: NextRequest) {
     ContentDisposition: 'attachment',
   })
 
-  console.log(`${fileName}.${ext}`)
-
   try {
     await s3.send(command)
 
@@ -48,6 +46,7 @@ export async function POST(request: NextRequest) {
       {
         name: fileName ? `${fileName}.${ext}` : `${newName}.${ext}`,
         status: true,
+        url: `${Endpoint}/${Bucket}/`,
         originalName: file.name,
       },
       { status: 200 },

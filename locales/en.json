@@ -32,11 +32,33 @@
     "signinLink": "Sign in"
   },
   "Navigation": {
-    "addPage": "Add a page"
+    "addPage": "Add a page",
+    "newPage": "New page",
+    "search": "Search",
+    "settings": "Settings",
+    "trash": "Trash",
+    "delete": "Delete"
   },
   "ModeToggle": {
     "light": "Light",
     "dark": "Dark",
     "system": "System"
+  },
+  "TrashBox": {
+    "filterPlaceholder": "Filter by page title..."
+  },
+  "BannerDelete": {
+    "title": "This page is in the Trash.",
+    "restorePageButton": "Restore page",
+    "deleteForever": "Delete forever"
+  },
+  "startDocument": {
+    "title": "Welcome to Checknote",
+    "createNote": "Create a note"
+  },
+  "searchCommand": {
+    "placeholder": "Search notes...",
+    "title": "Documents",
+    "notFound": "No result found"
   }
 }

@@ -1,7 +1,7 @@
 'use client'
 
 import { LangToggle } from '@/components/lang-toggle'
-import { ModeToggle } from '@/components/mode-toggle'
+import ModeToggle from '@/components/mode-toggle'
 import { Logo } from '../../(marketing)/_components/logo'
 
 interface Root {

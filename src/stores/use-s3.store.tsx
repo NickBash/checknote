@@ -23,7 +23,7 @@ export const useS3 = create<S3Store>(set => ({
       console.error(e)
     }
   },
-  uploadFile: async (file, fileName) => {
+  uploadFile: async (file, fileName = undefined) => {
     const body = new FormData()
     body.append('file', file, file.name)
     if (fileName) {

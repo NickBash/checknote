@@ -1,22 +1,26 @@
+import { useS3 } from '@/stores/use-s3.store'
 import { DragEvent, useCallback, useEffect, useRef, useState } from 'react'
 import toast from 'react-hot-toast'
-import { API } from '@/lib/api'
 
 export const useUploader = ({ onUpload }: { onUpload: (url: string) => void }) => {
   const [loading, setLoading] = useState(false)
+  const uploadFileS3 = useS3(state => state.uploadFile)
 
-  const uploadFile = useCallback(async () => {
-    setLoading(true)
-    try {
-      const url = await API.uploadImage()
+  const uploadFile = useCallback(
+    async (file: File) => {
+      setLoading(true)
+      try {
+        const { url, name } = await uploadFileS3(file)
 
-      onUpload(url)
-    } catch (errPayload: any) {
-      const error = errPayload?.response?.data?.error || 'Something went wrong'
-      toast.error(error)
-    }
-    setLoading(false)
-  }, [onUpload])
+        onUpload(url + name)
+      } catch (errPayload: any) {
+        const error = errPayload?.response?.data?.error || 'Something went wrong'
+        toast.error(error)
+      }
+      setLoading(false)
+    },
+    [onUpload],
+  )
 
   return { loading, uploadFile }
 }

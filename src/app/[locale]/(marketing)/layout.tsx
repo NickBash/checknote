@@ -1,5 +1,6 @@
 'use client'
 
+import { memo } from 'react'
 import { Navbar } from './_components/navbar'
 
 interface Root {
@@ -16,4 +17,4 @@ const MarketingLayout = ({ children, params }: Root) => {
   )
 }
 
-export default MarketingLayout
+export default memo(MarketingLayout)

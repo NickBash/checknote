@@ -1,5 +1,6 @@
 'use client'
 
+import { SearchCommand } from '@/components/search-command'
 import { Spinner } from '@/components/spinner'
 import { useDocuments, type DocumentCopy } from '@/stores/use-documents.store'
 import { usePocketbaseStore } from '@/stores/use-pocketbase.store'
@@ -56,7 +57,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
     <div className="flex h-full dark:bg-[#1F1F1F]">
       <Navigation />
       <main className="h-full flex-1 overflow-y-auto">
-        {/* <SearchCommand /> */}
+        <SearchCommand />
         {children}
       </main>
     </div>

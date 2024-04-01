@@ -6,11 +6,12 @@ import { useEffect, useState } from 'react'
 import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from './ui/command'
 
 import { useDocuments } from '@/stores'
-import { useUserStore } from '@/stores/use-user.store'
 import { File } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 export const SearchCommand = () => {
-  const user = useUserStore(state => state.user)
+  const t = useTranslations('searchCommand')
+
   const router = useRouter()
   const listDocuments = useDocuments(state => state.listDocuments)
   const [isMounted, setIsMounted] = useState(false)
@@ -47,10 +48,10 @@ export const SearchCommand = () => {
 
   return (
     <CommandDialog open={isOpen} onOpenChange={onClose}>
-      <CommandInput placeholder={`Search ${user?.fullName}'s Checknote...`} />
+      <CommandInput placeholder={t('placeholder')} />
       <CommandList>
-        <CommandEmpty>No result found.</CommandEmpty>
-        <CommandGroup heading="Documents">
+        <CommandEmpty>{t('notFound')}</CommandEmpty>
+        <CommandGroup heading={t('title')}>
           {listDocuments?.map(document => (
             <CommandItem
               key={document.id}
