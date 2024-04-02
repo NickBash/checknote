@@ -32,11 +32,11 @@ export default function Document({ params }: DocumentIdPageProps) {
   const ydoc = useMemo(() => new Y.Doc(), [])
 
   useEffect(() => {
-    if (hasCollab) {
+    if (hasCollab && documentCopy) {
       setProvider(
         new HocuspocusProvider({
           url: 'ws://127.0.0.1:1234',
-          name: documentId,
+          name: documentCopy?.contentId as string,
           document: ydoc,
           forceSyncInterval: 200,
         }),
@@ -45,7 +45,7 @@ export default function Document({ params }: DocumentIdPageProps) {
 
     return () => provider?.destroy()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [documentCopy])
 
   // if (documentCopy === undefined) {
   //   return (

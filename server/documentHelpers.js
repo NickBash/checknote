@@ -10,18 +10,19 @@ const onStoreDocument = async data => {
   const state = Y.encodeStateAsUpdate(document)
   const dbDocument = fromUint8Array(state)
 
-  await pb?.collection('documents').update(documentName, { content: dbDocument })
+  await pb?.collection('documentsContent').update(documentName, { content: dbDocument })
 }
 const onLoadDocument = async data => {
   const { documentName, document } = data
 
   if (!documentName) return Promise.resolve()
 
-  const documentFromDB = await pb?.collection('documents').getOne(documentName)
+  const documentFromDB = await pb?.collection('documentsContent').getOne(documentName)
 
   if (documentFromDB) {
     const dbDocument = toUint8Array(documentFromDB.content || '')
-    if (dbDocument) Y.applyUpdate(document, dbDocument)
+
+    if (dbDocument && dbDocument?.length > 0) Y.applyUpdate(document, dbDocument)
     return document
   }
   return document

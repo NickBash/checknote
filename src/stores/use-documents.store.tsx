@@ -19,6 +19,7 @@ export type DocumentCopy = {
   updated: string
   userId: string
   coverImage: string
+  contentId: string | null
 }
 
 type DocumentsStore = {
@@ -50,6 +51,7 @@ const documentTemplate: DocumentTemplate = {
   title: 'Untitled',
   userId: '',
   coverImage: '',
+  contentId: null,
 }
 
 export const useDocuments = create<DocumentsStore>()(
@@ -102,7 +104,8 @@ export const useDocuments = create<DocumentsStore>()(
           const doc: DocumentTemplate = { ...documentTemplate, ...data, userId: user.id }
 
           try {
-            await pb.collection('documents').create(doc)
+            const { id } = await pb.collection('documentsContent').create({})
+            await pb.collection('documents').create({ ...doc, contentId: id })
 
             toast.success('Документ создан')
           } catch (e) {
