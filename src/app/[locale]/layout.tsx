@@ -39,7 +39,6 @@ export default function RootLayout({ children, params: { locale } }: Root) {
     <html className="h-full font-sans" lang={locale} suppressHydrationWarning>
       <body className="flex h-full flex-col">
         <PocketProvider />
-
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -47,13 +46,14 @@ export default function RootLayout({ children, params: { locale } }: Root) {
           disableTransitionOnChange
           storageKey="checknote-theme-2"
         >
-          <Toaster position="bottom-center" />
-          <ModalProvider />
-          <main className="h-full">
-            <NextIntlClientProvider locale={locale} messages={messages}>
+          <NextIntlClientProvider locale={locale} messages={messages}>
+            <main className="h-full">
+              <Toaster position="bottom-center" />
+              <ModalProvider />
+
               {children}
-            </NextIntlClientProvider>
-          </main>
+            </main>
+          </NextIntlClientProvider>
         </ThemeProvider>
       </body>
     </html>

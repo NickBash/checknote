@@ -60,5 +60,15 @@
     "placeholder": "Search notes...",
     "title": "Documents",
     "notFound": "No result found"
+  },
+  "ToolbarEditor": {
+    "addIcon": "Add icon",
+    "addCover": "Add cover"
+  },
+  "Cover": {
+    "changeCover": "Change cover",
+    "remove": "Remove",
+    "coverImage": "Cover Image",
+    "clickOrDrag": "Click or drag file to this to upload"
   }
 }

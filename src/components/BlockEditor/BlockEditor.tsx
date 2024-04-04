@@ -1,7 +1,7 @@
 'use client'
 
 import { EditorContent, PureEditorContent } from '@tiptap/react'
-import { useRef } from 'react'
+import { memo, useRef } from 'react'
 
 import { LinkMenu } from '@/components/menus'
 
@@ -16,7 +16,7 @@ import { ContentItemMenu } from '../menus/ContentItemMenu'
 import { TextMenu } from '../menus/TextMenu'
 import { TiptapProps } from './types'
 
-export const BlockEditor = ({ ydoc, provider }: TiptapProps) => {
+const BlockEditor = ({ ydoc, provider }: TiptapProps) => {
   const menuContainerRef = useRef(null)
   const editorRef = useRef<PureEditorContent | null>(null)
 
@@ -31,14 +31,6 @@ export const BlockEditor = ({ ydoc, provider }: TiptapProps) => {
   return (
     <div className="flex h-full" ref={menuContainerRef}>
       <div className="relative flex h-full flex-1 flex-col">
-        {/* <EditorHeader
-          characters={characterCount.characters()}
-          collabState={collabState}
-          users={displayedUsers}
-          words={characterCount.words()}
-          isSidebarOpen={leftSidebar.isOpen}
-          toggleSidebar={leftSidebar.toggle}
-        /> */}
         <EditorContent editor={editor} ref={editorRef} className="flex-1 overflow-y-auto" />
         <ContentItemMenu editor={editor} />
         <LinkMenu editor={editor} appendTo={menuContainerRef} />
@@ -52,4 +44,4 @@ export const BlockEditor = ({ ydoc, provider }: TiptapProps) => {
   )
 }
 
-export default BlockEditor
+export default memo(BlockEditor)

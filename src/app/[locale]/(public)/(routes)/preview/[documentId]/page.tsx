@@ -1,11 +1,14 @@
 'use client'
 
+import BlockEditorPreview from '@/components/BlockEditor/BlockEditorPreview'
 import { Cover } from '@/components/cover'
+import { Spinner } from '@/components/spinner'
 import { Toolbar } from '@/components/toolbar'
-import { Skeleton } from '@/components/ui/skeleton'
-import { useDocuments, type DocumentCopy } from '@/stores'
-import dynamic from 'next/dynamic'
+import { usePublishedDocument } from '@/stores'
+import { HocuspocusProvider, type TiptapCollabProvider } from '@hocuspocus/provider'
+import { useSearchParams } from 'next/navigation'
 import { useEffect, useMemo, useState } from 'react'
+import * as Y from 'yjs'
 
 interface DocumentIdPageProps {
   params: {
@@ -14,53 +17,63 @@ interface DocumentIdPageProps {
 }
 
 const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
-  const listDocuments = useDocuments(state => state.listDocuments)
+  const [provider, setProvider] = useState<TiptapCollabProvider | HocuspocusProvider | null>(null)
+  const searchParams = useSearchParams()
 
-  const Editor = useMemo(() => dynamic(() => import('@/components/editor'), { ssr: false }), [])
-
-  const [documentCopy, setDocumentCopy] = useState<DocumentCopy>()
+  const publishedDocument = usePublishedDocument(state => state.document)
+  const requestGetOneDocument = usePublishedDocument(state => state.requestGetOneDocument)
+  const isLoadingPublishedDocument = usePublishedDocument(state => state.isLoading)
 
   useEffect(() => {
-    const findDoc = listDocuments.find(doc => doc.id === params.documentId)
+    requestGetOneDocument(params.documentId)
 
-    if (findDoc) {
-      setDocumentCopy(findDoc)
-    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const onChange = (content: string) => {
-    // update({
-    //   id: params.documentId,
-    //   content,
-    // });
-  }
+  const hasCollab = parseInt(searchParams.get('noCollab') as string) !== 1
 
-  if (documentCopy === undefined) {
+  const ydoc = useMemo(() => new Y.Doc(), [])
+
+  useEffect(() => {
+    if (hasCollab && publishedDocument) {
+      setProvider(
+        new HocuspocusProvider({
+          url: process.env.NEXT_PUBLIC_HOCUSPOCUS_URL!,
+          name: publishedDocument?.contentId as string,
+          document: ydoc,
+          forceSyncInterval: 200,
+        }),
+      )
+    }
+
+    return () => provider?.destroy()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [publishedDocument])
+
+  if (isLoadingPublishedDocument) {
     return (
-      <div>
-        <Cover.Skeleton />
-        <div className="mx-auto mt-10 md:max-w-3xl lg:max-w-4xl">
-          <div className="space-y-4 pl-8 pt-4">
-            <Skeleton className="h-14 w-[50%]" />
-            <Skeleton className="h-4 w-[80%]" />
-            <Skeleton className="h-4 w-[40%]" />
-            <Skeleton className="h-4 w-[60%]" />
-          </div>
-        </div>
+      <div className="flex h-full items-center justify-center">
+        <Spinner size="lg" />
       </div>
     )
   }
 
-  if (document === null) {
-    return <div>Not found</div>
+  if (publishedDocument === undefined) {
+    return (
+      <div className="flex h-full items-center justify-center">
+        <p>Not found</p>
+      </div>
+    )
   }
+
+  if (hasCollab && !provider) return
 
   return (
     <div className="pb-40">
-      <Cover preview url={documentCopy.coverImage} documentId={params.documentId} />
-      <div className="lg:md-max-w-4xl mx-auto md:max-w-3xl">
-        <Toolbar preview initialData={documentCopy} documentId={params.documentId} />
-        <Editor editable={false} onChange={onChange} initialContent={documentCopy.content} />
+      <Cover url={publishedDocument?.coverImage} documentId={params.documentId} preview />
+      <div className="mx-auto">
+        <Toolbar initialData={publishedDocument} documentId={params.documentId} preview />
+        <BlockEditorPreview hasCollab={hasCollab} ydoc={ydoc} provider={provider} />
       </div>
     </div>
   )

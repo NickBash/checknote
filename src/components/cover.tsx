@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils'
 import { useDocuments } from '@/stores'
 import { useS3 } from '@/stores/use-s3.store'
 import { ImageIcon, X } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import { Button } from './ui/button'
@@ -17,6 +18,8 @@ interface CoverImageProps {
 }
 
 export const Cover = ({ preview, url, documentId }: CoverImageProps) => {
+  const t = useTranslations('Cover')
+
   const [urlImage, setUrlImage] = useState<string | null>(null)
 
   const getUrlS3 = useS3(state => state.getUrl)
@@ -57,11 +60,11 @@ export const Cover = ({ preview, url, documentId }: CoverImageProps) => {
         <div className="absolute bottom-5 right-5 flex items-center gap-x-2 opacity-0 group-hover:opacity-100">
           <Button onClick={coverImage.onOpen} className="text-xs text-muted-foreground" variant="outline" size="sm">
             <ImageIcon className="mr-2 h-4 w-4" />
-            Change cover
+            {t('changeCover')}
           </Button>
           <Button onClick={onRemove} className="text-xs text-muted-foreground" variant="outline" size="sm">
             <X className="mr-2 h-4 w-4" />
-            Remove
+            {t('remove')}
           </Button>
         </div>
       )}

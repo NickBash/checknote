@@ -14,6 +14,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
   const addDocument = useDocuments(state => state.addDocument)
   const updateDocument = useDocuments(state => state.updateDocument)
   const deleteDocument = useDocuments(state => state.deleteDocument)
+  const isLoadingDocuments = useDocuments(state => state.isLoading)
 
   const getAllDocuments = useDocuments(state => state.requestGetDocuments)
 
@@ -22,7 +23,6 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
       getAllDocuments()
 
       pb?.collection('documents').subscribe('*', e => {
-        console.log(e)
         if (e?.action === 'create') {
           addDocument(e?.record as DocumentCopy)
         }
@@ -41,7 +41,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userStore.user, userStore.isLoadingUser])
 
-  if (userStore.isLoadingUser) {
+  if (userStore.isLoadingUser || isLoadingDocuments) {
     return (
       <div className="flex h-full items-center justify-center">
         <Spinner size="lg" />
