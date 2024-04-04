@@ -3,12 +3,15 @@
 import { useCoverImage } from '@/hooks/use-cover-image'
 import { useDocuments } from '@/stores'
 import { useS3 } from '@/stores/use-s3.store'
+import { useTranslations } from 'next-intl'
 import { useParams } from 'next/navigation'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { SingleImageDropzone } from '../single-image-dropzone'
 import { Dialog, DialogContent, DialogHeader } from '../ui/dialog'
 
 export const CoverImageModal = () => {
+  const t = useTranslations('Cover')
+
   const { documentId } = useParams()
 
   const requestUpdateDocument = useDocuments(state => state.requestUpdateDocument)
@@ -19,6 +22,16 @@ export const CoverImageModal = () => {
 
   const uploadFile = useS3(state => state.uploadFile)
 
+  const [isMounted, setIsMounted] = useState(false)
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
+
+  if (!isMounted) {
+    return null
+  }
+
   const onClose = () => {
     setFile(undefined)
     setIsSubmitting(false)
@@ -27,6 +40,7 @@ export const CoverImageModal = () => {
 
   const onChange = async (file?: File) => {
     if (file) {
+      setIsSubmitting(true)
       const res = await uploadFile(file, documentId as string)
 
       if (res.status) {
@@ -41,7 +55,7 @@ export const CoverImageModal = () => {
     <Dialog open={coverImage.isOpen} onOpenChange={coverImage.onClose}>
       <DialogContent>
         <DialogHeader>
-          <h2 className="text-center text-lg font-semibold">Cover Image</h2>
+          <h2 className="text-center text-lg font-semibold">{t('coverImage')}</h2>
         </DialogHeader>
         <SingleImageDropzone className="w-full outline-none" disabled={isSubmitting} value={file} onChange={onChange} />
       </DialogContent>

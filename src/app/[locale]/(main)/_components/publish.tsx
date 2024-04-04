@@ -2,30 +2,32 @@
 
 import { Button } from '@/components/ui/button'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import type { Document } from '@/hooks/use-documents'
+
 import { useOrigin } from '@/hooks/use-origin'
+import { useDocuments, type DocumentCopy } from '@/stores'
 import { Check, Copy, Globe } from 'lucide-react'
 import { useState } from 'react'
 
 interface IPublishProps {
-  initialData: Document
+  initialData: DocumentCopy
 }
 
 export const Publish = ({ initialData }: IPublishProps) => {
   const origin = useOrigin()
-  // const update = useMutation(api.documents.update);
+  const requestUpdateDocument = useDocuments(state => state.requestUpdateDocument)
 
   const [copied, setCopied] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const url = `${origin}/preview/${initialData.id}`
 
-  const onPublish = () => {
-    //setIsSubmitting(true);
-    // const promise = update({
-    //   id: initialData._id,
-    //   isPublished: true,
-    // }).finally(() => setIsSubmitting(false));
+  const onPublish = async () => {
+    setIsSubmitting(true)
+
+    await requestUpdateDocument(initialData.id, { isPublished: true })
+
+    setIsSubmitting(false)
+
     // toast.promise(promise, {
     //   loading: 'Publishing...',
     //   success: 'Note published!',
@@ -33,12 +35,13 @@ export const Publish = ({ initialData }: IPublishProps) => {
     // });
   }
 
-  const onUnpublish = () => {
-    // setIsSubmitting(true);
-    // const promise = update({
-    //   id: initialData._id,
-    //   isPublished: false,
-    // }).finally(() => setIsSubmitting(false));
+  const onUnpublish = async () => {
+    setIsSubmitting(true)
+
+    await requestUpdateDocument(initialData.id, { isPublished: false })
+
+    setIsSubmitting(false)
+
     // toast.promise(promise, {
     //   loading: 'Unpublishing...',
     //   success: 'Note unpublished!',
@@ -63,7 +66,7 @@ export const Publish = ({ initialData }: IPublishProps) => {
           {initialData.isPublished && <Globe className="ml-2 h-4 w-4 text-sky-500" />}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-72" align="end" alignOffset={8} forceMount>
+      <PopoverContent className="w-72" align="end" alignOffset={8} forceMount asChild>
         {initialData.isPublished ? (
           <div className="space-y-4">
             <div className="flex items-center gap-x-2">

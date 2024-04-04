@@ -6,7 +6,7 @@ import { useSearchParams } from 'next/navigation'
 import { useEffect, useMemo, useState } from 'react'
 import * as Y from 'yjs'
 
-import { BlockEditor } from '@/components/BlockEditor'
+import BlockEditor from '@/components/BlockEditor/BlockEditor'
 import { Cover } from '@/components/cover'
 import { Toolbar } from '@/components/toolbar'
 import { useDocuments, type DocumentCopy } from '@/stores'
@@ -19,15 +19,28 @@ interface DocumentIdPageProps {
 
 export default function Document({ params }: DocumentIdPageProps) {
   const [provider, setProvider] = useState<TiptapCollabProvider | HocuspocusProvider | null>(null)
-  const [collabToken, setCollabToken] = useState<string | null>(null)
   const searchParams = useSearchParams()
   const listDocuments = useDocuments(state => state.listDocuments)
 
-  const documentCopy: DocumentCopy | undefined = listDocuments?.find(doc => doc.id === params.documentId)
+  const documentCopy: DocumentCopy | undefined = useMemo(
+    () => listDocuments?.find(doc => doc.id === params.documentId),
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [listDocuments],
+  )
+
+  const documentCopyEditor: DocumentCopy | undefined = useMemo(
+    () => listDocuments?.find(doc => doc.id === params.documentId),
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [params.documentId],
+  )
+
+  useEffect(() => {
+    console.log(documentCopyEditor)
+  }, [documentCopyEditor])
 
   const hasCollab = parseInt(searchParams.get('noCollab') as string) !== 1
-
-  const documentId = params.documentId as string
 
   const ydoc = useMemo(() => new Y.Doc(), [])
 
@@ -35,7 +48,7 @@ export default function Document({ params }: DocumentIdPageProps) {
     if (hasCollab && documentCopy) {
       setProvider(
         new HocuspocusProvider({
-          url: 'ws://127.0.0.1:1234',
+          url: process.env.NEXT_PUBLIC_HOCUSPOCUS_URL!,
           name: documentCopy?.contentId as string,
           document: ydoc,
           forceSyncInterval: 200,
@@ -45,26 +58,14 @@ export default function Document({ params }: DocumentIdPageProps) {
 
     return () => provider?.destroy()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [documentCopy])
+  }, [documentCopyEditor])
 
-  // if (documentCopy === undefined) {
-  //   return (
-  //     <div>
-  //       <Cover.Skeleton />
-  //       <div className="mx-auto mt-10 md:max-w-3xl lg:max-w-4xl">
-  //         <div className="space-y-4 pl-8 pt-4">
-  //           <Skeleton className="h-14 w-[50%]" />
-  //           <Skeleton className="h-4 w-[80%]" />
-  //           <Skeleton className="h-4 w-[40%]" />
-  //           <Skeleton className="h-4 w-[60%]" />s
-  //         </div>
-  //       </div>
-  //     </div>
-  //   )
-  // }
-
-  if (documentCopy === undefined) {
-    return <div>Not found</div>
+  if (documentCopyEditor === undefined || documentCopy === undefined) {
+    return (
+      <div className="flex h-full items-center justify-center">
+        <p>Not found</p>
+      </div>
+    )
   }
 
   if (hasCollab && !provider) return

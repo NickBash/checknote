@@ -22,8 +22,6 @@ export const Menu = ({ documentId }: MenuProps) => {
 
   const user = useUserStore(state => state.user)
 
-  // const archive = useMutation(api.documents.archive)
-
   const onArchive = () => {
     // const promise = archive({ id: documentId })
     // toast.promise(promise, {
