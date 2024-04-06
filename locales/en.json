@@ -70,5 +70,21 @@
     "remove": "Remove",
     "coverImage": "Cover Image",
     "clickOrDrag": "Click or drag file to this to upload"
+  },
+  "SettingsModal": {
+    "title": "My settings",
+    "theme": "Theme",
+    "language": "Language"
+  },
+  "Publish": {
+    "publish": "Publish",
+    "unpublish": "Unpublish",
+    "publishButton": "Publish",
+    "publishThisNote": "Publish this note",
+    "share": "Share your work with others.",
+    "liveNote": "This note is live on web"
+  },
+  "Menu": {
+    "delete": "Delete"
   }
 }

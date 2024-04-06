@@ -40,9 +40,9 @@ type DocumentsStore = {
   onRemoveDocuments: (recordId: string) => void
 }
 
-type DocumentTemplate = Omit<DocumentCopy, 'collectionId' | 'collectionName' | 'id' | 'updated' | 'created'>
+export type DocumentTemplate = Omit<DocumentCopy, 'collectionId' | 'collectionName' | 'id' | 'updated' | 'created'>
 
-const documentTemplate: DocumentTemplate = {
+export const documentTemplate: DocumentTemplate = {
   content: null,
   icon: '',
   isArchived: false,
@@ -168,7 +168,7 @@ export const useDocuments = create<DocumentsStore>()(
 
           if (docs.length) {
             docs.forEach(doc => {
-              get().requestUpdateDocument(doc.id, { isArchived: true })
+              get().requestUpdateDocument(doc.id, { isArchived: true, isPublished: false })
             })
           }
         }

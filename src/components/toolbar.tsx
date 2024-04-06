@@ -14,6 +14,7 @@ interface ToolbarProps {
   initialData: DocumentCopy | null
   preview?: boolean
   documentId: string
+  sharedView?: boolean
 }
 
 export const Toolbar = ({ initialData, preview, documentId }: ToolbarProps) => {

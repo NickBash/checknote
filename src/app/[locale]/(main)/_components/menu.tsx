@@ -1,16 +1,11 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Skeleton } from '@/components/ui/skeleton'
-import { useUserStore } from '@/stores/use-user.store'
+import { useDocuments } from '@/stores'
 import { MoreHorizontal, Trash } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { useRouter } from 'next/navigation'
 
 interface MenuProps {
@@ -18,18 +13,17 @@ interface MenuProps {
 }
 
 export const Menu = ({ documentId }: MenuProps) => {
+  const t = useTranslations('Menu')
+
   const router = useRouter()
 
-  const user = useUserStore(state => state.user)
+  const onArchiveDocuments = useDocuments(state => state.onArchiveDocuments)
 
-  const onArchive = () => {
-    // const promise = archive({ id: documentId })
-    // toast.promise(promise, {
-    //   loading: 'Moving to trash...',
-    //   success: 'Note moved to trash!',
-    //   error: 'Failed to archive note.',
-    // })
-    // router.push('/documents')
+  const onArchive = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    event.stopPropagation()
+    if (!documentId) return
+
+    onArchiveDocuments(documentId)
   }
 
   return (
@@ -42,11 +36,8 @@ export const Menu = ({ documentId }: MenuProps) => {
       <DropdownMenuContent className="w-60" align="end" alignOffset={8} forceMount>
         <DropdownMenuItem onClick={onArchive}>
           <Trash className="mr-2 h-4 w-4" />
-          Delete
+          {t('delete')}
         </DropdownMenuItem>
-        <DropdownMenuSeparator />
-
-        <div className="p-2 text-xs text-muted-foreground">Last edited by: {user?.fullName}</div>
       </DropdownMenuContent>
     </DropdownMenu>
   )

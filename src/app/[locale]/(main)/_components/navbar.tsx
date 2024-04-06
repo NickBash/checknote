@@ -34,16 +34,18 @@ export const Navbar = ({ isCollapsed, onResetWidth }: NavbarProps) => {
 
   return (
     <>
-      <nav className="flex w-full items-center gap-x-4 border-b bg-background px-3 py-2 shadow-sm dark:bg-[#1F1F1F]">
-        {isCollapsed && <MenuIcon role="button" onClick={onResetWidth} className="h-6 w-6 text-muted-foreground" />}
-        <div className="flex w-full items-center justify-between">
-          <Title initialData={documentCopy} />
-          <div className="flex items-center gap-x-2">
-            <Publish initialData={documentCopy} />
-            <Menu documentId={documentCopy.id} />
+      {!documentCopy.isArchived && (
+        <nav className="flex w-full items-center gap-x-4 border-b bg-background px-3 py-2 shadow-sm dark:bg-[#1F1F1F]">
+          {isCollapsed && <MenuIcon role="button" onClick={onResetWidth} className="h-6 w-6 text-muted-foreground" />}
+          <div className="flex w-full items-center justify-between">
+            <Title initialData={documentCopy} />
+            <div className="flex items-center gap-x-2">
+              <Publish initialData={documentCopy} />
+              <Menu documentId={documentCopy.id} />
+            </div>
           </div>
-        </div>
-      </nav>
+        </nav>
+      )}
       {documentCopy.isArchived && <Banner documentId={documentCopy.id} />}
     </>
   )
