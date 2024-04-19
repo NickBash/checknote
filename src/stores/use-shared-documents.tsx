@@ -14,6 +14,9 @@ type SharedDocumentsStore = {
   listDocuments: DocumentCopy[]
   requestGetDocuments: () => Promise<unknown>
   requestСreateDocument: (data?: Partial<DocumentTemplate>) => Promise<unknown>
+  addDocument: (value: DocumentCopy) => void
+  updateDocument: (value: DocumentCopy) => void
+  deleteDocument: (id: string) => void
 }
 
 export const useSharedDocuments = create<SharedDocumentsStore>()(
@@ -34,8 +37,6 @@ export const useSharedDocuments = create<SharedDocumentsStore>()(
             const records = await pb.collection('documents').getFullList({
               filter: `editors ~ "${user.id}"`,
             })
-
-            console.log(records)
 
             set({ listDocuments: records as DocumentCopy[], isLoading: false })
           } catch (e) {
@@ -61,6 +62,24 @@ export const useSharedDocuments = create<SharedDocumentsStore>()(
           }
         }
       },
+      addDocument: value =>
+        set(state => {
+          state.listDocuments.push(value)
+        }),
+      updateDocument: value =>
+        set(state => {
+          const index = state.listDocuments.findIndex(doc => doc.id === value.id)
+
+          if (index > -1) {
+            state.listDocuments[index] = value
+          } else {
+            state.listDocuments.push(value)
+          }
+        }),
+      deleteDocument: id =>
+        set(state => {
+          state.listDocuments = state.listDocuments.filter(doc => doc.id !== id)
+        }),
     })),
   ),
 )

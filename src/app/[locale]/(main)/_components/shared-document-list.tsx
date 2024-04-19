@@ -1,22 +1,28 @@
 'use client'
 
 import { cn } from '@/lib/utils'
+import { usePocketbaseStore } from '@/stores/use-pocketbase.store'
 import { useSharedDocuments } from '@/stores/use-shared-documents'
 import { FileIcon } from 'lucide-react'
 import { useParams, useRouter } from 'next/navigation'
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { SharedItem } from './shared-item'
 
 interface IDocumentListProps {
   level?: number
   parentDocumentId?: string
   className?: string
+  userId?: string
 }
 
-export const SharedDocumentList = ({ level = 0, parentDocumentId, className }: IDocumentListProps) => {
+export const SharedDocumentList = ({ level = 0, parentDocumentId, className, userId }: IDocumentListProps) => {
   const params = useParams()
   const router = useRouter()
   const [expanded, setExpanded] = useState<Record<string, boolean>>({})
+
+  const pb = usePocketbaseStore(state => state.pocketbaseClient)
+
+  const deleteSharedDocument = useSharedDocuments(state => state.deleteDocument)
 
   const listDocuments = useSharedDocuments(state => state.listDocuments)
   const displayDocuments = useMemo(
@@ -47,24 +53,9 @@ export const SharedDocumentList = ({ level = 0, parentDocumentId, className }: I
     }))
   }
 
-  useEffect(() => {
-    console.log('sdsdasd')
-  }, [])
-
   const onRedirect = (documentId: string) => {
     router.push(`/shared/${documentId}`)
   }
-
-  const requestGetSharedDocuments = useSharedDocuments(state => state.requestGetDocuments)
-
-  useEffect(() => {
-    //requestGetSharedDocuments()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  useEffect(() => {
-    console.log(displayDocuments)
-  }, [displayDocuments])
 
   if (!listDocuments) {
     return (
@@ -105,8 +96,13 @@ export const SharedDocumentList = ({ level = 0, parentDocumentId, className }: I
             level={level}
             onExpand={() => onExpand(document.id)}
             expanded={expanded[document.id]}
+            pb={pb}
+            deleteSharedDocument={deleteSharedDocument}
+            userId={userId as string}
           />
-          {expanded[document.id] && <SharedDocumentList parentDocumentId={document.id} level={level + 1} />}
+          {expanded[document.id] && (
+            <SharedDocumentList userId={userId} parentDocumentId={document.id} level={level + 1} />
+          )}
         </div>
       ))}
     </div>

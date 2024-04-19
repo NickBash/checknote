@@ -14,15 +14,16 @@ interface ToolbarProps {
   initialData: DocumentCopy | null
   preview?: boolean
   documentId: string
-  sharedView?: boolean
+  sharedMode?: boolean
 }
 
-export const Toolbar = ({ initialData, preview, documentId }: ToolbarProps) => {
+export const Toolbar = ({ initialData, preview, documentId, sharedMode }: ToolbarProps) => {
   const t = useTranslations('ToolbarEditor')
 
   const inputRef = useRef<ElementRef<'textarea'>>(null)
   const [isEditing, setIsEditing] = useState(false)
   const [value, setValue] = useState(initialData?.title)
+
   const requestUpdateDocument = useDocuments(state => state.requestUpdateDocument)
 
   const debouncedInput = useDebounce(value, 700)
@@ -37,7 +38,8 @@ export const Toolbar = ({ initialData, preview, documentId }: ToolbarProps) => {
       return
     }
 
-    requestUpdateDocument(documentId as string, { title: value || 'Untitled' })
+    requestUpdateDocument(documentId as string, { title: value || 'Untitled' }, sharedMode)
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedInput])
 
@@ -65,11 +67,11 @@ export const Toolbar = ({ initialData, preview, documentId }: ToolbarProps) => {
   }
 
   const onIconSelect = (icon: string) => {
-    requestUpdateDocument(documentId as string, { icon })
+    requestUpdateDocument(documentId as string, { icon }, sharedMode)
   }
 
   const onRemoveIcon = () => {
-    requestUpdateDocument(documentId as string, { icon: '' })
+    requestUpdateDocument(documentId as string, { icon: '' }, sharedMode)
   }
 
   return (
@@ -100,7 +102,12 @@ export const Toolbar = ({ initialData, preview, documentId }: ToolbarProps) => {
           </IconPicker>
         )}
         {!initialData?.coverImage && !preview && (
-          <Button onClick={coverImage.onOpen} className="text-xs text-muted-foreground" variant="outline" size="sm">
+          <Button
+            onClick={() => coverImage.onOpen(sharedMode)}
+            className="text-xs text-muted-foreground"
+            variant="outline"
+            size="sm"
+          >
             <ImageIcon className="mr-2 h-4 w-4" />
             {t('addCover')}
           </Button>

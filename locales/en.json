@@ -85,6 +85,16 @@
     "liveNote": "This note is live on web"
   },
   "Menu": {
-    "delete": "Delete"
+    "delete": "Delete",
+    "sharedPerson": "Participant management"
+  },
+  "EditorsModal": {
+    "title": "Select users to co-edit",
+    "label": "Enter user email",
+    "label2": "Added users",
+    "noUsersFound": "No users found",
+    "foundYourRequest": "Found according to your request",
+    "add": "Add",
+    "remove": "Remove"
   }
 }

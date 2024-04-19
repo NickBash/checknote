@@ -3,7 +3,8 @@ import { create } from 'zustand'
 type CoverImageStore = {
   url?: string | null
   isOpen: boolean
-  onOpen: () => void
+  sharedMode: boolean
+  onOpen: (sharedMode?: boolean) => void
   onClose: () => void
   onReplace: (url: string) => void
   setUrlImage: (url: string | null) => void
@@ -13,8 +14,9 @@ type CoverImageStore = {
 export const useCoverImage = create<CoverImageStore>(set => ({
   url: null,
   isOpen: false,
-  onOpen: () => set({ isOpen: true, url: undefined }),
-  onClose: () => set({ isOpen: false, url: undefined }),
+  sharedMode: false,
+  onOpen: (sharedMode = false) => set({ isOpen: true, url: undefined, sharedMode }),
+  onClose: () => set({ isOpen: false, url: undefined, sharedMode: false }),
   onReplace: (url: string) => set({ isOpen: true, url }),
   setUrlImage: (url: string | null) => set({ url }),
   requestGetImage: async (fileName: string) => {

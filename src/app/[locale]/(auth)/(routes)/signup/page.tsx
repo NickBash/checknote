@@ -93,7 +93,7 @@ const SignUp = () => {
                 <Input
                   type="password"
                   name="password"
-                  id="password"
+                  id="password_repeat"
                   className="dark:bg-neutral-900"
                   placeholder="••••••••"
                   onChange={e => setRepeatPass(e.target.value)}

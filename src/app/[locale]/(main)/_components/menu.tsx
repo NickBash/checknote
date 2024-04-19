@@ -3,27 +3,26 @@
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Skeleton } from '@/components/ui/skeleton'
-import { useDocuments } from '@/stores'
+import { useDocuments, useEditorsModal, type DocumentCopy } from '@/stores'
+import { PersonIcon } from '@radix-ui/react-icons'
 import { MoreHorizontal, Trash } from 'lucide-react'
 import { useTranslations } from 'next-intl'
-import { useRouter } from 'next/navigation'
 
 interface MenuProps {
-  documentId: string
+  initialData: DocumentCopy
 }
 
-export const Menu = ({ documentId }: MenuProps) => {
+export const Menu = ({ initialData }: MenuProps) => {
   const t = useTranslations('Menu')
 
-  const router = useRouter()
-
   const onArchiveDocuments = useDocuments(state => state.onArchiveDocuments)
+  const onOpenEditors = useEditorsModal(state => state.onOpen)
 
   const onArchive = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     event.stopPropagation()
-    if (!documentId) return
+    if (!initialData.id) return
 
-    onArchiveDocuments(documentId)
+    onArchiveDocuments(initialData.id)
   }
 
   return (
@@ -34,6 +33,10 @@ export const Menu = ({ documentId }: MenuProps) => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-60" align="end" alignOffset={8} forceMount>
+        <DropdownMenuItem onClick={() => onOpenEditors(initialData)}>
+          <PersonIcon className="mr-2 h-4 w-4" />
+          {t('sharedPerson')}
+        </DropdownMenuItem>
         <DropdownMenuItem onClick={onArchive}>
           <Trash className="mr-2 h-4 w-4" />
           {t('delete')}

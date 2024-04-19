@@ -4,6 +4,18 @@ import { usePocketbaseStore } from './use-pocketbase.store'
 
 const FIVE_MINUTE_IN_MS = 300000 as const
 
+export interface UserDB {
+  email: string
+  id: string
+  name: string
+  updated: string
+  username: string
+  avatar: string
+  created: string
+  emailVisibility: boolean
+  verified: boolean
+}
+
 type ResLogin = {
   record: Record<string, any>
   token: string
@@ -22,6 +34,7 @@ type UserStore = {
   login: (email: string, password: string) => void
   logout: () => void
   refreshSession: () => void
+  findUser: (value: string) => any
 }
 
 export const useUserStore = create<UserStore>((set, get) => ({
@@ -62,7 +75,7 @@ export const useUserStore = create<UserStore>((set, get) => ({
   register: async (email, password) => {
     const pb = usePocketbaseStore.getState().pocketbaseClient
 
-    return await pb?.collection('users').create({ email, password, passwordConfirm: password })
+    return await pb?.collection('users').create({ email, password, passwordConfirm: password, emailVisibility: true })
   },
   login: async (email: string, password: string) => {
     const pb = usePocketbaseStore.getState().pocketbaseClient
@@ -99,6 +112,18 @@ export const useUserStore = create<UserStore>((set, get) => ({
     const expirationWithBuffer = (decoded.exp + FIVE_MINUTE_IN_MS) / 1000
     if (tokenExpiration < expirationWithBuffer) {
       await pb.collection('users').authRefresh()
+    }
+  },
+  findUser: async value => {
+    const pb = usePocketbaseStore.getState().pocketbaseClient
+    const user = get().user
+
+    if (pb && user) {
+      const records = await pb.collection('users').getFullList({ filter: `email ~ "${value}"` })
+
+      return records
+    } else {
+      return null
     }
   },
 }))

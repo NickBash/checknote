@@ -2,7 +2,9 @@
 
 import { useSettings } from '@/hooks/use-settings'
 import { useTranslations } from 'next-intl'
-import { Dialog } from '../ui/dialog'
+import { LangToggle } from '../lang-toggle'
+import ModeToggle from '../mode-toggle'
+import { Dialog, DialogContent, DialogHeader } from '../ui/dialog'
 
 export const SettingsModal = ({ locale }: { locale: string }) => {
   const t = useTranslations('SettingsModal')
@@ -12,7 +14,7 @@ export const SettingsModal = ({ locale }: { locale: string }) => {
 
   return (
     <Dialog open={isOpenModal} onOpenChange={onCloseModal}>
-      {/* <DialogContent>
+      <DialogContent>
         <DialogHeader className="border-b pb-3">
           <h2 className="text-lg font-medium">{t('title')}</h2>
         </DialogHeader>
@@ -28,7 +30,7 @@ export const SettingsModal = ({ locale }: { locale: string }) => {
           </div>
           <LangToggle locale={locale} />
         </div>
-      </DialogContent> */}
+      </DialogContent>
     </Dialog>
   )
 }

@@ -4,7 +4,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { useSearch } from '@/hooks/use-search'
 import { useSettings } from '@/hooks/use-settings'
 import { cn } from '@/lib/utils'
-import { useDocuments, useNavigationStore } from '@/stores'
+import { useDocuments, useNavigationStore, useUserStore } from '@/stores'
 import { ChevronsLeft, Plus, PlusCircle, Search, Trash } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { usePathname } from 'next/navigation'
@@ -35,6 +35,8 @@ const Navigation = () => {
   const onOpenSearch = useSearch(state => state.onOpen)
 
   const requestСreateDocument = useDocuments(state => state.requestСreateDocument)
+
+  const user = useUserStore(state => state.user)
 
   const resetWidth = () => {
     if (sidebarRef.current) {
@@ -141,7 +143,7 @@ const Navigation = () => {
           <Item onClick={handleCreate} icon={Plus} label={t('addPage')} />
 
           <p className="mb-1 mt-4 pl-8 text-sm font-medium text-muted-foreground">Поделились с вами</p>
-          <SharedDocumentList className="max-h-40 overflow-y-auto" />
+          <SharedDocumentList className="max-h-40 overflow-y-auto" userId={user?.id} />
           <Popover>
             <PopoverTrigger className="mt-4 w-full">
               <Item label={t('trash')} icon={Trash} />

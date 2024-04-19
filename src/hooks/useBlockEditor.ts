@@ -9,7 +9,7 @@ import * as Y from 'yjs'
 import { ExtensionKit } from '@/extensions/extension-kit'
 import { useUserStore } from '@/stores/use-user.store'
 import { EditorUser } from '../components/BlockEditor/types'
-import { userColors, userNames } from '../lib/constants'
+import { userColors } from '../lib/constants'
 import { randomElement } from '../lib/utils'
 import { useSidebar } from './useSidebar'
 
@@ -43,7 +43,7 @@ export const useBlockEditor = ({
         CollaborationCursor.configure({
           provider,
           user: {
-            name: user?.fullName || randomElement(userNames),
+            name: user?.email || user?.username,
             color: randomElement(userColors),
           },
         }),

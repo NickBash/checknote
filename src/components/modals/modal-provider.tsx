@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { CoverImageModal } from './cover-image-modal'
-import { SettingsModal } from './settings.modal'
+import { EditorsModal } from './editors-modal'
 
 export const ModalProvider = ({ locale }: { locale: string }) => {
   const [isMounted, setIsMounted] = useState(false)
@@ -17,8 +17,9 @@ export const ModalProvider = ({ locale }: { locale: string }) => {
 
   return (
     <>
-      <SettingsModal locale={locale} />
+      {/* <SettingsModal locale={locale} /> */}
       <CoverImageModal />
+      <EditorsModal />
     </>
   )
 }

@@ -5,6 +5,8 @@ import { cn } from '@/lib/utils'
 import { useSharedDocuments } from '@/stores/use-shared-documents'
 import { ChevronDown, ChevronRight, Plus, type LucideIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
+import PocketBase from 'pocketbase'
+import { useEffect } from 'react'
 
 interface ItemProps {
   id?: string
@@ -18,6 +20,9 @@ interface ItemProps {
   label: string
   onClick?: () => void
   icon: LucideIcon
+  pb: PocketBase | undefined
+  deleteSharedDocument: (id: string) => void
+  userId: string
 }
 
 export const SharedItem = ({
@@ -32,6 +37,9 @@ export const SharedItem = ({
   level = 0,
   onExpand,
   expanded,
+  pb,
+  deleteSharedDocument,
+  userId,
 }: ItemProps) => {
   const t = useTranslations('Navigation')
 
@@ -50,6 +58,28 @@ export const SharedItem = ({
   }
 
   const ChevronIcon = expanded ? ChevronDown : ChevronRight
+
+  useEffect(() => {
+    if (pb && id) {
+      pb?.collection('documents').subscribe(
+        id,
+        e => {
+          if (e?.action === 'update' && !e?.record?.editors?.includes(userId)) {
+            deleteSharedDocument(id)
+          }
+        },
+        { expand: 'editors' },
+      )
+    }
+
+    return () => {
+      if (id) {
+        pb?.collection('documents').unsubscribe(id)
+      }
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id])
 
   return (
     <div

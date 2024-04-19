@@ -69,9 +69,9 @@ export default function Document({ params }: DocumentIdPageProps) {
 
   return (
     <div className="pb-40">
-      <Cover url={documentCopy?.coverImage} documentId={params.documentId} />
+      <Cover url={documentCopy?.coverImage} documentId={params.documentId} sharedMode />
       <div className="mx-auto">
-        <Toolbar initialData={documentCopy} documentId={params.documentId} />
+        <Toolbar initialData={documentCopy} documentId={params.documentId} sharedMode />
         <BlockEditor hasCollab={hasCollab} ydoc={ydoc} provider={provider} />
       </div>
     </div>
