@@ -9,7 +9,8 @@ import * as Y from 'yjs'
 import BlockEditor from '@/components/BlockEditor/BlockEditor'
 import { Cover } from '@/components/cover'
 import { Toolbar } from '@/components/toolbar'
-import { useDocuments, type DocumentCopy } from '@/stores'
+import { type DocumentCopy } from '@/stores'
+import { useSharedDocuments } from '@/stores/use-shared-documents'
 
 interface DocumentIdPageProps {
   params: {
@@ -20,7 +21,7 @@ interface DocumentIdPageProps {
 export default function Document({ params }: DocumentIdPageProps) {
   const [provider, setProvider] = useState<TiptapCollabProvider | HocuspocusProvider | null>(null)
   const searchParams = useSearchParams()
-  const listDocuments = useDocuments(state => state.listDocuments)
+  const listDocuments = useSharedDocuments(state => state.listDocuments)
 
   const documentCopy: DocumentCopy | undefined = useMemo(
     () => listDocuments?.find(doc => doc.id === params.documentId),
@@ -68,9 +69,9 @@ export default function Document({ params }: DocumentIdPageProps) {
 
   return (
     <div className="pb-40">
-      <Cover url={documentCopy?.coverImage} documentId={params.documentId} />
+      <Cover url={documentCopy?.coverImage} documentId={params.documentId} sharedMode />
       <div className="mx-auto">
-        <Toolbar initialData={documentCopy} documentId={params.documentId} />
+        <Toolbar initialData={documentCopy} documentId={params.documentId} sharedMode />
         <BlockEditor hasCollab={hasCollab} ydoc={ydoc} provider={provider} />
       </div>
     </div>

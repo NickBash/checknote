@@ -49,7 +49,7 @@ export default function RootLayout({ children, params: { locale } }: Root) {
           <NextIntlClientProvider locale={locale} messages={messages}>
             <main className="h-full">
               <Toaster position="bottom-center" />
-              <ModalProvider />
+              <ModalProvider locale={locale} />
 
               {children}
             </main>

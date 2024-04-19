@@ -1,16 +1,16 @@
 version: '3.7'
 services:
   pocketbase:
-    image: ghcr.io/muchobien/pocketbase:0.22.2
+    image: ghcr.io/muchobien/pocketbase:0.22.8
     container_name: pocketbase
     restart: unless-stopped
     ports:
       - '8090:8090'
     volumes:
       - /path/to/data:/pb_data
-      - /path/to/public:/pb_public #optional
-      - /path/to/hooks:/pb_hooks #optional
-    healthcheck: #optional (recommended) since v0.10.0
+      - /path/to/public:/pb_public
+      - /path/to/hooks:/pb_hooks
+    healthcheck:
       test: wget --no-verbose --tries=1 --spider http://localhost:8090/api/health || exit 1
       interval: 5s
       timeout: 5s
@@ -23,7 +23,6 @@ services:
       - 9001:9001
     volumes:
       - minio_storage:/data
-      # - ./.cert-minio:/root/.minio
     env_file: .env
     command: server --console-address ":9001" /data
   createbuckets:
@@ -33,19 +32,19 @@ services:
     entrypoint: >
       /bin/sh -c " sleep 10;  /usr/bin/mc alias set myminio http://minio:9000 checknote 89898989; /usr/bin/mc mb
       myminio/checknote; /usr/bin/mc anonymous set public myminio/checknote;  exit 0;  "
-  # caddy:
-  #   image: 'caddy:latest'
-  #   # container_name: caddy
-  #   ports:
-  #     - '80:80'
-  #     - '443:443'
-  #     - '443:443/udp'
-  #   # depends_on:
-  #   #   - minio
-  #   volumes:
-  #     # - ./.certs:/root/certs
-  #     - ./.caddy/Caddyfile:/etc/caddy/Caddyfile
-  #     - ./.caddy/sysctl.conf:/etc/sysctl.conf
+  caddy:
+    image: 'caddy:latest'
+    # container_name: caddy
+    ports:
+      - '80:80'
+      - '443:443'
+      - '443:443/udp'
+    # depends_on:
+    #   - minio
+    volumes:
+      # - ./.certs:/root/certs
+      - ./.caddy/Caddyfile:/etc/caddy/Caddyfile
+      - ./.caddy/sysctl.conf:/etc/sysctl.conf
 
 networks:
   caddy:

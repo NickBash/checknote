@@ -15,9 +15,10 @@ interface CoverImageProps {
   url?: string
   preview?: boolean
   documentId: string
+  sharedMode?: boolean
 }
 
-export const Cover = ({ preview, url, documentId }: CoverImageProps) => {
+export const Cover = ({ preview, url, documentId, sharedMode }: CoverImageProps) => {
   const t = useTranslations('Cover')
 
   const [urlImage, setUrlImage] = useState<string | null>(null)
@@ -26,6 +27,7 @@ export const Cover = ({ preview, url, documentId }: CoverImageProps) => {
   const urlS3 = useS3(state => state.url)
   const removeFile = useS3(state => state.removeFile)
   const requestUpdateDocument = useDocuments(state => state.requestUpdateDocument)
+
   const coverImage = useCoverImage()
 
   useEffect(() => {
@@ -46,7 +48,7 @@ export const Cover = ({ preview, url, documentId }: CoverImageProps) => {
       const res = await removeFile(url)
 
       if (res?.status) {
-        requestUpdateDocument(documentId, { coverImage: '' })
+        requestUpdateDocument(documentId, { coverImage: '' }, sharedMode)
 
         setUrlImage(null)
       }
@@ -58,7 +60,12 @@ export const Cover = ({ preview, url, documentId }: CoverImageProps) => {
       {!!urlImage && <Image src={urlImage} fill alt="Cover" className="object-cover" />}
       {urlImage && !preview && (
         <div className="absolute bottom-5 right-5 flex items-center gap-x-2 opacity-0 group-hover:opacity-100">
-          <Button onClick={coverImage.onOpen} className="text-xs text-muted-foreground" variant="outline" size="sm">
+          <Button
+            onClick={() => coverImage.onOpen(sharedMode)}
+            className="text-xs text-muted-foreground"
+            variant="outline"
+            size="sm"
+          >
             <ImageIcon className="mr-2 h-4 w-4" />
             {t('changeCover')}
           </Button>

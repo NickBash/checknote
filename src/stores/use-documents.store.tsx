@@ -3,7 +3,11 @@ import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
 import { usePocketbaseStore } from './use-pocketbase.store'
-import { useUserStore } from './use-user.store'
+import { useUserStore, type UserDB } from './use-user.store'
+
+type Expand = {
+  editors: UserDB[]
+}
 
 export type DocumentCopy = {
   collectionId: string
@@ -20,6 +24,8 @@ export type DocumentCopy = {
   userId: string
   coverImage: string
   contentId: string | null
+  editors: string[] | null
+  expand?: Expand
 }
 
 type DocumentsStore = {
@@ -33,16 +39,18 @@ type DocumentsStore = {
   deleteDocument: (id: string) => void
   requestGetDocuments: () => Promise<void>
   requestСreateDocument: (data?: Partial<DocumentTemplate>) => Promise<unknown>
-  requestUpdateDocument: (recordId: string, data: Partial<DocumentCopy>) => Promise<unknown>
+  requestUpdateDocument: (recordId: string, data: Partial<DocumentCopy>, sharedMode?: boolean) => Promise<unknown>
   requestDeleteDocument: (recordId: string) => Promise<unknown>
   onArchiveDocuments: (recordId: string) => void
   onRestoreDocuments: (recordId: string) => void
   onRemoveDocuments: (recordId: string) => void
+  requestUpdateEditors: (recordId: string, userId: string) => void
+  requestRemoveEditor: (recordId: string, userId: string) => void
 }
 
-type DocumentTemplate = Omit<DocumentCopy, 'collectionId' | 'collectionName' | 'id' | 'updated' | 'created'>
+export type DocumentTemplate = Omit<DocumentCopy, 'collectionId' | 'collectionName' | 'id' | 'updated' | 'created'>
 
-const documentTemplate: DocumentTemplate = {
+export const documentTemplate: DocumentTemplate = {
   content: null,
   icon: '',
   isArchived: false,
@@ -52,6 +60,7 @@ const documentTemplate: DocumentTemplate = {
   userId: '',
   coverImage: '',
   contentId: null,
+  editors: null,
 }
 
 export const useDocuments = create<DocumentsStore>()(
@@ -88,6 +97,7 @@ export const useDocuments = create<DocumentsStore>()(
           try {
             const records = await pb.collection('documents').getFullList({
               filter: `userId = "${user.id}"`,
+              expand: 'editors',
             })
 
             set({ listDocuments: records as DocumentCopy[], isLoading: false })
@@ -114,12 +124,14 @@ export const useDocuments = create<DocumentsStore>()(
           }
         }
       },
-      requestUpdateDocument: async (recordId, data) => {
+      requestUpdateDocument: async (recordId, data, sharredMode = false) => {
         const pb = usePocketbaseStore.getState().pocketbaseClient
         const user = useUserStore.getState().user
 
         if (user) {
-          data.userId = user.id
+          if (!sharredMode) {
+            data.userId = user.id
+          }
 
           try {
             await pb?.collection('documents').update(recordId, data)
@@ -168,7 +180,7 @@ export const useDocuments = create<DocumentsStore>()(
 
           if (docs.length) {
             docs.forEach(doc => {
-              get().requestUpdateDocument(doc.id, { isArchived: true })
+              get().requestUpdateDocument(doc.id, { isArchived: true, isPublished: false })
             })
           }
         }
@@ -233,6 +245,24 @@ export const useDocuments = create<DocumentsStore>()(
               get().requestDeleteDocument(doc.id)
             })
           }
+        }
+      },
+      requestUpdateEditors: async (recordId, userId) => {
+        const documentCopy = get().getDocument(recordId)
+
+        if (documentCopy) {
+          return await get().requestUpdateDocument(recordId, {
+            editors: Array.isArray(documentCopy.editors) ? [...documentCopy.editors, userId] : [userId],
+          })
+        }
+      },
+      requestRemoveEditor: async (recordId, userId) => {
+        const documentCopy = get().getDocument(recordId)
+
+        if (documentCopy) {
+          return await get().requestUpdateDocument(recordId, {
+            editors: documentCopy.editors?.filter(value => value !== userId),
+          })
         }
       },
     })),

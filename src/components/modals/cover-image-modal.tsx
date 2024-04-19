@@ -15,6 +15,7 @@ export const CoverImageModal = () => {
   const { documentId } = useParams()
 
   const requestUpdateDocument = useDocuments(state => state.requestUpdateDocument)
+  const sharedMode = useCoverImage(state => state.sharedMode)
 
   const [file, setFile] = useState<File>()
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -44,7 +45,7 @@ export const CoverImageModal = () => {
       const res = await uploadFile(file, documentId as string)
 
       if (res.status) {
-        requestUpdateDocument(documentId as string, { coverImage: res.name })
+        requestUpdateDocument(documentId as string, { coverImage: res.name }, sharedMode)
       }
 
       onClose()
