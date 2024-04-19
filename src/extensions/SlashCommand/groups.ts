@@ -84,6 +84,15 @@ export const GROUPS: Group[] = [
           editor.chain().focus().setCodeBlock().run()
         },
       },
+      {
+        name: 'board',
+        label: 'Task Board',
+        iconName: 'SquareCode',
+        description: 'Block',
+        action: editor => {
+          editor.commands.insertContent(`<board></board>`)
+        },
+      },
     ],
   },
   {

@@ -45,6 +45,7 @@ import {
   Underline,
   emojiSuggestion,
 } from '.'
+import { Board } from './Board'
 import { ImageUpload } from './ImageUpload'
 import { TableOfContentsNode } from './TableOfContentsNode'
 
@@ -150,6 +151,7 @@ export const ExtensionKit = ({ provider, userId, userName = 'Maxi' }: ExtensionK
     width: 2,
     class: 'ProseMirror-dropcursor border-black',
   }),
+  Board,
 ]
 
 export default ExtensionKit
