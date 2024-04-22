@@ -6,11 +6,15 @@ export const Board = Node.create({
   name: 'board',
   group: 'block',
   atom: true,
-
+  selectable: false,
+  excludes: '_',
   addAttributes() {
     return {
-      count: {
-        default: 0,
+      tasks: {
+        default: JSON.stringify([]),
+      },
+      columns: {
+        default: JSON.stringify([]),
       },
     }
   },

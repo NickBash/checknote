@@ -35,6 +35,10 @@
   width: 1000vw;
 }
 
+.react-renderer.node-board {
+  max-width: 90%;
+}
+
 @import './partials/animations.css';
 @import './partials/blocks.css';
 @import './partials/code.css';

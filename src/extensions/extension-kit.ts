@@ -151,7 +151,11 @@ export const ExtensionKit = ({ provider, userId, userName = 'Maxi' }: ExtensionK
     width: 2,
     class: 'ProseMirror-dropcursor border-black',
   }),
-  Board,
+  Board.configure({
+    HTMLAttributes: {
+      class: 'w-full bg-red-600',
+    },
+  }),
 ]
 
 export default ExtensionKit
