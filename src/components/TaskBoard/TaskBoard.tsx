@@ -221,7 +221,7 @@ export const TaskBoard = (props: any) => {
       rounded-lg
       border-2
       p-4
-      ring-rose-500
+      ring-blue-400
       hover:ring-2
       "
             >

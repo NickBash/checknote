@@ -1,6 +1,6 @@
 import { SortableContext, useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import { Plus, Trash } from 'lucide-react'
+import { MoreHorizontal, Plus } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { Column, Id, Task } from '../types'
 import TaskCard from './TaskCard'
@@ -44,13 +44,10 @@ function ColumnContainer({ column, deleteColumn, updateColumn, createTask, tasks
         style={style}
         className="
       flex
-      h-[500px]
       max-h-[500px]
       w-[350px]
       flex-col
       rounded-md
-      border-2
-      border-pink-500
       bg-secondary
       opacity-40
       "
@@ -64,12 +61,13 @@ function ColumnContainer({ column, deleteColumn, updateColumn, createTask, tasks
       style={style}
       className="
   flex
-  h-[500px]
   max-h-[500px]
   w-[350px]
   flex-col
   rounded-sm
   bg-secondary
+  shadow-md
+  shadow-gray-300
   "
     >
       {/* Column title */}
@@ -80,36 +78,17 @@ function ColumnContainer({ column, deleteColumn, updateColumn, createTask, tasks
           setEditMode(true)
         }}
         className="
-      bg-mainBackgroundColor
       text-md
-      border-columnBackgroundColor
       flex
       h-[60px]
       cursor-grab
       items-center
       justify-between
-      rounded-md
-      rounded-b-none
-      border-4
       p-3
       font-bold
       "
       >
         <div className="flex gap-2">
-          <div
-            className="
-        bg-columnBackgroundColor
-        flex
-        items-center
-        justify-center
-        rounded-full
-        px-2
-        py-1
-        text-sm
-        "
-          >
-            0
-          </div>
           {!editMode && column.title}
           {editMode && (
             <input
@@ -127,21 +106,13 @@ function ColumnContainer({ column, deleteColumn, updateColumn, createTask, tasks
             />
           )}
         </div>
-        <button
+        <div
           onClick={() => {
             deleteColumn(column.id)
           }}
-          className="
-        hover:bg-columnBackgroundColor
-        rounded
-        stroke-gray-500
-        px-1
-        py-2
-        hover:stroke-white
-        "
         >
-          <Trash />
-        </button>
+          <MoreHorizontal className="text-gray-400" size="18" />
+        </div>
       </div>
 
       {/* Column task container */}
@@ -154,12 +125,12 @@ function ColumnContainer({ column, deleteColumn, updateColumn, createTask, tasks
       </div>
       {/* Column footer */}
       <button
-        className="border-columnBackgroundColor border-x-columnBackgroundColor hover:bg-mainBackgroundColor flex items-center gap-2 rounded-md border-2 p-4 hover:text-rose-500 active:bg-black"
+        className="flex items-center gap-2 rounded-md p-4 text-sm text-gray-400 transition hover:text-gray-600 active:text-gray-400"
         onClick={() => {
           createTask(column.id)
         }}
       >
-        <Plus />
+        <Plus size="18" />
         Add task
       </button>
     </div>

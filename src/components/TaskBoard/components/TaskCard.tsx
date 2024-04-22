@@ -1,6 +1,6 @@
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import { MoreVertical, Trash } from 'lucide-react'
+import { GripVertical, MoreVertical } from 'lucide-react'
 import { useState } from 'react'
 import { Id, Task } from '../types'
 
@@ -12,7 +12,7 @@ interface Props {
 
 function TaskCard({ task, deleteTask, updateTask }: Props) {
   const [mouseIsOver, setMouseIsOver] = useState(false)
-  const [editMode, setEditMode] = useState(true)
+  const [editMode, setEditMode] = useState(false)
 
   const { setNodeRef, attributes, listeners, transform, transition, isDragging } = useSortable({
     id: task.id,
@@ -39,30 +39,65 @@ function TaskCard({ task, deleteTask, updateTask }: Props) {
         ref={setNodeRef}
         style={style}
         className="
-        relative
-      flex h-[100px] min-h-[100px] cursor-grab items-center rounded-xl border-2 border-rose-500 bg-white p-2.5  text-left opacity-30
+        border-1
+      relative flex h-[100px] min-h-[100px] cursor-grab items-center rounded-sm border-slate-300 bg-slate-300 p-2.5  text-left opacity-30
       "
       />
     )
   }
 
-  if (editMode) {
-    return (
-      <div
-        ref={setNodeRef}
-        style={style}
-        {...attributes}
-        {...listeners}
-        className="relative flex h-[100px] min-h-[100px] cursor-grab items-center rounded-sm bg-white p-2.5 text-left hover:shadow-md hover:ring-2 hover:ring-inset"
-      >
-        <p>HELLO</p>
+  // if (editMode) {
+  //   return (
+  //     <div
+  //       ref={setNodeRef}
+  //       style={style}
+  //       {...attributes}
+  //       {...listeners}
+  //       className="relative flex h-[100px] min-h-[100px] cursor-grab items-center rounded-sm bg-white p-2.5 text-left hover:shadow-md hover:ring-2 hover:ring-inset"
+  //     >
+  //       <textarea
+  //         className="
+  //       h-[90%]
+  //       w-full resize-none rounded border-none bg-transparent focus:outline-none
+  //       "
+  //         value={task.content}
+  //         placeholder="Task content here"
+  //         onBlur={toggleEditMode}
+  //         onKeyDown={e => {
+  //           if (e.key === 'Enter' && e.shiftKey) {
+  //             toggleEditMode()
+  //           }
+  //         }}
+  //         onChange={e => updateTask(task.id, e.target.value)}
+  //       />
+  //     </div>
+  //   )
+  // }
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
+      className="task relative flex h-[100px] min-h-[100px] flex-col rounded-sm bg-white p-2.5 text-left shadow-sm shadow-gray-400"
+    >
+      <div className="flex h-6 w-full items-center justify-between">
+        <div className="flex items-center gap-x-2">
+          <GripVertical size="18" className="cursor-grab" />
+          <span>KK-2000</span>
+        </div>
+        <div className="cursor-pointer rounded-sm p-1 hover:bg-secondary">
+          <MoreVertical size="18" />
+        </div>
+      </div>
+      {editMode ? (
         <textarea
           className="
         h-[90%]
         w-full resize-none rounded border-none bg-transparent focus:outline-none
         "
           value={task.content}
-          autoFocus
           placeholder="Task content here"
           onBlur={toggleEditMode}
           onKeyDown={e => {
@@ -72,43 +107,13 @@ function TaskCard({ task, deleteTask, updateTask }: Props) {
           }}
           onChange={e => updateTask(task.id, e.target.value)}
         />
-      </div>
-    )
-  }
-
-  return (
-    <div
-      ref={setNodeRef}
-      style={style}
-      {...attributes}
-      {...listeners}
-      onClick={toggleEditMode}
-      className="task relative flex h-[100px] min-h-[100px] cursor-grab flex-col rounded-sm bg-white p-2.5 text-left"
-      onMouseEnter={() => {
-        setMouseIsOver(true)
-      }}
-      onMouseLeave={() => {
-        setMouseIsOver(false)
-      }}
-    >
-      <div className="flex h-6 w-full items-center justify-between">
-        <span>Num task</span>
-        <div className="cursor-pointer rounded-sm p-1 hover:bg-secondary">
-          <MoreVertical size="18" />
-        </div>
-      </div>
-      <p className="!my-0">HELLO</p>
-      <p className="!my-0 h-[90%] w-full overflow-y-auto overflow-x-hidden whitespace-pre-wrap">{task.content}</p>
-
-      {mouseIsOver && (
-        <button
-          onClick={() => {
-            deleteTask(task.id)
-          }}
-          className="bg-columnBackgroundColor absolute right-4 top-1/2 -translate-y-1/2 rounded stroke-white p-2 opacity-60 hover:opacity-100"
+      ) : (
+        <p
+          onClick={toggleEditMode}
+          className="!my-0 h-[90%] w-full overflow-y-auto overflow-x-hidden whitespace-pre-wrap"
         >
-          <Trash />
-        </button>
+          {task.content}
+        </p>
       )}
     </div>
   )
