@@ -1,3 +1,4 @@
+import ModeToggle from '@/components/mode-toggle'
 import { useDocuments } from '@/stores'
 import { MenuIcon } from 'lucide-react'
 import { useParams } from 'next/navigation'
@@ -41,6 +42,7 @@ export const Navbar = ({ isCollapsed, onResetWidth }: NavbarProps) => {
             <Title initialData={documentCopy} />
             <div className="flex items-center gap-x-2">
               <Publish initialData={documentCopy} />
+              <ModeToggle />
               <Menu initialData={documentCopy} />
             </div>
           </div>

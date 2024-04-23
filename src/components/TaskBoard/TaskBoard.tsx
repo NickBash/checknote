@@ -12,6 +12,7 @@ import {
 import { SortableContext, arrayMove } from '@dnd-kit/sortable'
 import { NodeViewWrapper } from '@tiptap/react'
 import { Plus } from 'lucide-react'
+import { nanoid } from 'nanoid'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import ColumnContainer from './components/ColumnContainer'
@@ -146,7 +147,6 @@ export const TaskBoard = (props: any) => {
   }, [debouncedTasks])
 
   useEffect(() => {
-    console.log('PROPS', props.node.attrs.tasks)
     if (props) {
       if (!initComponent.current) {
         initComponent.current = true
@@ -254,9 +254,15 @@ export const TaskBoard = (props: any) => {
 
   function createTask(columnId: Id) {
     const newTask: Task = {
-      id: generateId(),
+      id: nanoid(),
+      titleCard: `KK-${tasks.length + 1}`,
       columnId,
-      content: `Task ${tasks.length + 1}`,
+      description: `New task content`,
+      performers: [],
+      priority: 'normal',
+      title: 'New tasks',
+      beginDate: null,
+      endDate: null,
     }
 
     setTasks([...tasks, newTask])
@@ -267,10 +273,10 @@ export const TaskBoard = (props: any) => {
     setTasks(newTasks)
   }
 
-  function updateTask(id: Id, content: string) {
+  function updateTask(id: Id, content: Partial<Task>) {
     const newTasks = tasks.map(task => {
       if (task.id !== id) return task
-      return { ...task, content }
+      return { ...task, ...content }
     })
 
     setTasks(newTasks)
@@ -329,8 +335,6 @@ export const TaskBoard = (props: any) => {
     const isActiveAColumn = active.data.current?.type === 'Column'
     if (!isActiveAColumn) return
 
-    console.log('DRAG END')
-
     setColumns(columns => {
       const activeColumnIndex = columns.findIndex(col => col.id === activeId)
 
@@ -378,7 +382,6 @@ export const TaskBoard = (props: any) => {
         const activeIndex = tasks.findIndex(t => t.id === activeId)
 
         tasks[activeIndex].columnId = overId
-        console.log('DROPPING TASK OVER COLUMN', { activeIndex })
         return arrayMove(tasks, activeIndex, activeIndex)
       })
     }

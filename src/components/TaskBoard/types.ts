@@ -7,6 +7,12 @@ export type Column = {
 
 export type Task = {
   id: Id
+  titleCard: string
   columnId: Id
-  content: string
+  description: string
+  title: string
+  performers: string[]
+  priority: string
+  beginDate: string | null
+  endDate: string | null
 }

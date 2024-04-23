@@ -106,11 +106,7 @@ function ColumnContainer({ column, deleteColumn, updateColumn, createTask, tasks
             />
           )}
         </div>
-        <div
-          onClick={() => {
-            deleteColumn(column.id)
-          }}
-        >
+        <div>
           <MoreHorizontal className="text-gray-400" size="18" />
         </div>
       </div>

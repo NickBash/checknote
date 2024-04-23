@@ -5,9 +5,10 @@ import { useSearch } from '@/hooks/use-search'
 import { useSettings } from '@/hooks/use-settings'
 import { cn } from '@/lib/utils'
 import { useDocuments, useNavigationStore, useUserStore } from '@/stores'
-import { ChevronsLeft, Plus, PlusCircle, Search, Trash } from 'lucide-react'
+import { ChevronsLeft, Plus, PlusCircle, Search, Trash, User2 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
+
 import { useEffect, useRef, type ElementRef } from 'react'
 import { useMediaQuery } from 'usehooks-ts'
 import { DocumentList } from './document-list'
@@ -19,6 +20,7 @@ import { UserItem } from './user-item'
 const Navigation = () => {
   const t = useTranslations('Navigation')
   const pathname = usePathname()
+  const router = useRouter()
 
   const isMobile = useMediaQuery('(max-width: 768px)')
 
@@ -111,6 +113,10 @@ const Navigation = () => {
     requestСreateDocument()
   }
 
+  const redirectToTeamManagement = () => {
+    router.push('/team-management')
+  }
+
   return (
     <>
       <aside
@@ -136,6 +142,9 @@ const Navigation = () => {
           <Item label={t('search')} icon={Search} isSearch onClick={onOpenSearch} />
           {/* <Item label={t('settings')} icon={Settings} onClick={onOpenSettings} /> */}
           <Item onClick={handleCreate} label={t('newPage')} icon={PlusCircle} />
+        </div>
+        <div className="mt-4">
+          <Item onClick={redirectToTeamManagement} icon={User2} label={t('addPage')} />
         </div>
         <div className="mt-4">
           <DocumentList />
