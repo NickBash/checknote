@@ -20,7 +20,7 @@ const DocumentLayout = ({ children }: { children: React.ReactNode }) => {
     <>
       <div
         className={cn(
-          'absolute left-0 top-0 z-[99999] w-full',
+          'absolute left-0 top-0 z-20 w-full',
           isResetting && 'transition-all duration-300 ease-in-out',
           isMobile && 'left-0 w-full',
         )}

@@ -13,6 +13,7 @@ export type Task = {
   title: string
   performers: string[]
   priority: string
-  beginDate: string | null
-  endDate: string | null
+  beginDate: Date | undefined
+  endDate: Date | undefined
+  creator: string
 }
