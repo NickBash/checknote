@@ -9,7 +9,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { cn } from '@/lib/utils'
 import { enUS, ru } from 'date-fns/locale'
-import { Check, ChevronsUpDown, Pencil } from 'lucide-react'
+import { Check, ChevronDown, ChevronUp, ChevronsUp, ChevronsUpDown, Pencil } from 'lucide-react'
 import { useParams } from 'next/navigation'
 import { useMemo, useState } from 'react'
 import type { Id, Task } from '../types'
@@ -97,9 +97,30 @@ function SheetTaskCard({ task, updateTask }: Props) {
                 <SelectValue placeholder="Выберите приоритет" />
               </SelectTrigger>
               <SelectContent className="pointer-events-auto z-[51]">
-                <SelectItem value="hight">hight</SelectItem>
-                <SelectItem value="normal">normal</SelectItem>
-                <SelectItem value="low">low</SelectItem>
+                <SelectItem value="highest">
+                  <div className="flex flex-row items-center gap-x-1">
+                    <ChevronsUp size="20" className="text-red-600" />
+                    highest
+                  </div>
+                </SelectItem>
+                <SelectItem value="hight">
+                  <div className="flex flex-row items-center gap-x-1">
+                    <ChevronUp size="20" className="text-orange-600" />
+                    hight
+                  </div>
+                </SelectItem>
+                <SelectItem value="normal">
+                  <div className="flex flex-row items-center gap-x-1">
+                    <ChevronUp size="20" className="text-blue-600" />
+                    normal
+                  </div>
+                </SelectItem>
+                <SelectItem value="low">
+                  <div className="flex flex-row items-center gap-x-1">
+                    <ChevronDown size="20" className="text-green-600" />
+                    low
+                  </div>
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>

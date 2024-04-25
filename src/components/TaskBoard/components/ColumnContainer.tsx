@@ -68,6 +68,8 @@ function ColumnContainer({ column, deleteColumn, updateColumn, createTask, tasks
   bg-secondary
   shadow-md
   shadow-gray-300
+  dark:shadow-sm
+  dark:shadow-gray-700
   "
     >
       {/* Column title */}
@@ -121,7 +123,7 @@ function ColumnContainer({ column, deleteColumn, updateColumn, createTask, tasks
       </div>
       {/* Column footer */}
       <button
-        className="flex items-center gap-2 rounded-md p-4 text-sm text-gray-400 transition hover:text-gray-600 active:text-gray-400"
+        className="flex items-center gap-2 rounded-md p-4 text-sm text-gray-400 shadow-gray-300 transition hover:text-gray-600 active:text-gray-400 dark:shadow-sm dark:shadow-gray-700"
         onClick={() => {
           createTask(column.id)
         }}

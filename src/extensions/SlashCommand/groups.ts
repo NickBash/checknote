@@ -87,7 +87,7 @@ export const GROUPS: Group[] = [
       {
         name: 'board',
         label: 'Task Board',
-        iconName: 'SquareCode',
+        iconName: 'LayoutDashboard',
         description: 'Block',
         action: editor => {
           editor.commands.insertContent(`<board></board>`)

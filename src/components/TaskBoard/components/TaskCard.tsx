@@ -1,7 +1,7 @@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import { GripVertical, MoreVertical } from 'lucide-react'
+import { ChevronDown, ChevronUp, ChevronsUp, GripVertical, MoreVertical } from 'lucide-react'
 import { useState } from 'react'
 import { Id, Task } from '../types'
 import SheetTaskCard from './SheetTaskCard'
@@ -35,6 +35,15 @@ function TaskCard({ task, deleteTask, updateTask }: Props) {
     setMouseIsOver(false)
   }
 
+  const priorityIcon: Record<string, JSX.Element> = {
+    highest: <ChevronsUp size="20" className="text-red-600" />,
+    hight: <ChevronUp size="20" className="text-orange-600" />,
+    normal: <ChevronUp size="20" className="text-blue-600" />,
+    low: <ChevronDown size="20" className="text-green-600" />,
+  }
+
+  const getPriorityIcon = (value: string) => (value in priorityIcon ? priorityIcon[value] : priorityIcon.normal)
+
   if (isDragging) {
     return (
       <div
@@ -42,7 +51,7 @@ function TaskCard({ task, deleteTask, updateTask }: Props) {
         style={style}
         className="
         border-1
-      relative flex h-[100px] min-h-[100px] cursor-grab items-center rounded-sm border-slate-300 bg-slate-300 p-2.5  text-left opacity-30
+      relative flex h-[100px] min-h-[100px] cursor-grab items-center rounded-sm border-slate-300 bg-slate-300 p-2.5  text-left opacity-30 dark:bg-slate-700
       "
       />
     )
@@ -52,17 +61,18 @@ function TaskCard({ task, deleteTask, updateTask }: Props) {
     <div
       ref={setNodeRef}
       style={style}
-      className="task group relative grid h-[100px] min-h-[100px] grid-cols-[min-content_1fr] rounded-sm bg-white text-left shadow-sm shadow-gray-400"
+      className="task group relative grid h-[100px] min-h-[100px] select-none grid-cols-[min-content_1fr] overflow-hidden rounded-sm bg-white text-left shadow-sm shadow-gray-700 dark:bg-neutral-900 dark:shadow-none"
     >
-      <div className="flex h-full w-0 items-center bg-slate-200 transition-all group-hover:w-4">
+      <div className="flex h-full w-0 items-center bg-slate-200 transition-all group-hover:w-4 dark:bg-slate-700">
         <GripVertical className="cursor-grab focus:outline-none" {...attributes} {...listeners} size="18" />
       </div>
       <div className="flex-grow-0 p-2">
         <div className="flex w-full items-center justify-between">
-          <div className="flex items-center font-medium text-gray-500">
+          <div className="flex items-center font-medium text-gray-500 dark:text-gray-300">
             <span>{task?.titleCard}</span>
           </div>
-          <div className="flex cursor-pointer gap-x-2 text-gray-400">
+          <div className="flex cursor-pointer gap-x-2 text-gray-400 dark:text-gray-500">
+            {getPriorityIcon(task.priority)}
             <SheetTaskCard task={task} updateTask={updateTask} />
             <DropdownMenu>
               <DropdownMenuTrigger>
@@ -76,7 +86,7 @@ function TaskCard({ task, deleteTask, updateTask }: Props) {
         </div>
         <p
           onClick={toggleEditMode}
-          className="!my-0 h-[90%] w-full overflow-y-auto overflow-x-hidden whitespace-pre-wrap text-gray-600"
+          className="!my-0 h-[90%] w-full overflow-y-auto overflow-x-hidden whitespace-pre-wrap text-gray-600 dark:text-gray-400"
         >
           {task?.title}
         </p>

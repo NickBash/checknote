@@ -1,4 +1,5 @@
 import useDebounce from '@/hooks/use-debounce'
+import { useUserStore } from '@/stores'
 import {
   DndContext,
   DragOverlay,
@@ -36,6 +37,8 @@ const defaultCols: Column[] = [
 
 export const TaskBoard = (props: any) => {
   const initComponent = useRef(false)
+
+  const user = useUserStore(state => state.user)
 
   const [columns, setColumns] = useState<Column[]>([])
   const columnsId = useMemo(() => columns.map(col => col.id), [columns])
@@ -203,6 +206,7 @@ export const TaskBoard = (props: any) => {
       title: 'New tasks',
       beginDate: undefined,
       endDate: undefined,
+      creator: user?.name || user?.email,
     }
 
     setTasks([...tasks, newTask])
