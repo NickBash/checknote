@@ -43,8 +43,8 @@
       }
     ],
     "indexes": [],
-    "listRule": "id = @request.auth.id",
-    "viewRule": "id = @request.auth.id",
+    "listRule": "",
+    "viewRule": "",
     "createRule": "",
     "updateRule": "id = @request.auth.id",
     "deleteRule": "id = @request.auth.id",
@@ -142,20 +142,6 @@
       },
       {
         "system": false,
-        "id": "pd1dmav8",
-        "name": "userId",
-        "type": "text",
-        "required": false,
-        "presentable": false,
-        "unique": false,
-        "options": {
-          "min": null,
-          "max": null,
-          "pattern": ""
-        }
-      },
-      {
-        "system": false,
         "id": "boaml0gs",
         "name": "order",
         "type": "number",
@@ -171,7 +157,7 @@
       {
         "system": false,
         "id": "p412xiyo",
-        "name": "cover",
+        "name": "coverImage",
         "type": "text",
         "required": false,
         "presentable": false,
@@ -180,6 +166,54 @@
           "min": null,
           "max": null,
           "pattern": ""
+        }
+      },
+      {
+        "system": false,
+        "id": "swlf3i0z",
+        "name": "editors",
+        "type": "relation",
+        "required": false,
+        "presentable": false,
+        "unique": false,
+        "options": {
+          "collectionId": "_pb_users_auth_",
+          "cascadeDelete": false,
+          "minSelect": null,
+          "maxSelect": null,
+          "displayFields": null
+        }
+      },
+      {
+        "system": false,
+        "id": "uaxwxjiq",
+        "name": "contentId",
+        "type": "relation",
+        "required": false,
+        "presentable": false,
+        "unique": false,
+        "options": {
+          "collectionId": "cnd3zpe5pv9n657",
+          "cascadeDelete": true,
+          "minSelect": null,
+          "maxSelect": 1,
+          "displayFields": null
+        }
+      },
+      {
+        "system": false,
+        "id": "klvpd3dm",
+        "name": "userId",
+        "type": "relation",
+        "required": false,
+        "presentable": false,
+        "unique": false,
+        "options": {
+          "collectionId": "_pb_users_auth_",
+          "cascadeDelete": false,
+          "minSelect": null,
+          "maxSelect": 1,
+          "displayFields": null
         }
       }
     ],
@@ -193,59 +227,29 @@
   },
   {
     "id": "cnd3zpe5pv9n657",
-    "name": "files",
+    "name": "documentsContent",
     "type": "base",
     "system": false,
     "schema": [
       {
         "system": false,
-        "id": "zszxnezu",
-        "name": "originalName",
-        "type": "text",
+        "id": "pllr5a4z",
+        "name": "content",
+        "type": "editor",
         "required": false,
         "presentable": false,
         "unique": false,
         "options": {
-          "min": null,
-          "max": null,
-          "pattern": ""
-        }
-      },
-      {
-        "system": false,
-        "id": "koj8sv5d",
-        "name": "encodeName",
-        "type": "text",
-        "required": false,
-        "presentable": false,
-        "unique": false,
-        "options": {
-          "min": null,
-          "max": null,
-          "pattern": ""
-        }
-      },
-      {
-        "system": false,
-        "id": "fi49ob0i",
-        "name": "owner",
-        "type": "text",
-        "required": false,
-        "presentable": false,
-        "unique": false,
-        "options": {
-          "min": null,
-          "max": null,
-          "pattern": ""
+          "convertUrls": false
         }
       }
     ],
     "indexes": [],
-    "listRule": "owner = @request.auth.id",
-    "viewRule": "owner = @request.auth.id",
-    "createRule": "owner = @request.auth.id",
-    "updateRule": "owner = @request.auth.id",
-    "deleteRule": "owner = @request.auth.id",
+    "listRule": "",
+    "viewRule": "",
+    "createRule": "",
+    "updateRule": "",
+    "deleteRule": "",
     "options": {}
   }
 ]
