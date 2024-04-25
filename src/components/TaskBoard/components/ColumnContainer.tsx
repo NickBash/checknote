@@ -1,3 +1,5 @@
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { Input } from '@/components/ui/input'
 import { SortableContext, useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { MoreHorizontal, Plus } from 'lucide-react'
@@ -68,17 +70,13 @@ function ColumnContainer({ column, deleteColumn, updateColumn, createTask, tasks
   bg-secondary
   shadow-md
   shadow-gray-300
-  dark:shadow-sm
-  dark:shadow-gray-700
+  dark:shadow-none
   "
     >
       {/* Column title */}
       <div
         {...attributes}
         {...listeners}
-        onClick={() => {
-          setEditMode(true)
-        }}
         className="
       text-md
       flex
@@ -91,10 +89,18 @@ function ColumnContainer({ column, deleteColumn, updateColumn, createTask, tasks
       "
       >
         <div className="flex gap-2">
-          {!editMode && column.title}
+          {!editMode && (
+            <span
+              onClick={() => {
+                setEditMode(true)
+              }}
+            >
+              {column.title}
+            </span>
+          )}
           {editMode && (
-            <input
-              className="rounded border bg-black px-2 outline-none focus:border-rose-500"
+            <Input
+              className="h-6 min-w-4 px-2 outline-none"
               value={column.title}
               onChange={e => updateColumn(column.id, e.target.value)}
               autoFocus
@@ -109,7 +115,17 @@ function ColumnContainer({ column, deleteColumn, updateColumn, createTask, tasks
           )}
         </div>
         <div>
-          <MoreHorizontal className="text-gray-400" size="18" />
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <MoreHorizontal
+                className="rounded-sm p-1 text-gray-400 hover:bg-secondary focus:outline-none"
+                size="22"
+              />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem onClick={() => deleteColumn(column.id)}>Удалить</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
 
@@ -123,7 +139,7 @@ function ColumnContainer({ column, deleteColumn, updateColumn, createTask, tasks
       </div>
       {/* Column footer */}
       <button
-        className="flex items-center gap-2 rounded-md p-4 text-sm text-gray-400 shadow-gray-300 transition hover:text-gray-600 active:text-gray-400 dark:shadow-sm dark:shadow-gray-700"
+        className="light:shadow-gray-300 flex items-center gap-2 rounded-md p-4 text-sm text-gray-400 transition hover:text-gray-600 active:text-gray-400 "
         onClick={() => {
           createTask(column.id)
         }}

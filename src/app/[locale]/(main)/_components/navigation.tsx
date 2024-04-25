@@ -144,7 +144,7 @@ const Navigation = () => {
           <Item onClick={handleCreate} label={t('newPage')} icon={PlusCircle} />
         </div>
         <div className="mt-4">
-          <Item onClick={redirectToTeamManagement} icon={User2} label={t('addPage')} />
+          <Item onClick={redirectToTeamManagement} icon={User2} label={t('teamManagement')} />
         </div>
         <div className="mt-4">
           <DocumentList />

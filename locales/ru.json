@@ -37,7 +37,8 @@
     "search": "Поиск",
     "settings": "Настройки",
     "trash": "Корзина",
-    "delete": "Удалить"
+    "delete": "Удалить",
+    "teamManagement": "Управление командой"
   },
   "ModeToggle": {
     "light": "Светлая",

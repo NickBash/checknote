@@ -37,7 +37,8 @@
     "search": "Search",
     "settings": "Settings",
     "trash": "Trash",
-    "delete": "Delete"
+    "delete": "Delete",
+    "teamManagement": "Team management"
   },
   "ModeToggle": {
     "light": "Light",

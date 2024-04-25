@@ -166,6 +166,7 @@ export const TaskBoard = (props: any) => {
       shadow-gray-300
       transition
       hover:text-gray-600 active:text-gray-400
+      dark:shadow-none
       "
             >
               <Plus size="18" />
