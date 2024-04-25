@@ -2,7 +2,7 @@ const Y = require('yjs')
 const { fromUint8Array, toUint8Array } = require('js-base64')
 const PocketBase = require('pocketbase/cjs')
 
-const pb = new PocketBase(process.env.POCKETBASE_URL)
+const pb = new PocketBase(process.env.POCKETBASE_URL || 'http://127.0.0.1:8090')
 
 const onStoreDocument = async data => {
   const { documentName, document } = data
@@ -14,6 +14,8 @@ const onStoreDocument = async data => {
 }
 const onLoadDocument = async data => {
   const { documentName, document } = data
+
+  console.log('log')
 
   if (!documentName) return Promise.resolve()
 
