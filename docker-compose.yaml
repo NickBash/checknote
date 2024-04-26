@@ -34,19 +34,6 @@ services:
     entrypoint: >
       /bin/sh -c " sleep 10;  /usr/bin/mc alias set myminio http://minio:9000 checknote 89898989; /usr/bin/mc mb
       myminio/checknote; /usr/bin/mc anonymous set public myminio/checknote;  exit 0;  "
-  caddy:
-    image: 'caddy:latest'
-    # container_name: caddy
-    ports:
-      - '80:80'
-      - '443:443'
-      - '443:443/udp'
-    # depends_on:
-    #   - minio
-    volumes:
-      # - ./.certs:/root/certs
-      - ./.caddy/Caddyfile:/etc/caddy/Caddyfile
-      - ./.caddy/sysctl.conf:/etc/sysctl.conf
   hocuspocus:
     build: server/
     ports:
@@ -61,7 +48,6 @@ services:
 networks:
   apinet:
     driver: bridge
-  caddy:
 
 volumes:
   minio_storage:

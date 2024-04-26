@@ -1,0 +1,15 @@
+version: '3.7'
+services:
+  caddy:
+    image: 'caddy:latest'
+    # container_name: caddy
+    ports:
+      - '80:80'
+      - '443:443'
+      - '443:443/udp'
+    # depends_on:
+    #   - minio
+    volumes:
+      # - ./.certs:/root/certs
+      - ./.caddy/Caddyfile:/etc/caddy/Caddyfile
+      - ./.caddy/sysctl.conf:/etc/sysctl.conf

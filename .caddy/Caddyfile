@@ -1,55 +1,19 @@
-localdev.site {
-    log stdout
-
-    auto_https off
-
-    encode zstd gzip
-    reverse_proxy minio:9000 {
-        header_up Host                {host}
-        header_up X-Real-IP           {remote}
-        header_up X-Forwarded-Host    {host}
-        header_up X-Forwarded-Server  {host}
-        header_up X-Forwarded-Port    {port}
-        header_up X-Forwarded-For     {remote}
-        header_up X-Forwarded-Scheme  {scheme}
-    }
+checknote.ru {
+    reverse_proxy nextjs:3000
 }
 
-s3.localdev.site {
-    log stdout
-
-    auto_https disable_redirects
-    auto_https off
-
-    route {
-        reverse_proxy minio:9000 {
-            header_up Host                {host}
-            header_up X-Real-IP           {remote}
-            header_up X-Forwarded-Host    {host}
-            header_up X-Forwarded-Server  {host}
-            header_up X-Forwarded-Port    {port}
-            header_up X-Forwarded-For     {remote}
-            header_up X-Forwarded-Scheme  {scheme}
-        }
-    }
+s3.checknote.ru {
+    reverse_proxy nextjs:9000
 }
 
-s3-console.localdev.site {
-    log stdout
-    
+s3-console.checknote.ru {
     reverse_proxy minio:9001
 }
 
+pb.checknote.ru {
+    reverse_proxy pocketbase:8090
+}
 
-
-# localhost:8090 {
-#     tls internal
-
-#     handle {
-#         reverse_proxy pocketbase:8090
-#     }
-
-#     log {
-#         format json
-#     }
-# }
+hp.checknote.ru {
+    reverse_proxy pocketbase:1234
+}

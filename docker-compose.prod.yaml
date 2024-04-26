@@ -41,19 +41,6 @@ services:
       - 3000:3000
     environment:
       - NODE_ENV=production
-  caddy:
-    image: 'caddy:latest'
-    # container_name: caddy
-    ports:
-      - '80:80'
-      - '443:443'
-      - '443:443/udp'
-    # depends_on:
-    #   - minio
-    volumes:
-      # - ./.certs:/root/certs
-      - ./.caddy/Caddyfile:/etc/caddy/Caddyfile
-      - ./.caddy/sysctl.conf:/etc/sysctl.conf
   hocuspocus:
     build: server/
     ports:
@@ -68,7 +55,6 @@ services:
 networks:
   apinet:
     driver: bridge
-  caddy:
 
 volumes:
   minio_storage:
