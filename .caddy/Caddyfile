@@ -3,7 +3,7 @@ checknote.ru {
 }
 
 s3.checknote.ru {
-    reverse_proxy nextjs:9000
+    reverse_proxy minio:9000
 }
 
 s3-console.checknote.ru {
