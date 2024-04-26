@@ -7,10 +7,15 @@ RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 # Install dependencies based on the preferred package manager
-COPY package.json package-lock.json ./
+COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
 COPY .npmrc ./
 
-RUN npm install --registry=https://registry.npmjs.org
+RUN \
+  if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
+  elif [ -f package-lock.json ]; then npm ci; \
+  elif [ -f pnpm-lock.yaml ]; then yarn global add pnpm && pnpm i --frozen-lockfile; \
+  else echo "Lockfile not found." && exit 1; \
+  fi
 
 # Rebuild the source code only when needed
 FROM base AS builder
@@ -40,7 +45,6 @@ RUN adduser --system --uid 1001 nextjs
 
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/prisma ./prisma
 
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
@@ -51,4 +55,4 @@ USER nextjs
 
 # server.js is created by next build from the standalone output
 # https://nextjs.org/docs/pages/api-reference/next-config-js/output
-ENTRYPOINT ["npm", "start"]
+CMD ["npm", "start"]

@@ -10,8 +10,5 @@ server
 /.caddy
 .caddy
 
-/.next
-.next
-
 /data
 data

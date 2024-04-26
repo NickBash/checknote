@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "concurrently \"npm run serve\" \"npm run dev\"",
+    "start": "next start",
+    "start:test": "concurrently \"npm run serve\" \"npm run dev\"",
     "dev": "next dev",
     "serve": "node --env-file .env ./server/hocuspocus-server.js ",
     "build": "next build",
