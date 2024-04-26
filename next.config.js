@@ -6,10 +6,10 @@ const nextConfig = {
   reactStrictMode: false,
   images: {
     remotePatterns: [
-      // {
-      //   protocol: 'https',
-      //   hostname: 'checknote.ru',
-      // },
+      {
+        protocol: 'https',
+        hostname: 's3.checknote.ru',
+      },
       {
         protocol: 'http',
         hostname: 'localhost',

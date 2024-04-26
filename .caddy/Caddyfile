@@ -1,13 +1,13 @@
 checknote.ru {
-    reverse_proxy nextjs:3000
+    reverse_proxy 127.0.0.1:3000
 }
 
 s3.checknote.ru {
-    reverse_proxy minio:9000
+    reverse_proxy 127.0.0.1:9000
 }
 
 s3-console.checknote.ru {
-    reverse_proxy minio:9001
+    reverse_proxy 127.0.0.1:9001
 }
 
 pb.checknote.ru {
@@ -15,7 +15,7 @@ pb.checknote.ru {
         max_size 10MB
     }
 
-    reverse_proxy pocketbase:8090 {
+    reverse_proxy 127.0.0.1:8090 {
         transport http {
             read_timeout 360s
         }
@@ -23,5 +23,5 @@ pb.checknote.ru {
 }
 
 hp.checknote.ru {
-    reverse_proxy hocuspocus:1234
+    reverse_proxy 127.0.0.1:1234
 }

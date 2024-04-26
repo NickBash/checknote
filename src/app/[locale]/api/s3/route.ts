@@ -13,6 +13,7 @@ const s3 = new S3Client({
     secretAccessKey: process.env.AWS_SECRET! as string,
   },
   endpoint: Endpoint,
+  forcePathStyle: true,
 })
 
 // endpoint to get the list of files in the bucket
