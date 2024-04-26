@@ -15,5 +15,5 @@ pb.checknote.ru {
 }
 
 hp.checknote.ru {
-    reverse_proxy pocketbase:1234
+    reverse_proxy hocuspocus:1234
 }
