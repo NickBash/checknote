@@ -20,7 +20,8 @@
     "forgout": "Forgot password?",
     "signinButton": "Sign in",
     "dontAccount": "Don’t have an account yet?",
-    "signupLink": "Sign up"
+    "signupLink": "Sign up",
+    "loginVia": "Login via"
   },
   "Signup": {
     "title": "Registration",

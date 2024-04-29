@@ -20,7 +20,8 @@
     "forgout": "Забыли пароль?",
     "signinButton": "Войти",
     "dontAccount": "У вас нет аккаунта?",
-    "signupLink": "Зарегистрироваться"
+    "signupLink": "Зарегистрироваться",
+    "loginVia": "Войти через"
   },
   "Signup": {
     "title": "Регистрация",

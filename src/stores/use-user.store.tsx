@@ -1,4 +1,5 @@
 import { jwtDecode } from 'jwt-decode'
+import type { RecordAuthResponse, RecordModel } from 'pocketbase'
 import { create } from 'zustand'
 import { usePocketbaseStore } from './use-pocketbase.store'
 
@@ -30,6 +31,7 @@ type UserStore = {
   setToken: (token: string | null) => void
   setIsLoadingUser: (value: boolean) => void
   checkAuth: () => Promise<boolean | undefined> | boolean
+  checkYandex: () => Promise<void | RecordAuthResponse<RecordModel>> | undefined
   register: (email: string, password: string) => void
   login: (email: string, password: string) => void
   logout: () => void
@@ -125,5 +127,17 @@ export const useUserStore = create<UserStore>((set, get) => ({
     } else {
       return null
     }
+  },
+  checkYandex: () => {
+    const pb = usePocketbaseStore.getState().pocketbaseClient
+
+    return pb
+      ?.collection('users')
+      .authWithOAuth2({ provider: 'yandex', emailVisibility: true })
+      .then(res => {
+        if (res?.record) {
+          set({ user: res.record, token: res.token })
+        }
+      })
   },
 }))

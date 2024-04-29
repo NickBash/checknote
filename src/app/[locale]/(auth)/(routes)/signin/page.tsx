@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useUserStore } from '@/stores/use-user.store'
 import { useTranslations } from 'next-intl'
+import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
@@ -16,6 +17,8 @@ const SignIn = () => {
   const t = useTranslations('Signin')
   const [email, setEmail] = useState('')
   const [pass, setPass] = useState('')
+
+  const checkYandex = useUserStore(state => state.checkYandex)
 
   const onSubmit = useCallback(
     async (evt: React.MouseEvent<HTMLElement>) => {
@@ -35,6 +38,14 @@ const SignIn = () => {
     setInit(true)
   }, [])
 
+  const onCheckYandex = () => {
+    checkYandex()
+      ?.then(res => (res ? push('/') : null))
+      .catch(err => {
+        console.log('yandex auth err', err)
+      })
+  }
+
   if (!init) {
     return (
       <div className="flex h-full flex-1 items-center justify-center">
@@ -51,6 +62,7 @@ const SignIn = () => {
             <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 dark:text-white md:text-2xl">
               {t('title')}
             </h1>
+
             <form className="space-y-4 md:space-y-6" action="#">
               <div>
                 <label htmlFor="email" className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
@@ -80,21 +92,33 @@ const SignIn = () => {
                   required
                 />
               </div>
-              <div className="flex items-center justify-center">
-                <Link href="#" className="text-primary-600 dark:text-primary-500 text-sm font-medium hover:underline">
-                  {t('forgout')}
-                </Link>
+              <div>
+                <Button onClick={onSubmit} variant="default" className="w-full">
+                  {t('signinButton')}
+                </Button>
+
+                <Button
+                  onClick={onCheckYandex}
+                  className="mt-2 flex w-full cursor-pointer items-center justify-center bg-gray-200 hover:border hover:bg-background dark:bg-stone-700"
+                  variant="ghost"
+                >
+                  {t('loginVia')}
+                  <Image className="ml-1" src="/yandex-icon.png" alt="" height={26} width={26} />
+                </Button>
               </div>
-              <Button onClick={onSubmit} variant="default" className="w-full">
-                {t('signinButton')}
-              </Button>
-              <p className="text-center text-sm font-light text-gray-500 dark:text-gray-400">
-                {t('dontAccount')}{' '}
-                <Link href="/signup" className="text-primary-600 dark:text-primary-500 font-medium hover:underline">
-                  {t('signupLink')}
-                </Link>
-              </p>
             </form>
+
+            <div className="flex items-center justify-center">
+              <Link href="#" className="text-primary-600 dark:text-primary-500 text-sm font-medium hover:underline">
+                {t('forgout')}
+              </Link>
+            </div>
+            <p className="text-center text-sm font-light text-gray-500 dark:text-gray-400">
+              {t('dontAccount')}{' '}
+              <Link href="/signup" className="text-primary-600 dark:text-primary-500 font-medium hover:underline">
+                {t('signupLink')}
+              </Link>
+            </p>
           </div>
         </div>
       </div>
