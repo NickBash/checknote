@@ -133,7 +133,7 @@ export const useUserStore = create<UserStore>((set, get) => ({
 
     return pb
       ?.collection('users')
-      .authWithOAuth2({ provider: 'yandex', emailVisibility: true })
+      .authWithOAuth2({ provider: 'yandex', createData: { emailVisibility: true } })
       .then(res => {
         if (res?.record) {
           set({ user: res.record, token: res.token })

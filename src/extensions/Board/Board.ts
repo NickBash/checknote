@@ -7,7 +7,11 @@ export const Board = Node.create({
   group: 'block',
   atom: true,
   selectable: false,
+  draggable: true,
   excludes: '_',
+
+  content: 'inline*',
+
   addAttributes() {
     return {
       tasks: {
@@ -32,7 +36,7 @@ export const Board = Node.create({
   },
 
   addNodeView() {
-    return ReactNodeViewRenderer(TaskBoard)
+    return ReactNodeViewRenderer(TaskBoard, { contentDOMElementTag: 'board' })
   },
 })
 

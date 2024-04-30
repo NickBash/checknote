@@ -101,6 +101,7 @@ const SignIn = () => {
                   onClick={onCheckYandex}
                   className="mt-2 flex w-full cursor-pointer items-center justify-center bg-gray-200 hover:border hover:bg-background dark:bg-stone-700"
                   variant="ghost"
+                  type="button"
                 >
                   {t('loginVia')}
                   <Image className="ml-1" src="/yandex-icon.png" alt="" height={26} width={26} />
