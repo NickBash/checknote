@@ -17,26 +17,16 @@ import { nanoid } from 'nanoid'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import ColumnContainer from './components/ColumnContainer'
+import FilterBoard from './components/FiltersBoard'
 import TaskCard from './components/TaskCard'
 import type { Column, Id, Task } from './types'
 
-const defaultCols: Column[] = [
-  {
-    id: 'todo',
-    title: 'Todo',
-  },
-  {
-    id: 'doing',
-    title: 'Work in progress',
-  },
-  {
-    id: 'done',
-    title: 'Done',
-  },
-]
+export type Priority = 'highest' | 'high' | 'normal' | 'low'
 
 export const TaskBoard = (props: any) => {
   const initComponent = useRef(false)
+
+  const [priority, setPriority] = useState<Priority | null>(null)
 
   const user = useUserStore(state => state.user)
 
@@ -44,6 +34,11 @@ export const TaskBoard = (props: any) => {
   const columnsId = useMemo(() => columns.map(col => col.id), [columns])
 
   const [tasks, setTasks] = useState<Task[]>([])
+
+  const visibleTasks = useMemo(
+    () => (priority ? tasks?.filter(task => task.priority === priority) : tasks),
+    [tasks, priority],
+  )
 
   const [activeColumn, setActiveColumn] = useState<Column | null>(null)
 
@@ -115,7 +110,8 @@ export const TaskBoard = (props: any) => {
   )
 
   return (
-    <NodeViewWrapper className="react-component">
+    <NodeViewWrapper className="flex flex-col gap-y-4">
+      <FilterBoard priority={priority} setPriority={setPriority} />
       <div
         className="
         m-auto
@@ -140,7 +136,7 @@ export const TaskBoard = (props: any) => {
                     createTask={createTask}
                     deleteTask={deleteTask}
                     updateTask={updateTask}
-                    tasks={tasks.filter(task => task.columnId === col.id)}
+                    tasks={visibleTasks.filter(task => task.columnId === col.id)}
                   />
                 ))}
               </SortableContext>
