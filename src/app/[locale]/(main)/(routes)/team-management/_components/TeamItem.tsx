@@ -6,7 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
 import { useTeamManagementStore, useUserStore, type TeamManagementItem, type UserDB } from '@/stores'
-import { MoreVertical, Search } from 'lucide-react'
+import { MoreVertical, Save, Search } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { useMemo, useState } from 'react'
 import toast from 'react-hot-toast'
@@ -29,6 +29,10 @@ export const TeamItem = ({ team }: Props) => {
   const [searchResult, setSearchResult] = useState<UserDB[]>([])
   const [filterUser, setFilterUser] = useState('')
 
+  const [title, setTitle] = useState(team.name)
+  const [editingTitle, setEditingTitle] = useState(false)
+
+  // восстановить инпут, setFilterUser
   const users = useMemo(() => {
     const u = team?.expand?.users?.filter(user => user.email.includes(filterUser))
 
@@ -39,7 +43,7 @@ export const TeamItem = ({ team }: Props) => {
     if (search) {
       const result: UserDB[] = await findUser(search)
 
-      setSearchResult(result.filter(u => u.email !== user?.email).filter(u => !team.users.includes(u.id)))
+      setSearchResult(result?.filter(u => u?.email !== user?.email)?.filter(u => !team?.users?.includes(u.id)))
     }
   }
 
@@ -68,13 +72,34 @@ export const TeamItem = ({ team }: Props) => {
     })
   }
 
+  const onSave = () => {
+    const changeTeam = {
+      ...team,
+      name: title,
+    }
+
+    requestUpdateTeam(changeTeam)?.then(() => {
+      setEditingTitle(false)
+    })
+  }
+
   return (
     <div
       key={team.id}
       className="flex cursor-pointer select-none flex-col items-center gap-x-4 gap-y-2 rounded-sm bg-secondary px-4 py-2"
     >
       <div className="flex w-full items-center justify-between">
-        {team.name}
+        {!editingTitle && (
+          <div className="inline-flex" onClick={() => setEditingTitle(true)}>
+            {team.name}
+          </div>
+        )}
+        {editingTitle && (
+          <div className="inline-flex items-center gap-x-2">
+            <Input className="h-6 w-40" value={title} onChange={e => setTitle(e.target.value)} />
+            <Save size={20} onClick={onSave} />
+          </div>
+        )}
         <DropdownMenu>
           <DropdownMenuTrigger className="focus-visible:ring-transparent">
             <MoreVertical className="rounded-sm p-1 hover:bg-secondary focus-visible:ring-transparent" size="22" />
@@ -100,9 +125,9 @@ export const TeamItem = ({ team }: Props) => {
               </TabsList>
               <TabsContent value="current">
                 <div className="flex flex-col gap-y-2">
-                  <label className="text-sm">{t('label')}</label>
+                  {/* <label className="text-sm">{t('label')}</label> */}
                   <div className="grid w-full grid-cols-[1fr_max-content_max-content] gap-x-2">
-                    <Input
+                    {/* <Input
                       name="email"
                       id="email"
                       className="dark:bg-neutral-900"
@@ -111,10 +136,10 @@ export const TeamItem = ({ team }: Props) => {
                     />
                     <Button className="h-full" onClick={onSearch}>
                       <Search />
-                    </Button>
+                    </Button> */}
                   </div>
                   <div className="flex w-full flex-col gap-y-2">
-                    <label className="text-sm">{users.length ? t('foundYourRequest') : t('noUsersFound')}</label>
+                    {/* <label className="text-sm">{users.length ? t('foundYourRequest') : t('noUsersFound')}</label> */}
                     {users.map(value => (
                       <SearchUserItem
                         key={value.id}
@@ -144,8 +169,10 @@ export const TeamItem = ({ team }: Props) => {
                     </Button>
                   </div>
                   <div className="flex w-full flex-col gap-y-2">
-                    <label className="text-sm">{searchResult.length ? t('foundYourRequest') : t('noUsersFound')}</label>
-                    {searchResult.map(value => (
+                    <label className="text-sm">
+                      {searchResult?.length ? t('foundYourRequest') : t('noUsersFound')}
+                    </label>
+                    {searchResult?.map(value => (
                       <SearchUserItem
                         key={value.id}
                         team={team}

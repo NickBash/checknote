@@ -20,8 +20,8 @@ export const SearchUserItem = ({ team, user, onAddUser, onRemoveUser, onUpdateUs
   const [role, setRole] = useState<string>('observer')
 
   useEffect(() => {
-    if (user.id in team.usersRoles) {
-      setRole(team.usersRoles[user.id])
+    if (user?.id && team?.usersRoles?.hasOwnProperty(user?.id)) {
+      setRole(team?.usersRoles[user.id])
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [team])
