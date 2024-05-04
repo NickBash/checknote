@@ -47,7 +47,20 @@ export const TeamItem = ({ team }: Props) => {
     }
   }
 
-  const onRemoveUser = (id: string) => {}
+  const onRemoveUser = (id: string) => {
+    const teamChange = { ...team.usersRoles }
+
+    delete teamChange[id]
+
+    const changeTeam = {
+      ...team,
+      usersRoles: teamChange,
+    }
+
+    requestUpdateTeam(changeTeam)?.then(() => {
+      toast.success('Пользователь удален')
+    })
+  }
 
   const onUpdateUser = (id: string, role: string) => {
     const changeTeam = {

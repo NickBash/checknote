@@ -26,6 +26,8 @@ export type DocumentCopy = {
   contentId: string | null
   editors: string[] | null
   expand?: Expand
+  teams?: string[]
+  usersRoles: any
 }
 
 type DocumentsStore = {
@@ -44,7 +46,7 @@ type DocumentsStore = {
   onArchiveDocuments: (recordId: string) => void
   onRestoreDocuments: (recordId: string) => void
   onRemoveDocuments: (recordId: string) => void
-  requestUpdateEditors: (recordId: string, userId: string) => void
+  requestUpdateEditors: (recordId: string, userId: string, role: string) => void
   requestRemoveEditor: (recordId: string, userId: string) => void
 }
 
@@ -61,6 +63,7 @@ export const documentTemplate: DocumentTemplate = {
   coverImage: '',
   contentId: null,
   editors: null,
+  usersRoles: {},
 }
 
 export const useDocuments = create<DocumentsStore>()(
@@ -247,21 +250,27 @@ export const useDocuments = create<DocumentsStore>()(
           }
         }
       },
-      requestUpdateEditors: async (recordId, userId) => {
+      requestUpdateEditors: async (recordId, userId, role) => {
         const documentCopy = get().getDocument(recordId)
 
         if (documentCopy) {
           return await get().requestUpdateDocument(recordId, {
             editors: Array.isArray(documentCopy.editors) ? [...documentCopy.editors, userId] : [userId],
+            usersRoles: { ...documentCopy?.usersRoles, [userId]: role },
           })
         }
       },
       requestRemoveEditor: async (recordId, userId) => {
         const documentCopy = get().getDocument(recordId)
 
+        const userRolesChange = { ...documentCopy?.usersRoles }
+
+        delete userRolesChange[userId]
+
         if (documentCopy) {
           return await get().requestUpdateDocument(recordId, {
             editors: documentCopy.editors?.filter(value => value !== userId),
+            usersRoles: userRolesChange,
           })
         }
       },
