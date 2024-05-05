@@ -2,16 +2,17 @@ import { Textarea } from '@/components/ui-tiptap/Textarea'
 import { DatePicker } from '@/components/ui/DatePicker'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/Select'
 import { Button } from '@/components/ui/button'
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
+import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from '@/components/ui/command'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { cn } from '@/lib/utils'
+import type { UserDB } from '@/stores'
 import { enUS, ru } from 'date-fns/locale'
 import { Check, ChevronDown, ChevronUp, ChevronsUp, ChevronsUpDown, Pencil } from 'lucide-react'
 import { useParams } from 'next/navigation'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import type { Id, Task } from '../types'
 
 const frameworks = [
@@ -40,11 +41,12 @@ const frameworks = [
 interface Props {
   task: Task
   updateTask: (id: Id, content: Partial<Task>) => void
+  usersList: UserDB[]
 }
 
-function SheetTaskCard({ task, updateTask }: Props) {
+function SheetTaskCard({ task, updateTask, usersList }: Props) {
   const [open, setOpen] = useState(false)
-  const [value, setValue] = useState('')
+  const [value, setValue] = useState<UserDB | null>(null)
 
   const params = useParams()
 
@@ -62,6 +64,20 @@ function SheetTaskCard({ task, updateTask }: Props) {
     setEndDate(value)
     updateTask(task.id, { endDate })
   }
+
+  useEffect(() => {
+    if (usersList?.length && task) {
+      const currUser = usersList?.find(user => user.id === task?.performers)
+
+      if (currUser) {
+        setValue(currUser)
+      }
+    }
+  }, [task, usersList])
+
+  useEffect(() => {
+    updateTask(task.id, { performers: value?.id })
+  }, [value])
 
   return (
     <Sheet>
@@ -129,29 +145,26 @@ function SheetTaskCard({ task, updateTask }: Props) {
             <Popover open={open} onOpenChange={setOpen}>
               <PopoverTrigger asChild>
                 <Button variant="outline" role="combobox" aria-expanded={open} className="justify-between">
-                  {value ? frameworks.find(framework => framework.value === value)?.label : 'Выберите исполнителей'}
+                  {value ? value?.username : 'Выберите исполнителя'}
                   <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="pointer-events-auto max-h-[--radix-popover-content-available-height] w-[--radix-popover-trigger-width] p-0">
                 <Command>
-                  <CommandInput placeholder="Search framework..." />
                   <CommandEmpty>No framework found.</CommandEmpty>
                   <CommandList>
                     <CommandGroup>
-                      {frameworks.map(framework => (
+                      {usersList?.map(user => (
                         <CommandItem
-                          key={framework.value}
-                          value={framework.value}
+                          key={user.id}
+                          value={user.username}
                           onSelect={currentValue => {
-                            setValue(currentValue === value ? '' : currentValue)
+                            setValue(user)
                             setOpen(false)
                           }}
                         >
-                          <Check
-                            className={cn('mr-2 h-4 w-4', value === framework.value ? 'opacity-100' : 'opacity-0')}
-                          />
-                          {framework.label}
+                          <Check className={cn('mr-2 h-4 w-4', value?.id === user.id ? 'opacity-100' : 'opacity-0')} />
+                          {user.username}
                         </CommandItem>
                       ))}
                     </CommandGroup>

@@ -1,5 +1,5 @@
 import useDebounce from '@/hooks/use-debounce'
-import { useUserStore } from '@/stores'
+import { useDocuments, useUserStore } from '@/stores'
 import {
   DndContext,
   DragOverlay,
@@ -14,6 +14,7 @@ import { SortableContext, arrayMove } from '@dnd-kit/sortable'
 import { NodeViewWrapper } from '@tiptap/react'
 import { Plus } from 'lucide-react'
 import { nanoid } from 'nanoid'
+import { useParams } from 'next/navigation'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import ColumnContainer from './components/ColumnContainer'
@@ -46,6 +47,35 @@ export const TaskBoard = (props: any) => {
 
   const debouncedTasks = useDebounce(tasks, 1400)
   const debouncedColumns = useDebounce(columns, 300)
+
+  const { documentId } = useParams()
+
+  const getDocument = useDocuments(state => state.getDocument)
+  const getDocumentShared = useDocuments(state => state.getDocument)
+
+  const usersList = useMemo(() => {
+    if (documentId) {
+      const a = getDocument(documentId as string)
+      const b = getDocumentShared(documentId as string)
+
+      const res = a ? a : b
+
+      if (res) {
+        const editors = res.expand?.editors
+
+        const teamsUsers = res.expand?.teams?.map(value => value.expand.users)?.flat()
+
+        return [editors, teamsUsers]?.flat()
+      }
+    }
+
+    return null
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [documentId])
+
+  useEffect(() => {
+    console.log(usersList)
+  }, [usersList])
 
   const updateTasks = () => {
     if (props) {
@@ -137,6 +167,7 @@ export const TaskBoard = (props: any) => {
                     deleteTask={deleteTask}
                     updateTask={updateTask}
                     tasks={visibleTasks.filter(task => task.columnId === col.id)}
+                    usersList={usersList}
                   />
                 ))}
               </SortableContext>
@@ -181,6 +212,7 @@ export const TaskBoard = (props: any) => {
                   deleteTask={deleteTask}
                   updateTask={updateTask}
                   tasks={tasks.filter(task => task.columnId === activeColumn.id)}
+                  usersList={usersList}
                 />
               )}
               {activeTask && <TaskCard task={activeTask} deleteTask={deleteTask} updateTask={updateTask} />}

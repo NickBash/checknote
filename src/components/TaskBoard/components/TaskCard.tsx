@@ -1,4 +1,5 @@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import type { UserDB } from '@/stores'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { ChevronDown, ChevronUp, ChevronsUp, GripVertical, MoreVertical } from 'lucide-react'
@@ -10,9 +11,10 @@ interface Props {
   task: Task
   deleteTask: (id: Id) => void
   updateTask: (id: Id, content: Partial<Task>) => void
+  usersList: UserDB[]
 }
 
-function TaskCard({ task, deleteTask, updateTask }: Props) {
+function TaskCard({ task, deleteTask, updateTask, usersList }: Props) {
   const [mouseIsOver, setMouseIsOver] = useState(false)
   const [editMode, setEditMode] = useState(false)
 
@@ -73,7 +75,7 @@ function TaskCard({ task, deleteTask, updateTask }: Props) {
           </div>
           <div className="flex cursor-pointer gap-x-2 text-gray-400 dark:text-gray-500">
             {getPriorityIcon(task.priority)}
-            <SheetTaskCard task={task} updateTask={updateTask} />
+            <SheetTaskCard task={task} updateTask={updateTask} usersList={usersList} />
             <DropdownMenu>
               <DropdownMenuTrigger>
                 <MoreVertical className="rounded-sm p-1 hover:bg-secondary" size="22" />

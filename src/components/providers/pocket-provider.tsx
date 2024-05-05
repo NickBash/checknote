@@ -54,7 +54,7 @@ export const PocketProvider = () => {
             deleteDocument((e?.record as DocumentCopy).id)
           }
         },
-        { filter: `userId = "${user.id}"`, expand: 'editors' },
+        { filter: `userId = "${user.id}"`, expand: 'editors,teams,teams.users' },
       )
     }
 
@@ -69,11 +69,10 @@ export const PocketProvider = () => {
             updateSharedDocument(e?.record as DocumentCopy)
           }
           if (e?.action === 'delete') {
-            console.log('delete', e)
             deleteSharedDocument((e?.record as DocumentCopy).id)
           }
         },
-        { filter: `editors ~ "${user.id}"` },
+        { filter: `editors ~ "${user.id}" || teams.users ~ "${user.id}"`, expand: 'editors,teams,teams.users' },
       )
     }
 

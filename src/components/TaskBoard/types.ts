@@ -11,7 +11,7 @@ export type Task = {
   columnId: Id
   description: string
   title: string
-  performers: string[]
+  performers: string | null
   priority: string
   beginDate: Date | undefined
   endDate: Date | undefined

@@ -1,5 +1,6 @@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
+import type { UserDB } from '@/stores'
 import { SortableContext, useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { MoreHorizontal, Plus } from 'lucide-react'
@@ -16,9 +17,19 @@ interface Props {
   updateTask: (id: Id, content: Partial<Task>) => void
   deleteTask: (id: Id) => void
   tasks: Task[]
+  usersList: UserDB[]
 }
 
-function ColumnContainer({ column, deleteColumn, updateColumn, createTask, tasks, deleteTask, updateTask }: Props) {
+function ColumnContainer({
+  column,
+  deleteColumn,
+  updateColumn,
+  createTask,
+  tasks,
+  deleteTask,
+  updateTask,
+  usersList,
+}: Props) {
   const [editMode, setEditMode] = useState(false)
 
   const tasksIds = useMemo(() => {
@@ -133,7 +144,7 @@ function ColumnContainer({ column, deleteColumn, updateColumn, createTask, tasks
       <div className="flex flex-grow flex-col gap-4 overflow-y-auto overflow-x-hidden p-2">
         <SortableContext items={tasksIds}>
           {tasks.map(task => (
-            <TaskCard key={task.id} task={task} deleteTask={deleteTask} updateTask={updateTask} />
+            <TaskCard key={task.id} task={task} deleteTask={deleteTask} updateTask={updateTask} usersList={usersList} />
           ))}
         </SortableContext>
       </div>

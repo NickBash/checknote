@@ -66,7 +66,7 @@ export const EditorsModal = () => {
     await requestUpdateEditors(documentId, id, role)
   }
 
-  const onRemoveUser = async (id: string, role: string) => {
+  const onRemoveUser = async (id: string) => {
     const documentId = params.documentId as string
 
     await requestRemoveEditor(documentId, id)

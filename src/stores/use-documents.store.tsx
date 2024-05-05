@@ -3,10 +3,12 @@ import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
 import { usePocketbaseStore } from './use-pocketbase.store'
+import type { TeamManagementItem } from './use-team-management.store'
 import { useUserStore, type UserDB } from './use-user.store'
 
 type Expand = {
   editors: UserDB[]
+  teams: TeamManagementItem[]
 }
 
 export type DocumentCopy = {
@@ -100,8 +102,10 @@ export const useDocuments = create<DocumentsStore>()(
           try {
             const records = await pb.collection('documents').getFullList({
               filter: `userId = "${user.id}"`,
-              expand: 'editors',
+              expand: 'editors,teams,teams.users',
             })
+
+            console.log(records)
 
             set({ listDocuments: records as DocumentCopy[], isLoading: false })
           } catch (e) {

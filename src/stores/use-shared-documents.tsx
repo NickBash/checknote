@@ -12,6 +12,7 @@ type SharedDocumentsStore = {
   isError: boolean
   error: any
   listDocuments: DocumentCopy[]
+  getDocument: (recordId: string) => DocumentCopy | undefined
   requestGetDocuments: () => Promise<unknown>
   requestСreateDocument: (data?: Partial<DocumentTemplate>) => Promise<unknown>
   addDocument: (value: DocumentCopy) => void
@@ -35,7 +36,8 @@ export const useSharedDocuments = create<SharedDocumentsStore>()(
 
           try {
             const records = await pb.collection('documents').getFullList({
-              filter: `editors ~ "${user.id}"`,
+              filter: `editors ~ "${user.id}" || teams.users ~ "${user.id}"`,
+              expand: 'editors,teams,teams.users',
             })
 
             set({ listDocuments: records as DocumentCopy[], isLoading: false })
@@ -66,6 +68,7 @@ export const useSharedDocuments = create<SharedDocumentsStore>()(
         set(state => {
           state.listDocuments.push(value)
         }),
+      getDocument: recordId => get().listDocuments.find(doc => doc.id === recordId),
       updateDocument: value =>
         set(state => {
           const index = state.listDocuments.findIndex(doc => doc.id === value.id)

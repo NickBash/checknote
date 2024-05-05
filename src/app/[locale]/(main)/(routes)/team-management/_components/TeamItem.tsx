@@ -54,6 +54,7 @@ export const TeamItem = ({ team }: Props) => {
 
     const changeTeam = {
       ...team,
+      users: team.users?.filter(u => u !== id),
       usersRoles: teamChange,
     }
 
