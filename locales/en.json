@@ -21,16 +21,27 @@
     "signinButton": "Sign in",
     "dontAccount": "Don’t have an account yet?",
     "signupLink": "Sign up",
-    "loginVia": "Login via"
+    "loginVia": "Login via",
+    "incorrectCredentials": "IncorrectCredentials",
+    "serverError": "Server error"
   },
   "Signup": {
     "title": "Registration",
     "email": "Your email",
     "password": "Password",
-    "repeatPassword": "Repeat password",
+    "confirmPassword": "Repeat password",
     "signupButton": "Sign up",
     "haveAccount": "You have an account?",
-    "signinLink": "Sign in"
+    "signinLink": "Sign in",
+    "emailIsEmpty": "* email is empty",
+    "emailMaxLength": "* email should be shorter than 50 characters",
+    "validEmail": "* this is not a valid email",
+    "passwordMismatch": "* password mismatch",
+    "minPassword": "* the password must be at least 8 characters long",
+    "maxPassword": "* the password length should not exceed 30 characters",
+    "successRegister": "Registration completed",
+    "emailAlredyUse": "The email is invalid or already in use",
+    "unknowError": "Failed to register"
   },
   "Navigation": {
     "addPage": "Add a page",

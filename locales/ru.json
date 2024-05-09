@@ -21,16 +21,27 @@
     "signinButton": "Войти",
     "dontAccount": "У вас нет аккаунта?",
     "signupLink": "Зарегистрироваться",
-    "loginVia": "Войти через"
+    "loginVia": "Войти через",
+    "incorrectCredentials": "Некорректные учетные данные",
+    "serverError": "Ошибка сервера"
   },
   "Signup": {
     "title": "Регистрация",
     "email": "Электронная почта",
     "password": "Пароль",
-    "repeatPassword": "Повторите пароль",
+    "confirmPassword": "Повторите пароль",
     "signupButton": "Зарегистрироваться",
     "haveAccount": "У вас есть аккаунт?",
-    "signinLink": "Войти"
+    "signinLink": "Войти",
+    "emailIsEmpty": "* почта не может быть пустой",
+    "emailMaxLength": "* почта не может быть длиннее 80 символов",
+    "validEmail": "* почта не валидна",
+    "passwordMismatch": "* пароли не совпадают",
+    "minPassword": "* длина пароля должна быть не менее 8 символов",
+    "maxPassword": "* длина пароля не должна превышать 30 символов",
+    "successRegister": "Регистрация выполнена",
+    "emailAlredyUse": "Эта почта уже используется",
+    "unknowError": "Не удалось зарегистрироваться"
   },
   "Navigation": {
     "addPage": "Создать страницу",

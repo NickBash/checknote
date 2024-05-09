@@ -1,38 +1,63 @@
 'use client'
 
 import { Spinner } from '@/components/spinner'
+import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/Form'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { useUserStore } from '@/stores/use-user.store'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useCallback, useEffect, useState } from 'react'
+import type { ClientResponseError } from 'pocketbase'
+import { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+
+const BaseSchema = (t: (arg: string) => string) =>
+  z.object({
+    email: z.string(),
+    password: z.string(),
+  })
 
 const SignIn = () => {
   const login = useUserStore(state => state.login)
   const { push } = useRouter()
   const [init, setInit] = useState(false)
   const t = useTranslations('Signin')
-  const [email, setEmail] = useState('')
-  const [pass, setPass] = useState('')
+  const formSchema = BaseSchema(t)
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  })
+
+  const [error, setError] = useState<string | undefined>('')
 
   const checkYandex = useUserStore(state => state.checkYandex)
 
-  const onSubmit = useCallback(
-    async (evt: React.MouseEvent<HTMLElement>) => {
-      evt?.preventDefault()
-      try {
-        await login(email, pass)
+  const onSubmit = (values: z.infer<typeof formSchema>) => {
+    setError('')
 
-        push('/')
-      } catch (e) {
-        console.error(e)
-      }
-    },
-    [email, pass, login, push],
-  )
+    login(values.email, values.password)
+      ?.then(res => {
+        setTimeout(() => {
+          push('/')
+        }, 300)
+      })
+      .catch((e: ClientResponseError) => {
+        if (e.data?.code) {
+          setError(t('incorrectCredentials'))
+        } else {
+          setError(t('serverError'))
+        }
+      })
+  }
 
   useEffect(() => {
     setInit(true)
@@ -62,52 +87,55 @@ const SignIn = () => {
             <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 dark:text-white md:text-2xl">
               {t('title')}
             </h1>
-
-            <form className="space-y-4 md:space-y-6" action="#">
-              <div>
-                <label htmlFor="email" className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
-                  {t('email')}
-                </label>
-                <Input
-                  type="email"
-                  name="email"
-                  id="email"
-                  className="dark:bg-neutral-900"
-                  placeholder="name@company.com"
-                  onChange={e => setEmail(e.target.value)}
-                  required
-                />
-              </div>
-              <div>
-                <label htmlFor="password" className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
-                  {t('password')}
-                </label>
-                <Input
-                  type="password"
-                  name="password"
-                  id="password"
-                  className="dark:bg-neutral-900"
-                  placeholder="••••••••"
-                  onChange={e => setPass(e.target.value)}
-                  required
-                />
-              </div>
-              <div>
-                <Button onClick={onSubmit} variant="default" className="w-full">
-                  {t('signinButton')}
-                </Button>
-
-                <Button
-                  onClick={onCheckYandex}
-                  className="mt-2 flex w-full cursor-pointer items-center justify-center bg-gray-200 hover:border hover:bg-background dark:bg-stone-700"
-                  variant="ghost"
-                  type="button"
-                >
-                  {t('loginVia')}
-                  <Image className="ml-1" src="/yandex-icon.png" alt="" height={26} width={26} />
-                </Button>
-              </div>
-            </form>
+            {error && <div className="text-red-600">{error}</div>}
+            <Form {...form}>
+              <form className="space-y-4 md:space-y-6" action="#" onSubmit={form.handleSubmit(onSubmit)}>
+                <div>
+                  <FormField
+                    name="email"
+                    control={form.control}
+                    render={({ field }) => (
+                      <FormItem>
+                        <Label>{t('email')}</Label>
+                        <FormControl>
+                          <Input placeholder="example@mail.com" className="dark:bg-neutral-900" {...field} />
+                        </FormControl>
+                        <FormMessage className="dark:text-red-600" />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div>
+                  <FormField
+                    name="password"
+                    control={form.control}
+                    render={({ field }) => (
+                      <FormItem>
+                        <Label>{t('password')}</Label>
+                        <FormControl>
+                          <Input type="password" placeholder="••••••••" className="dark:bg-neutral-900" {...field} />
+                        </FormControl>
+                        <FormMessage className="dark:text-red-600" />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div>
+                  <Button type="submit" variant="default" className="w-full">
+                    {t('signinButton')}
+                  </Button>
+                  <Button
+                    onClick={onCheckYandex}
+                    className="mt-2 flex w-full cursor-pointer items-center justify-center bg-gray-200 hover:border hover:bg-background dark:bg-stone-700"
+                    variant="ghost"
+                    type="button"
+                  >
+                    {t('loginVia')}
+                    <Image className="ml-1" src="/yandex-icon.png" alt="" height={26} width={26} />
+                  </Button>
+                </div>
+              </form>
+            </Form>
 
             <div className="flex items-center justify-center">
               <Link href="#" className="text-primary-600 dark:text-primary-500 text-sm font-medium hover:underline">

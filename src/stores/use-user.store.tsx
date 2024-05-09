@@ -32,8 +32,8 @@ type UserStore = {
   setIsLoadingUser: (value: boolean) => void
   checkAuth: () => Promise<boolean | undefined> | boolean
   checkYandex: () => Promise<void | RecordAuthResponse<RecordModel>> | undefined
-  register: (email: string, password: string) => void
-  login: (email: string, password: string) => void
+  register: (email: string, password: string) => Promise<any> | undefined
+  login: (email: string, password: string) => Promise<any> | undefined
   logout: () => void
   refreshSession: () => void
   findUser: (value: string) => any
@@ -74,29 +74,27 @@ export const useUserStore = create<UserStore>((set, get) => ({
       return false
     }
   },
-  register: async (email, password) => {
+  register: (email, password) => {
     const pb = usePocketbaseStore.getState().pocketbaseClient
 
-    return await pb?.collection('users').create({ email, password, passwordConfirm: password, emailVisibility: true })
+    return pb?.collection('users').create({ email, password, passwordConfirm: password, emailVisibility: true })
   },
   login: async (email: string, password: string) => {
     const pb = usePocketbaseStore.getState().pocketbaseClient
 
-    try {
-      const res: ResLogin | undefined = await pb?.collection('users').authWithPassword(email, password)
-
-      if (res) {
+    return pb
+      ?.collection('users')
+      .authWithPassword(email, password)
+      .then(res => {
         set({
           user: res.record,
           token: res.token,
           isLoadingUser: false,
         })
-      }
-    } catch (error: unknown) {
-      get().clearUser()
-
-      console.error(error)
-    }
+      })
+    // .catch(() => {
+    //   get().clearUser()
+    // })
   },
   logout: () => {
     const pb = usePocketbaseStore.getState().pocketbaseClient

@@ -1,49 +1,82 @@
 'use client'
 
-import { Spinner } from '@/components/spinner'
+import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/Form'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { useUserStore } from '@/stores/use-user.store'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { Check } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useCallback, useEffect, useState } from 'react'
+import type { ClientResponseError } from 'pocketbase'
+import { useState, useTransition } from 'react'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+
+const BaseSchema = (t: (arg: string) => string) =>
+  z
+    .object({
+      email: z
+        .string()
+        .min(1, { message: t('emailIsEmpty') })
+        .max(80, { message: t('emailMaxLength') })
+        .email(t('validEmail')),
+      password: z
+        .string()
+        .min(8, { message: t('minPassword') })
+        .max(30, { message: t('maxPassword') }),
+      confirmPassword: z
+        .string()
+        .min(8, { message: t('minPassword') })
+        .max(30, { message: t('maxPassword') }),
+    })
+    .refine(data => data.password === data.confirmPassword, {
+      message: t('passwordMismatch'),
+      path: ['confirmPassword'],
+    })
 
 const SignUp = () => {
+  const t = useTranslations('Signup')
+  const formSchema = BaseSchema(t)
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+      confirmPassword: '',
+    },
+  })
+
   const register = useUserStore(state => state.register)
   const { push } = useRouter()
-  const [init, setInit] = useState(false)
-  const t = useTranslations('Signup')
-  const [email, setEmail] = useState('')
-  const [pass, setPass] = useState('')
-  const [repeatPass, setRepeatPass] = useState('')
 
-  const onSubmit = useCallback(
-    async (evt: React.MouseEvent<HTMLElement>) => {
-      evt?.preventDefault()
-      if (repeatPass === pass) {
-        try {
-          await register(email, pass)
+  const [error, setError] = useState<string | undefined>('')
+  const [success, setSuccess] = useState<boolean>(false)
+  const [isPending, startTransition] = useTransition()
 
-          push('/')
-        } catch (e) {
-          console.error(e)
-        }
-      }
-    },
-    [email, pass, register, push, repeatPass],
-  )
+  const onSubmit = (values: z.infer<typeof formSchema>) => {
+    setError('')
 
-  useEffect(() => {
-    setInit(true)
-  }, [])
+    startTransition(() => {
+      register(values.email, values.password)
+        ?.then(data => {
+          setSuccess(true)
 
-  if (!init) {
-    return (
-      <div className="flex h-full flex-1 items-center justify-center">
-        <Spinner />
-      </div>
-    )
+          setTimeout(() => {
+            push('/signin')
+          }, 800)
+        })
+        ?.catch((e: ClientResponseError) => {
+          if (e?.data?.data?.email?.message === 'The email is invalid or already in use.') {
+            setError(t('emailAlredyUse'))
+          } else {
+            setError(t('unknowError'))
+          }
+        })
+    })
   }
 
   return (
@@ -54,62 +87,73 @@ const SignUp = () => {
             <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 dark:text-white md:text-2xl">
               {t('title')}
             </h1>
-            <form className="space-y-4 md:space-y-6" action="#">
-              <div>
-                <label htmlFor="email" className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
-                  {t('email')}
-                </label>
-                <Input
-                  type="email"
-                  name="email"
-                  id="email"
-                  className="dark:bg-neutral-900"
-                  placeholder="name@company.com"
-                  onChange={e => setEmail(e.target.value)}
-                  required
-                />
-              </div>
-              <div>
-                <label htmlFor="password" className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
-                  {t('password')}
-                </label>
-                <Input
-                  type="password"
-                  name="password"
-                  id="password"
-                  className="dark:bg-neutral-900"
-                  placeholder="••••••••"
-                  onChange={e => setPass(e.target.value)}
-                  required
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="repeatPassword"
-                  className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  {t('repeatPassword')}
-                </label>
-                <Input
-                  type="password"
-                  name="password"
-                  id="password_repeat"
-                  className="dark:bg-neutral-900"
-                  placeholder="••••••••"
-                  onChange={e => setRepeatPass(e.target.value)}
-                  required
-                />
-              </div>
-              <Button onClick={onSubmit} variant="default" className="w-full">
-                {t('signupButton')}
-              </Button>
-              <p className="text-center text-sm font-light text-gray-500 dark:text-gray-400">
-                {t('haveAccount')}{' '}
-                <Link href="/signin" className="text-primary-600 dark:text-primary-500 font-medium hover:underline">
-                  {t('signinLink')}
-                </Link>
-              </p>
-            </form>
+            {error && <div className="text-red-600">{error}</div>}
+            <Form {...form}>
+              <form className="space-y-4 md:space-y-6" action="#" onSubmit={form.handleSubmit(onSubmit)}>
+                <div>
+                  <FormField
+                    name="email"
+                    control={form.control}
+                    render={({ field }) => (
+                      <FormItem>
+                        <Label>{t('email')}</Label>
+                        <FormControl>
+                          <Input placeholder="example@mail.com" className="dark:bg-neutral-900" {...field} />
+                        </FormControl>
+                        <FormMessage className="dark:text-red-600" />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div>
+                  <FormField
+                    name="password"
+                    control={form.control}
+                    render={({ field }) => (
+                      <FormItem>
+                        <Label>{t('password')}</Label>
+                        <FormControl>
+                          <Input type="password" placeholder="••••••••" className="dark:bg-neutral-900" {...field} />
+                        </FormControl>
+                        <FormMessage className="dark:text-red-600" />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div>
+                  <FormField
+                    name="confirmPassword"
+                    control={form.control}
+                    render={({ field }) => (
+                      <FormItem>
+                        <Label>{t('confirmPassword')}</Label>
+                        <FormControl>
+                          <Input type="password" placeholder="••••••••" className="dark:bg-neutral-900" {...field} />
+                        </FormControl>
+                        <FormMessage className="dark:text-red-600" />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                {success ? (
+                  <div className="flex h-10 w-full items-center justify-center gap-x-2 rounded-sm bg-green-600 text-foreground text-white  dark:bg-green-700">
+                    <Check />
+                    {t('successRegister')}
+                  </div>
+                ) : (
+                  <Button type="submit" variant="default" className="w-full" disabled={isPending}>
+                    {t('signupButton')}
+                  </Button>
+                )}
+                <p className="text-center text-sm font-light text-gray-500 dark:text-gray-400">
+                  {t('haveAccount')}{' '}
+                  <Link href="/signin" className="text-primary-600 dark:text-primary-500 font-medium hover:underline">
+                    {t('signinLink')}
+                  </Link>
+                </p>
+              </form>
+            </Form>
           </div>
         </div>
       </div>
