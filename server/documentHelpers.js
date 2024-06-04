@@ -15,8 +15,6 @@ const onStoreDocument = async data => {
 const onLoadDocument = async data => {
   const { documentName, document } = data
 
-  console.log('log')
-
   if (!documentName) return Promise.resolve()
 
   const documentFromDB = await pb?.collection('documentsContent').getOne(documentName)

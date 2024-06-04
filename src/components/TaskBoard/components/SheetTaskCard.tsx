@@ -15,29 +15,6 @@ import { useParams } from 'next/navigation'
 import { useEffect, useMemo, useState } from 'react'
 import type { Id, Task } from '../types'
 
-const frameworks = [
-  {
-    value: 'next.js',
-    label: 'Next.js',
-  },
-  {
-    value: 'sveltekit',
-    label: 'SvelteKit',
-  },
-  {
-    value: 'nuxt.js',
-    label: 'Nuxt.js',
-  },
-  {
-    value: 'remix',
-    label: 'Remix',
-  },
-  {
-    value: 'astro',
-    label: 'Astro',
-  },
-]
-
 interface Props {
   task: Task
   updateTask: (id: Id, content: Partial<Task>) => void
@@ -67,7 +44,7 @@ function SheetTaskCard({ task, updateTask, usersList }: Props) {
 
   useEffect(() => {
     if (usersList?.length && task) {
-      const currUser = usersList?.find(user => user.id === task?.performers)
+      const currUser = usersList?.find(user => user?.id && user?.id === task?.performers)
 
       if (currUser) {
         setValue(currUser)
@@ -76,7 +53,7 @@ function SheetTaskCard({ task, updateTask, usersList }: Props) {
   }, [task, usersList])
 
   useEffect(() => {
-    updateTask(task.id, { performers: value?.id })
+    updateTask(task?.id, { performers: value?.id })
   }, [value])
 
   return (
@@ -93,7 +70,7 @@ function SheetTaskCard({ task, updateTask, usersList }: Props) {
             <Label htmlFor="name">Заголовок</Label>
             <Input
               value={task?.title}
-              onChange={e => updateTask(task.id, { title: e.target.value })}
+              onChange={e => updateTask(task?.id, { title: e.target.value })}
               id="name"
               className="focus-visible:ring-transparent"
             />
@@ -102,13 +79,13 @@ function SheetTaskCard({ task, updateTask, usersList }: Props) {
             <Label htmlFor="description">Описание задачи</Label>
             <Textarea
               value={task?.description}
-              onChange={e => updateTask(task.id, { description: e.target.value })}
+              onChange={e => updateTask(task?.id, { description: e.target.value })}
               id="description"
             />
           </div>
           <div className="flex flex-col gap-4">
             <Label>Приоритет</Label>
-            <Select value={task?.priority} onValueChange={e => updateTask(task.id, { priority: e })}>
+            <Select value={task?.priority} onValueChange={e => updateTask(task?.id, { priority: e })}>
               <SelectTrigger className="focus:ring-transparent">
                 <SelectValue placeholder="Выберите приоритет" />
               </SelectTrigger>
@@ -156,15 +133,15 @@ function SheetTaskCard({ task, updateTask, usersList }: Props) {
                     <CommandGroup>
                       {usersList?.map(user => (
                         <CommandItem
-                          key={user.id}
-                          value={user.username}
+                          key={user?.id}
+                          value={user?.username}
                           onSelect={currentValue => {
                             setValue(user)
                             setOpen(false)
                           }}
                         >
-                          <Check className={cn('mr-2 h-4 w-4', value?.id === user.id ? 'opacity-100' : 'opacity-0')} />
-                          {user.username}
+                          <Check className={cn('mr-2 h-4 w-4', value?.id === user?.id ? 'opacity-100' : 'opacity-0')} />
+                          {user?.username}
                         </CommandItem>
                       ))}
                     </CommandGroup>

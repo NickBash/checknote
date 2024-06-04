@@ -109,5 +109,8 @@
     "foundYourRequest": "Найдено по вашему запросу",
     "add": "Добавить",
     "remove": "Удалить"
+  },
+  "DocumentList": {
+    "noPageInside": "Нет страниц"
   }
 }

@@ -147,6 +147,7 @@ const Navigation = () => {
           <Item onClick={redirectToTeamManagement} icon={User2} label={t('teamManagement')} />
         </div>
         <div className="mt-4">
+          <p className="mb-1 mt-4 pl-8 text-sm font-medium text-muted-foreground">Ваши заметки</p>
           <DocumentList />
 
           <Item onClick={handleCreate} icon={Plus} label={t('addPage')} />

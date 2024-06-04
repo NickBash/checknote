@@ -109,5 +109,8 @@
     "foundYourRequest": "Found according to your request",
     "add": "Add",
     "remove": "Remove"
+  },
+  "DocumentList": {
+    "noPageInside": "No page inside"
   }
 }

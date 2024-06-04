@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils'
 import { usePocketbaseStore } from '@/stores/use-pocketbase.store'
 import { useSharedDocuments } from '@/stores/use-shared-documents'
 import { FileIcon } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { useParams, useRouter } from 'next/navigation'
 import { useMemo, useState } from 'react'
 import { SharedItem } from './shared-item'
@@ -16,6 +17,7 @@ interface IDocumentListProps {
 }
 
 export const SharedDocumentList = ({ level = 0, parentDocumentId, className, userId }: IDocumentListProps) => {
+  const t = useTranslations('DocumentList')
   const params = useParams()
   const router = useRouter()
   const [expanded, setExpanded] = useState<Record<string, boolean>>({})
@@ -81,7 +83,7 @@ export const SharedDocumentList = ({ level = 0, parentDocumentId, className, use
           level === 0 && 'hidden',
         )}
       >
-        No page inside
+        {t('noPageInside')}
       </p>
       {displayDocuments.map(document => (
         <div key={document.id}>

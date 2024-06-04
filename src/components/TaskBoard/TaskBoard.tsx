@@ -65,17 +65,13 @@ export const TaskBoard = (props: any) => {
 
         const teamsUsers = res.expand?.teams?.map(value => value.expand.users)?.flat()
 
-        return [editors, teamsUsers]?.flat()
+        return [editors, teamsUsers]?.flat().filter(Boolean)
       }
     }
 
     return null
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [documentId])
-
-  useEffect(() => {
-    console.log(usersList)
-  }, [usersList])
 
   const updateTasks = () => {
     if (props) {
@@ -230,7 +226,7 @@ export const TaskBoard = (props: any) => {
       titleCard: `KK-${tasks.length + 1}`,
       columnId,
       description: `New task content`,
-      performers: [],
+      performers: null,
       priority: 'normal',
       title: 'New tasks',
       beginDate: undefined,

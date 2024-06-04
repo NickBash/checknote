@@ -3,6 +3,7 @@
 import { cn } from '@/lib/utils'
 import { useDocuments } from '@/stores'
 import { FileIcon } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { useParams, useRouter } from 'next/navigation'
 import { useMemo, useState } from 'react'
 import { Item } from './item'
@@ -13,6 +14,7 @@ interface IDocumentListProps {
 }
 
 export const DocumentList = ({ level = 0, parentDocumentId }: IDocumentListProps) => {
+  const t = useTranslations('DocumentList')
   const params = useParams()
   const router = useRouter()
   const [expanded, setExpanded] = useState<Record<string, boolean>>({})
@@ -74,7 +76,7 @@ export const DocumentList = ({ level = 0, parentDocumentId }: IDocumentListProps
           level === 0 && 'hidden',
         )}
       >
-        No page inside
+        {t('noPageInside')}
       </p>
       {displayDocuments.map(document => (
         <div key={document.id}>
